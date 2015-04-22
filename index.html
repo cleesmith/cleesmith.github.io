@@ -13,77 +13,80 @@
 </head>
 <body>
 <div class="container-fluid">
-<h2>Open Source Projects</h2>
-<ul>
-  <li>
-    <a href="https://github.com/cleesmith/cellipede" target="_blank">Cellipede</a>
-    &nbsp;&nbsp;&nbsp;an SEO tool and more&nbsp;&nbsp;&nbsp;
-    try the <a href="http://cellipede.com/" target="_blank">demo</a>
-  </li>
-  <li>
-    <a href="https://github.com/cleesmith/cellipede_on_heroku" target="_blank">Cellipede for Heroku</a>
-    &nbsp;&nbsp;&nbsp;running for FREE on Heroku&nbsp;&nbsp;&nbsp;
-    try the <a href="http://cellipede.herokuapp.com/" target="_blank">demo</a>
-  </li>
-  <li>
-    <a href="https://github.com/cleesmith/tinycore_with_python_plus" target="_blank">Tiny Core with Python plus</a>
+  <div class="jumbotron">
+    <h2>Open Source Projects</h2>
     <p>
-      A pre-installed Python development environment in Tiny Core for use on Windows with QEMU or VirtualBox.
-      <br />
-      This includes: python/pip, compile tools, openssh, vim/nano, and git.
-      <br />
-      It is a perfect way to <em>get your feet wet</em> and begin learning Linux/Python, or
-      just use it to explore Cellipede.
+      <ul>
+        <li>
+          <a href="https://github.com/cleesmith/cellipede" target="_blank">Cellipede</a>
+          &nbsp;&nbsp;&nbsp;an SEO tool and more&nbsp;&nbsp;&nbsp;
+          try the <a href="http://cellipede.com/" target="_blank">demo</a>
+        </li>
+        <li>
+          <a href="https://github.com/cleesmith/cellipede_on_heroku" target="_blank">Cellipede for Heroku</a>
+          &nbsp;&nbsp;&nbsp;running for FREE on Heroku&nbsp;&nbsp;&nbsp;
+          try the <a href="http://cellipede.herokuapp.com/" target="_blank">demo</a>
+        </li>
+        <li>
+          <a href="https://github.com/cleesmith/tinycore_with_python_plus" target="_blank">Tiny Core with Python plus</a>
+          <p>
+            A pre-installed Python development environment in Tiny Core for use on Windows with QEMU or VirtualBox.
+            <br />
+            This includes: python/pip, compile tools, openssh, vim/nano, and git.
+            <br />
+            It is a perfect way to <em>get your feet wet</em> and begin learning Linux/Python, or
+            just use it to explore Cellipede.
+          </p>
+        </li>
+      </ul>
     </p>
-  </li>
-</ul>
-<hr />
+  </div>
 
-<h3>Apr 18, 2015</h3>
-<ul>
-  <li>added a <b>links</b> function which crawls/scrapes a page gathering all of the href tags</li>
-  <li style="margin-top:10px;">idea: make a series of <b>Tiny Core of Discovery</b> youtube videos:
-    <ul>
-      <li>install using VirtualBox for Windows</li>
-      <li>install using QEMU for Windows</li>
-      <li>note: <em>VirtualBox/QEMU are not necessary for Mac OS X and Linux, but will work if desired</em>.</li>
-      <li>lead up to: how to remaster and create a disk image with a Python development environment pre-installed</li>
-    </ul>
-</ul>
+  <h3>Apr 18, 2015</h3>
+  <ul>
+    <li>added a <b>links</b> function which crawls/scrapes a page gathering all of the href tags</li>
+    <li style="margin-top:10px;">idea: make a series of <b>Tiny Core of Discovery</b> youtube videos:
+      <ul>
+        <li>install using VirtualBox for Windows</li>
+        <li>install using QEMU for Windows</li>
+        <li>note: <em>VirtualBox/QEMU are not necessary for Mac OS X and Linux, but will work if desired</em>.</li>
+        <li>lead up to: how to remaster and create a disk image with a Python development environment pre-installed</li>
+      </ul>
+  </ul>
 
-<h3>April 11, 2015</h3>
-cellipede can run on
-<a href="https://github.com/cleesmith/tinycore_with_python_plus" target="_blank">Tiny Core with Python plus</a>,
-which is a great way to explore linux, python, git, and vim from within a Windows environment
+  <h3>April 11, 2015</h3>
+  cellipede can run on
+  <a href="https://github.com/cleesmith/tinycore_with_python_plus" target="_blank">Tiny Core with Python plus</a>,
+  which is a great way to explore linux, python, git, and vim from within a Windows environment
 
-<h3>April 3, 2015</h3>
-cellipede offers a <b>SERP</b> function ... "What's your position in a google search ?"
-<br />
-note that the serp function does not use the deprecated API at https://developers.google.com/web-search/docs/,
-<br />
-rather it crawls/scrapes the exact same page as seen when a person performs a google search, but limited to about the first 100 results/positions
+  <h3>April 3, 2015</h3>
+  cellipede offers a <b>SERP</b> function ... "What's your position in a google search ?"
+  <br />
+  note that the serp function does not use the deprecated API at https://developers.google.com/web-search/docs/,
+  <br />
+  rather it crawls/scrapes the exact same page as seen when a person performs a google search, but limited to about the first 100 results/positions
 
-<h3>March 31, 2015</h3>
-<p>
-cellipede can be used as a <b>service for all functions</b>:
-<br /><br />
-use it in a google spreadsheet like:
-<pre>
-=IMPORTHTML("http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/","table",1)
-</pre>
-or use it in another program, like curl:
-<pre>
-curl "http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/"
-</pre>
-or use it directly in a web browser:
-<pre>
-http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/
-or:
-http://cellipede.herokuapp.com/sheet_as_table?id=1
-</pre>
-this feature really <b>opens up</b> cellipede giving you access to all of the functions
-from just about anywhere
-<p>
+  <h3>March 31, 2015</h3>
+  <p>
+    cellipede can be used as a <b>service for all functions</b>:
+    <br /><br />
+    use it in a google spreadsheet like:
+    <pre>
+    =IMPORTHTML("http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/","table",1)
+    </pre>
+    or use it in another program, like curl:
+    <pre>
+    curl "http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/"
+    </pre>
+    or use it directly in a web browser:
+    <pre>
+    http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/
+    or:
+    http://cellipede.herokuapp.com/sheet_as_table?id=1
+    </pre>
+    this feature really <b>opens up</b> cellipede giving you access to all of the functions
+    from just about anywhere
+  </p>
 </div>
 </body>
 </html>

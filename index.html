@@ -12,7 +12,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="container-fluid" style="margin-top:60px;">
+<div class="container-fluid">
 <h2>Open Source Projects</h2>
 <ul>
   <li>
@@ -54,9 +54,9 @@ rather it crawls/scrapes the exact same page as seen when a person performs a go
 cellipede can be used as a <b>service for all functions</b>:
 <br /><br />
 use it in a google spreadsheet like:
-<pre style="margin-top:-20px;"><code>
+<pre>
 =IMPORTHTML("http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/","table",1)
-</code></pre>
+</pre>
 or use it in another program, like curl:
 <pre style="margin-top:-12px;"><code>
 curl "http://cellipede.herokuapp.com/sheet_function?afunction=tweets&url=http://www.amazon.com/"

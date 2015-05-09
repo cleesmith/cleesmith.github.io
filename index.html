@@ -61,10 +61,9 @@
     <li style="margin-top:10px;">
       the beauty of Ruby and what almost no one understands ... simplified:
       <blockquote>
-        - 1.class means <b>1</b> is an <b>object</b> whose <b>class</b> is Fixnum<br>
-        - Fixnum.instance_methods(false) reveals this object to have these methods [:to_s, :+, :-, :==, etc], so<br>
-        - 1.to_s is really 1.send(:to_s)<br>
-        - 1 + 1 is really 1.send(:+, 1)<br>
+        - <b>1.class</b> means <b>1</b> is an <b>object</b> whose <b>class</b> is Fixnum<br>
+        - <b>Fixnum.instance_methods(false)</b> reveals this object to have these methods [:to_s, :+, :-, :==, etc], so<br>
+        - <b>1.to_s</b> is really 1.send(:to_s) and <b>1 + 1</b> is really 1.send(:+, 1)<br>
         - yes, <b>send</b> is just passing a <b>message</b> to an <b>object</b><br>
         an absolute beauty and why I say it's <b>manna from heaven</b>, ok, actually Japan
       </blockquote>

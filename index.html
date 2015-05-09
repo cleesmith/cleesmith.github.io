@@ -61,8 +61,8 @@
     <li style="margin-top:10px;">
       the beauty of Ruby and what almost no one understands:
       <blockquote>
-        - 1.class means <b>1</b> is an <b>object</b> whose <b>class</b> of Fixnum<br>
-        - Fixnum.instance_methods(false) => [:to_s, :+, :-, :==, etc], so<br>
+        - 1.class means <b>1</b> is an <b>object</b> whose <b>class</b> is Fixnum<br>
+        - Fixnum.instance_methods(false) reveals this object to have these methods [:to_s, :+, :-, :==, etc], so<br>
         - 1.to_s is really 1.send(:to_s)<br>
         - 1 + 1 is really 1.send(:+, 1)<br>
         - yes, <b>send</b> is just passing a <b>message</b> to an <b>object</b><br>

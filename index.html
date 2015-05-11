@@ -52,58 +52,50 @@
   </div>
 
   <pre>
-      <a href="http://0pointer.net/blog/revisiting-how-we-put-together-linux-systems.html" target="_blank">
-        interesting ... <em>Operating-System-As-A-Virus</em>
-      </a>
+<a href="http://0pointer.net/blog/revisiting-how-we-put-together-linux-systems.html" target="_blank">
+  interesting ... <em>Operating-System-As-A-Virus</em>
+</a>
 
-  feel like ranting so here goes:
-  <ul>
-    <li style="margin-top:10px;">people who constantly <em>pat themselves on the back</em> ... total lack of confidence</li>
-    <li style="margin-top:10px;">
-      it's puzzling how some people can give programming advice when they are so obviously not a programmer,
-      but only dabble at it, and yet regurgitate all of this stuff they have read and misunderstand
-      <br>
-      also, there's no proof of experience as their github account only has a single slow and unreliable python project
-      <br>
-      if you have never coded anything in ruby then shut up about programming or invest some
-      time in learning how to program
-      ... obviously, you don't know wet if you're never touched water, jump in already
-    </li>
-    <li style="margin-top:10px;">
-      things that are NOT <b>new nor next gen</b> or even all that interesting:
-      <ul>
-        <li>calling external api's ... this has been done in lots of apps for many years now</li>
-        <li>
-          locking an app while streaming ... only 1 client can be served, which is not really a server, right?
-        </li>
-        <li>
-          code that's comprised of giant <b>for</b> loops, and
-          tons of conditional statements (if's/else's) ... indicates zero OO skills
-        </li>
-        <li>bookmarklet, <em>nuff</em> said</li>
-        <li>
-          doing all of the above in one app is little more than a fascination with
-          the <em>tried and abandoned</em> of the past ... in a futile effort to be <em>original</em>
-        </li>
-      </ul>
-    </li>
-  </ul>
+feel like ranting so here goes:
+people who constantly <em>pat themselves on the back</em> ... total lack of confidence
 
-  <h3>May 9, 2015</h3>
-  <ul>
-    <li style="margin-top:10px;">
-      the beauty of Ruby and what almost no one understands ... simplified:
-      <blockquote>
-        - <b>1.class</b> means <b>1</b> is an <b>object</b> whose <b>class</b> is Fixnum<br>
-        - <b>Fixnum.instance_methods(false)</b> reveals this object to have these methods [:to_s, :+, :-, :==, etc], so<br>
-        - <b>1.to_s</b> is really 1.send(:to_s) and <b>1 + 1</b> is really 1.send(:+, 1)<br>
-        - yes, <b>send</b> is just passing a <b>message</b> to an <b>object</b><br>
-        - of course, I don't need to know about <em>sending messages to objects</em> just to do <b>1 + 1</b><br>
-        absolute beauty and why I say it's <b>manna from heaven</b>, ok, actually Japan
-      </blockquote>
-      but is it more beautiful to have a language like Smalltalk with only 6 keywords and no conditionals ... true OO
-    </li>
-    <li style="margin-top:10px;">
+it's puzzling how some people can give programming advice when they are so obviously not a programmer,
+but only dabble at it, and yet regurgitate all of this stuff they have read and misunderstand
+
+also, there's no proof of experience as their github account only has a single slow and unreliable python project
+
+if you have never coded anything in ruby then shut up about programming or invest some
+time in learning how to program
+... obviously, you don't know wet if you're never touched water, jump in already
+
+things that are NOT <b>new nor next gen</b> or even all that interesting:
+<ul>
+  <li>calling external api's ... this has been done in lots of apps for many years now</li>
+  <li>
+    locking an app while streaming ... only 1 client can be served, which is not really a server, right?
+  </li>
+  <li>
+    code that's comprised of giant <b>for</b> loops, and
+    tons of conditional statements (if's/else's) ... indicates zero OO skills
+  </li>
+  <li>bookmarklet, <em>nuff</em> said</li>
+  <li>
+    doing all of the above in one app is little more than a fascination with
+    the <em>tried and abandoned</em> of the past ... in a futile effort to be <em>original</em>
+  </li>
+</ul>
+
+the beauty of Ruby and what few people understand ... simplified:
+<blockquote>
+  - <b>1.class</b> means <b>1</b> is an <b>object</b> whose <b>class</b> is Fixnum<br>
+  - <b>Fixnum.instance_methods(false)</b> reveals this object to have these methods [:to_s, :+, :-, :==, etc], so<br>
+  - <b>1.to_s</b> is really 1.send(:to_s) and <b>1 + 1</b> is really 1.send(:+, 1)<br>
+  - yes, <b>send</b> is just passing a <b>message</b> to an <b>object</b><br>
+  - of course, I don't need to know about <em>sending messages to objects</em> just to do <b>1 + 1</b><br>
+  absolute beauty and why I say it's <b>manna from heaven</b>, ok, actually Japan
+</blockquote>
+but is it more beautiful to have a language like Smalltalk with only 6 keywords and no conditionals ... true OO
+
       can't remember where I got these but every developer should be more:
       <ul>
         <li>Smalltalk infected</li>

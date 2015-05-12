@@ -44,6 +44,7 @@
 
 <pre>
 ES releases Watcher which is an alert/notification api: query + condition + schedule + actions (email) ... probably not free :(
+plus I've already written my own at the app level which is customized for each client's needs
 
 today is a total work day, no porch, no sun, no cats, just jumping between C, python, and ruby for 2 apps
 
@@ -52,6 +53,9 @@ installed air conditioner last night as 90 degrees was just too hot
 gave websockets a try with flask, works great, but requires Redis for pub/sub, see:
 <a href="http://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent" target="_blank">easy-websockets-with-flask-and-gevent</a>, <a href="https://github.com/miguelgrinberg/Flask-SocketIO" target="_blank">Flask-SocketIO</a>, <a href="https://github.com/makaimc/python-websockets-example" target="_blank">python-websockets-example</a>
 pretty much the same as Rails 5 Action Cable (kind of a dorky name)
+
+websockets is a good choice for web pages that require real-time up-to-date info or messages as the
+user is waiting, much better than some lame <em>python yield + streaming</em> or polling in javascript
 </pre>
 
 <pre>

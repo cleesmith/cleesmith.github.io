@@ -44,54 +44,36 @@
 <div class="container">
 
 <pre>
-</pre>
-
-<pre>
 the beauty of Ruby and what few people understand ... simplified:
 - <b>1.class</b> means <b>1</b> is an <b>object</b> whose <b>class</b> is Fixnum
 - <b>Fixnum.instance_methods(false)</b> reveals this object to have these methods [:to_s, :+, :-, :==, etc], so
 - <b>1.to_s</b> is really 1.send(:to_s) and <b>1 + 1</b> is really 1.send(:+, 1)
 - yes, <b>send</b> is just passing a <b>message</b> to an <b>object</b>
 - of course, I don't need to know about <em>sending messages to objects</em> just to do <b>1 + 1</b>
-absolute beauty and why I say it's <b>manna from heaven</b>, ok, actually Japan
-but it may be more beautiful to have a language like Smalltalk with only 6 keywords and no conditionals ... true OO
+... an absolute beauty and why I say it's <b>manna from heaven</b>, ok, actually Japan but it may be more beautiful to have a language like Smalltalk with only 6 keywords and no conditionals ... true OO
+</pre>
 
-can't remember where I got these but every developer should be more:
-<b>Smalltalk infected</b>
-<b>Condition averse</b> (avoid if/else/case)
-<b>Message centric</b>
+<pre>
+always apply these ideas from Sandi Metz:
+<b>be Smalltalk infected</b>
+<b>be Condition averse</b> (when possible avoid if/else/case/unless)
+<b>be Message centric</b>
   - don't own the behavoir of an object
   - null object pattern
   - composition ... beware of always using inheritance, it's not for sharing behavoir
   - independency injection for behavior
-<b>Abstraction seeking</b>
+<b>be Abstraction seeking</b>
+* see: <a href="https://www.youtube.com/watch?v=OMPfEXIlTVE" target="_blank">Sandi Metz</a> and her book is great too
+For the most part, my projects accomplish each of the **be**'s above.
 </pre>
 
-***
-
-#### notes
-* there is nothing new or original in anything this code does:
-  * scraping an html page has been going on for years
-  * fetching counts from facebook/twitter/whatever has also been done many times before
-  * all of these simple seo functions have been around for years
-  * creating spreadsheets whether they be for excel or google drive have been done before
-  * anyone who says otherwise ... is, well, selling you snake oil
-* this project was coded for a friend who could not find anything that was fast/reliable, and she tried many open source projects, including pipulate which I semi-recommended but which she quickly rejected for several reasons I won't mention here ... however, this project let's her specify what she desires in the yaml file and quickly get the results, maybe rinse/repeat a few times, then enhance into a report using excel
-* this was also a bit of an experiment, as well as a teaching tool, for practical object-oriented design/coding ... in ruby at least
-* I tried to apply these ideas from Sandi Metz
-  * see: https://www.youtube.com/watch?v=OMPfEXIlTVE and her book is great too
-  * be **Smalltalk** infected
-  * be **Condition** adverse
-  * be **Message** centric
-  * be **Abstraction** seeking
-  * I think, for the most part, this project accomplished each of the **be**'s
-
-***
-
-#### mini-rants
-* if you have a project that you consider to be **intellectual property** ... that's great, but keep it to yourself, maybe a private repo, until you're ready to **gift your little wonder** to the world
-* there is no **intellectual property** here, as this is open source and best explained by Remy Sharp:
-```
+<pre>
+mini-rants
+- if you have a project that you consider to be <b>intellectual property</b>
+... that's great, but keep it to yourself, maybe a private repo, until you're ready to
+<b>gift your little wonder</b> to the world
+- open source is not <b>intellectual property</b>, and best explained by Remy Sharp:
+"
 Welcome. Welcome to this code I wrote.
 Help yourself to bits you like or need.
 Help make it better for others.
@@ -99,19 +81,19 @@ Help make it yours.
 Help make me better with your suggestions, changes or discussion.
 Use the code in any way you want, in ways I never thought of.
 And if the projects I created lives on without me, then open source has worked.
-```
-... if you don't understand the above then you just don't get github or open source software.
-
-***
+"
+... if you don't understand the above then you just don't understand github or open source software.
+</pre>
 
 <pre>
 * learn Clojure and Elixir
 * return to Smalltalk more often
-* Rails, given the **monkey-patched mess** it's become, will be the ruin of Ruby ... bummer, as I used Ruby before Rails came along, and, often, it will put a **smile on your face**
-* Python ... well, why, if you have Ruby? ... well, ok, maybe for nltk, pandas, scipy, scikit-learn, matplotlib, and numpy ... so ok, maybe sometimes you want to **wax nostalgic** and relive the days of gigantic loops, with lots of sideways pyramid-style indented code, and if-else's the size of Montana (you know, big) ... just to remind yourself of how nice OO can be
+* Rails, given the <b>monkey-patched mess</b> it's become, will be the ruin of Ruby ... bummer, as I used Ruby before Rails came along, and, often, it will put a <b>smile on your face</b>
+* Python ... well, why, if you have Ruby? ... well, ok, maybe for nltk, pandas, scipy, scikit-learn, matplotlib, and numpy ... so ok, maybe sometimes you want to <b>wax nostalgic</b> and relive the days of gigantic loops, with lots of sideways
+pyramid-style indented code, and if-else's the size of Montana (you know, big) ... just to remind yourself of how nice OO can be
 * Java ... no way am I going back there ... although Elasticsearch is really impressive
 * Emacs Lisp, maybe, I like Lisp, but I use vim most of the time
-* regarding editors: on a daily basis I use vim, sublime, textmate, nano, and notepad ...  and I type so blazingly fast in all of them that I don't need any macro's/whatever's for repeated actions/tasks/whatevers, just keep on truckin' ... I'm **chicken chasin'** fast and no **Kentucky fried idiot** ... oh yeah, stay humble, IMHO
+* regarding editors: on a daily basis I use vim, sublime, textmate, nano, and notepad ...  and I type so blazingly fast in all of them that I don't need any macro's/whatever's for repeated actions/tasks/whatevers, just keep on truckin' ... I'm <b>chicken chasin'</b> fast and no <b>Kentucky fried idiot</b> ... oh yeah, stay humble, IMHO
 </pre>
 
 <pre>

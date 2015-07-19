@@ -52,12 +52,10 @@ just discovered <a href="https://golang.org/" target="_blank">Go</a> (GoLang):
 - a program can be compiled on a Mac for all operating systems ... i.e. cross compiling
 - installation of a program becomes just copying the binary file to the target system
 - a small <a href="http://beego.me/" target="_blank">Beego</a> (like flask/rails) web app is about 20MB binary file, that's small
-- no installing:
-  - an interpreter (Python or Ruby)
-  - packages/dependencies (pip or gems)
-  - the only dependency is the target operating system
-- the downside is that the Go language is not as eloquent as Ruby, but it's faster/smaller and without the long
-  complicated installation process
+- there's no installing an interpreter (Python or Ruby), or packages/dependencies (pip or gems) ...
+  the only real dependency is the target system
+- the downside is that the Go language is not as eloquent as Ruby, but it's faster/smaller and without the
+  usual difficult and error prone installation process
 
 Python is great for beginners and playing around.
 
@@ -68,7 +66,7 @@ Go is the way forward ... with:
   - everything that's provided by Ruby/Python but with a different syntax
   - contains a fully functional web server, but can also be proxied via nginx (which is much faster for static assets)
   - multi-core support baked in
-  - concurrency/parallelism built-in
+  - concurrency built-in
   - high performance is in large part due to the static compilation of the statically-typed code (not quite as fast as C, but close)
   - no install on target system due to static linking, just copy binary file to target then "./someprogram"
 </pre>

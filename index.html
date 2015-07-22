@@ -46,7 +46,12 @@
 <pre>
 If I wanted to make Cellipede a web app there are many options available, for example:
 <a href="http://beego.me/docs/intro/" target="_blank">beego</a> if one wanted to continue in the cookie cutter rut that is Python/Flask or Ruby/Rails
-See <a href="https://github.com/avelino/awesome-go" target="_blank">awesome-go</a> for a curated list of Go frameworks, libraries and software
+See <a href="https://github.com/avelino/awesome-go" target="_blank">awesome-go</a> for a curated list of Go frameworks, libraries and software.
+However, I just don't see gathering social metrics and page scraping as a web app, but more of a command line
+program that dumps the gathered data to a csv/xls file, google drive, or whatever.
+But there's definitely concurrency as counts and scraped data are from different sources
+and can be gathered in parallel ... this is so obvious as to be stupid not to do it that way,
+why waste 10 seconds when the whole thing can be done in 3 seconds (or whatever the longest took).
 
 Of course, for my day job I'm stuck with C++, Ruby/Rails, and some Python programs.
 I could switch the Python programs to Go, which I will do as my employer is cool with that.

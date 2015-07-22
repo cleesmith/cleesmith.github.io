@@ -44,6 +44,19 @@
 <div class="container">
 
 <pre>
+The concurrency offered by Go makes it a perfect choice for Cellipede:
+- as many of the tasks don't need to be done sequentially
+- all of the social metrics gathering can be done concurrently
+- instead of waiting 5-15 seconds for all of the api's or scrape's to respond, they
+  can be done concurrently which means the total time is equal to the longest task
+  and not all of them added together ... i.e. way faster
+Of course, the greatest advantage of using Go is compiling a single binary file for a target system.
+No more dependency hell ... just the scp/copy/whatever the file to the target and run it.
+And compiling for ALL target systems, including ARM (Raspberry Pi, etc.), is simple using
+the Go installed by Homebrew.
+</pre>
+
+<pre>
 just discovered <a href="https://golang.org/" target="_blank">Go</a> (GoLang):
 - it's fast when compiling and the result is fast at execution time
 - it's cool, coz "go build" creates a statically linked program

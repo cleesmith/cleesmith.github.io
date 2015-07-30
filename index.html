@@ -51,7 +51,9 @@ Just do: git clone git://g.csail.mit.edu/6.824-golabs-2014
 A simple example that could be used to fetch counts from various social api's
 (like tweets, facebook likes, google +'s, etc.) almost simultaneously:
 </pre>
-<code>
+
+<div style="background-color:black; color:green;">
+<pre>
 package main
 
 import (
@@ -106,7 +108,9 @@ func with_goroutine(urls []string) {
   }
   wg.Wait() // waits until the url checks complete
 }
-</code>
+</pre>
+</div>
+
 <pre>
 ... similar code could be used to scrape a web page and all of that being done
 asynchronously. If one needed to keep the user informed as to what is

@@ -122,6 +122,26 @@ why should a user in 2015 wait 5+ seconds for all this to complete when they
 can usually wait less than a second ... it's 2015, come on. Typically I see
 the "with_goroutine" finish in 0.17 seconds compared to the 1.34 seconds doing
 the get's sequentially.
+
+Gist of the code at https://gist.github.com/cleesmith/303fa4c5a07fa81eb22d
+
+Things to note:
+- one can read Go code from top to bottom and understand it's intent
+- Go is so simple you can learn it in a single video:
+  https://www.youtube.com/watch?v=CF9S4QZuV30
+  or take the tour at http://tour.golang.org/list
+  So if you're not really a coder/programmer, or you code infrequently, then
+  this is good news as you don't have to spend a lot of time relearning a
+  language just to scratch some itch.
+- it's compiles fast
+- the compiled code is fast
+- build once for all platforms, then give a friend a binary file to run and
+  they can scratch the same itch as you
+- it offers the 3 things almost every program needs:
+  - input
+  - output
+  - concurrency ... without the usual gotcha's and complication, heck even
+                    javascript can do this
 </pre>
 
 <pre>

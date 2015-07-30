@@ -119,7 +119,7 @@ messages from async routines while they are working (or even for errors/timeouts
 You can kind of do this in Ruby/Python but it's not as fast or as lightweight,
 because goroutines are not threads(heavy) nor processes(very heavy). Also,
 why should a user in 2015 wait 5+ seconds for all this to complete when they
-can usually wait less than a second ... it's 2015, come on. Typically I see
+can usually wait less than a second ... come on it's 2015. Typically I see
 the "with_goroutine" finish in 0.17 seconds compared to the 1.34 seconds doing
 the get's sequentially.
 

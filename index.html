@@ -116,6 +116,10 @@ func with_goroutine(urls []string) {
 asynchronously. If one needed to keep the user informed as to what is
 happening, Go has channels built in which are perfect for sending/receiving
 messages from async routines while they are working (or even for errors/timeouts).
+You can kind of do this in Ruby/Python but it's not as fast or as lightweight,
+because goroutines are not threads(heavy) nor processes(very heavy). Also,
+why should a user in 2015 wait 5+ seconds for all this to complete when they
+can usually wait less than a second ... it's 2015, come on.
 </pre>
 
 <pre>

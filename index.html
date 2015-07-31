@@ -43,6 +43,20 @@
 
 <div class="container">
 
+<blockquote>
+Python is convenient, and in many ways, a great advance over the C programming language.
+However, just as teaching teenagers to drive automatic transmission is a practical
+guarantee that they’ll never learn stick, advising neophytes to learn Python is creating
+programmers who will never bother to learn how to code in C.
+And that, I believe, is a bad thing.
+</blockquote>
+
+<pre>
+I agree with the above quote totally, and I would even through in that just as
+a teenager should learn how to raise the hood and change the oil, learning to
+code should involve some exposure to assembly/machine code.
+</pre>
+
 <pre>
 Oh look there's a MIT graduate-level DS course with a focus on fault tolerance,
 replication, and consistency, all taught via awesome lab assignments in Golang!
@@ -50,68 +64,8 @@ Just do: git clone git://g.csail.mit.edu/6.824-golabs-2014
 
 Here's a simple example that could be used to fetch counts from various social api's
 (like tweets, facebook likes, google +'s, etc.) almost simultaneously (you know, fast):
-</pre>
+<a href="https://gist.github.com/cleesmith/303fa4c5a07fa81eb22d" target="_blank">Gist</a> of the code.
 
-<div>
-<pre style="background-color:black; color:green; font-size:18px;">
-package main
-
-import (
-  "fmt"
-  "net/http"
-  "sync"
-  "time"
-)
-
-func main() {
-  urls := []string{
-    "http://www.cnn.com",
-    "http://espn.go.com/",
-    "http://grantland.com",
-    "http://www.newyorker.com/",
-  }
-
-  startIt := time.Now()
-  without_goroutine(urls)
-  endIt := time.Since(startIt)
-  fmt.Printf("without goroutine elapsed time is %v\n\n", endIt.Seconds())
-
-  startIt = time.Now()
-  with_goroutine(urls)
-  endIt = time.Since(startIt)
-  fmt.Printf("with goroutine elapsed time is %v\n\n", endIt.Seconds())
-}
-
-func without_goroutine(urls []string) {
-  for _, url := range urls {
-    response, err := http.Get(url)
-    if err != nil {
-      panic(err)
-    }
-    fmt.Printf("%s: %s\n", url, response.Status)
-  }
-}
-
-func with_goroutine(urls []string) {
-  var wg sync.WaitGroup
-  // number of concurrent goroutines to wait for:
-  wg.Add(len(urls))
-  for _, url := range urls {
-    go func(url string) {
-      defer wg.Done()
-      response, err := http.Get(url)
-      if err != nil {
-        panic(err)
-      }
-      fmt.Printf("%s: %s\n", url, response.Status)
-    }(url)
-  }
-  wg.Wait() // waits until the url checks complete
-}
-</pre>
-</div>
-
-<pre>
 ... similar code could be used to scrape a web page and all of that being done
 asynchronously. If one needed to keep the user informed as to what is
 happening, Go has channels built in which are perfect for sending/receiving
@@ -122,8 +76,6 @@ why should a user in 2015 wait 5+ seconds for all this to complete when they
 can usually wait less than a second ... come on it's 2015. Typically I see
 the "with_goroutine" finish in 0.17 seconds compared to the 1.34 seconds doing
 the get's sequentially.
-
-<a href="https://gist.github.com/cleesmith/303fa4c5a07fa81eb22d" target="_blank">Gist</a> of the code.
 
 Things to note:
 - one can read Go code from top to bottom and understand it's intent

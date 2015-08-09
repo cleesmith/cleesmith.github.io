@@ -65,6 +65,16 @@
  I’d just do concurrency in Python, because obviously that’s a good idea, right?"
  - quoted from: <a href="http://jordanorelli.com/post/31533769172/why-i-went-from-python-to-go-and-not-nodejs" target="_blank">Why I went from Python to Go (and not node.js)</a>
 
+Wrong!
+Coding for concurrency in Python is like fixing a leak in a boat by diving into the
+water, holding your breath, and patching it somehow, all while the boat is speeding along
+and slowly sinking.
+Even if you do manage to get it to work, guess what?, it still only uses 1 CPU core
+because of the global interpreter lock.
+Oh yeah, don't even bother trying concurrency in Ruby.
+In fairness, neither Ruby or Python are meant for concurrency ... it's an after thought
+and that is apparent.
+
 Also, see: <a href="https://lincolnloop.com/blog/concurrency-python-vs-go/" target="_blank">Concurrency in Python vs GO</a>
 The interesting part was how simple it was to change the Go version from
 synchronous to concurrent by just prefixing the function call with "go ...".

@@ -48,7 +48,11 @@ Cross compiling Go programs on a Mac:
 
 1. assuming Go was installed via Homebrew:
    cd /usr/local/Cellar/go/1.4.2/libexec/src/
-   - note: it's really process the same no matter how Go was installed
+   - note: it's really the same process no matter how Go was installed, so try:
+      sudo find / -name "make.bash"
+      -or-
+      which go
+      ... to locate Go's src folder in order to execute ./make.bash
 
 2. rebuild Go's libraries/runtime for target, in this case, the Raspberry Pi:
    GOOS=linux GOARCH=arm ./make.bash --no-clean

@@ -44,6 +44,26 @@
 <div class="container">
 
 <pre>
+Cross compiling Go programs on a Mac:
+
+1. assuming Go was installed via Homebrew:
+   cd /usr/local/Cellar/go/1.4.2/libexec/src/
+   - note: it's really process the same no matter how Go was installed
+
+2. rebuild Go's libraries/runtime for target, in this case, the Raspberry Pi:
+   GOOS=linux GOARCH=arm ./make.bash --no-clean
+   - this took less than 10 seconds
+
+3. now, compile some Go program as a self-contained binary for linux/arm:
+   GOOS=linux GOARCH=arm go build hello.go
+
+4. copy binary to target and run it
+   - no long drawn out installation process with oodles of dependencies to resolve
+
+How easy was that?
+</pre>
+
+<pre>
 1970's - Fortran and Cobol ... this is where I began with punch cards and teletypes
 1980's - C and Pascal (the language in my college courses)
 1990's - C++ and dare I mention Basic

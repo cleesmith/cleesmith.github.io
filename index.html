@@ -63,10 +63,16 @@ Cross compiling Go programs on a Mac:
 3. now, compile some Go program as a self-contained binary for linux/arm:
    GOOS=linux GOARCH=arm go build hello.go
 
-4. copy the binary file to the target and then run it
+4. use the "file" command to verify the target for the binary file:
+   file hello
+    "hello: ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, not stripped"
+
+5. copy the binary file to the target and then run it
    - no long drawn out installation process with oodles of dependencies to resolve
 
-How easy was that?
+How cool was that?
+
+Also, note that the exact same binary file will run on a Beagle Bone Black -- unchanged.
 
 Available platforms (there may be more than this, but I'm using these):
   darwin/386

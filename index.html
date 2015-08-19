@@ -44,6 +44,23 @@
 <div class="container">
 
 <pre>
+<pre>
+Aug 19, 2015:
+cross compiling in Go 1.5 has changed, it's even easier with no fuss:
+- just download:
+  go1.5.darwin-amd64.pkg  Installer OS X  64-bit  74MB
+
+- don't do ./make.bash for cross compiling as all environment are now available,
+  so just do:
+  env GOOS=linux GOARCH=arm go build main.go
+  env GOOS=windows GOARCH=amd64 go build main.go
+
+- note: renaming the executable binary after it has been compiled is ok, it still runs
+
+Real men code/hack/program in Go -- ok, that includes C/C++ too.
+</pre>
+
+<pre>
 Despite all of the rain this morning and the oppressive humidity, I was still
 able to get in 10,000+ steps today.
 

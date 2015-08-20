@@ -52,7 +52,9 @@ Code Me Maybe:
 
 2. rewrite Uni2EsPy in Go as Uni2EsGo?
    think about this one, as python's slowness may be a benefit during bulk indexing
-   into ES (which is also slow, especially if one is confirming writes to disk)
+   into ES (which is also slow, especially if one is confirming writes to disk), and
+   if the bulk indexing is performed concurrently this may overwhelm ES to the
+   point of being too troublesome
 </pre>
 
 <pre>

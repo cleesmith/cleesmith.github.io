@@ -55,7 +55,8 @@ Thankfully, someone wrote <a href="https://github.com/Jeffail/gabs" target="_bla
 However, one is still stuck with handling the JSON default of
 float64 for all numbers. My solution is to just convert numbers
 into strings, after all, the code is not doing math on them, rather
-they are just being inserted into a spreadsheet.
+they are just being inserted into a spreadsheet -- where strings
+that look like numbers magically become numbers.
 </pre>
 
 <pre>

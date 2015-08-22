@@ -44,6 +44,20 @@
 <div class="container">
 
 <pre>
+Whacky APIs Maybe:
+
+Who designed all of these APIs like twitter, facebook, etc. ?
+Every one of them are give inconsistent responses and different
+JSON response structures depending on the input. What a mess.
+Thankfully, someone wrote <a href="https://github.com/Jeffail/gabs" target="_blank">gabs</a> which
+helps to handle "dynamic or unknown JSON structures in golang".
+However, one is still stuck with handling the JSON default of
+float64 for all numbers. My solution is to just convert numbers
+into strings, after all, the code is not doing math on those rather
+they are just being inserted into a spreadsheet.
+</pre>
+
+<pre>
 Known Source Maybe:
 
 At first I didn't like how "go get" refers directly to the source of a package.

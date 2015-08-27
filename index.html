@@ -56,7 +56,7 @@ Joe Sixpack Maybe:
 
 I often use the term "Joe Sixpack" to describe those who can only code in
 python, javascript/node.js, php, and sometimes ruby on rails. I don't
-really mean it as derogatory remark, rather I'm referring to quick/dirty
+really mean it as derogatory remark, rather I'm referring to their quick/dirty
 seat-of-your-pants cowboy-coding approach. They seem capable enough to
 use libraries and hook various pre-built code together into a somewhat
 functioning app. Except for one-off's does that approach to coding really
@@ -76,7 +76,8 @@ Also, it's evented similar to node.js, which is similar to the many things
 based on EventMachine in ruby-land. All based on the reactor pattern.
 From the asynio docs:
 "An event loop runs in a thread and executes all callbacks and tasks in the same thread."
-... i.e. single threaded.
+
+The spaghetti-like callback-hell makes evented coding for concurrency is a nightmare.
 
 This <a href="http://tleyden.github.io/blog/2014/10/30/goroutines-vs-threads/" target="_blank">article</a> provides a brief summary.
 </pre>

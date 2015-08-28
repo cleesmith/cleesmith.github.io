@@ -80,7 +80,9 @@ a single channel -- can gather social media counts. I pushed it to
 10,000 urls and all of that still took less than 2 seconds. Which makes
 sense, of course, as the elapsed time is predictably the time it takes
 for the longest api call -- well, plus a hair more for the overhead
-related to the threads/scheduling/GC/etc.
+related to the threads/scheduling/GC/etc. I sure some defensive coding
+will be needed to avoid quotas and throttling -- i.e. be a good
+internet consumer and citizen.
 </pre>
 
 <pre>

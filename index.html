@@ -62,7 +62,8 @@ concurrency. The take away is that one is left with a few options
 depending on the OS:
 1. jack up the ulimit for fd's -- no biggy on linux/mac, but windows?
 2. use a strategy -- like semaphore or worker pool -- to restrict
-   concurrency to something reasonable like 200 or less socket connections
+   concurrency to something reasonable like 200 or less outbound
+   socket connections ... a bit slower but not that bad in Go
 The second option is probably the best cross platform solution, as
 who knows what the limitations are on Windows.
 </pre>

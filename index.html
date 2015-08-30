@@ -104,7 +104,8 @@ tl;dr -- goweb is smaller, faster, easily distributed, and more reliable
 - not to mention the fact that a python install is huge
     ballpark:
     find / -name "py*" -type f -printf '%s\n' | awk '{total += $1} END {print "Total:", total}'
-    Total: 37,803,305 ... this might be too low, so about 40MB
+    Total: 37,803,305
+    -- this is probably too low, so let's say about 50MB -- plus more for installed packages -- i.e. huge
     ok, sure, python is already installed on most linux distros but not all of them -- Tiny Core, et al
 - go's binary distribution makes using docker/containers much easier
 - go supports the arm/armhf architectures for linux/freebsd/netbsd os's -- Raspberry Pi, et al

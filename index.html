@@ -61,10 +61,12 @@ wget https://github.com/cleesmith/goweb/releases/download/v0.0.1-snapshot/goweb_
 tar zxvf goweb_0.0.1-snapshot_linux_amd64.tar.gz
 ./goweb
 
+<pre style="font-family: Consolas,monospace">
 ps aux:
 USE       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 foo      3756  0.0  0.8  39468  8916 ?        S    Jun03  31:18 python -m SimpleHTTPServer 4235
 foo     27837  0.1  0.2   8988  2852 pts/0    Sl+  10:35   0:00 ./goweb
+</pre>
 
 summary:
 - goweb's binary footprint is 4+ times smaller than SimpleHTTPServer

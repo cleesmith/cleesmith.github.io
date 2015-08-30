@@ -101,6 +101,7 @@ ab -n 200 -c 10 "http://cellipede.com:1234/"
 Summary:
 tl;dr -- goweb is smaller, faster, easily distributed, and more reliable
 - goweb's binary footprint is 4+ times smaller than SimpleHTTPServer -- see "ps aux" above
+- goweb has no external dependencies -- everything is from the standard libraries
 - not to mention the fact that a python install is huge
     ballpark:
     find / -name "py*" -type f -printf '%s\n' | awk '{total += $1} END {print "Total:", total}'

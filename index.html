@@ -57,48 +57,58 @@ Loving Go Maybe:
 Ok, not just "maybe" but definitely.
 
 On a droplet debian server:
+<pre style="font-family: Consolas,monospace; font-size:14px;">
 wget https://github.com/cleesmith/goweb/releases/download/v0.0.1-snapshot/goweb_0.0.1-snapshot_linux_amd64.tar.gz
 tar zxvf goweb_0.0.1-snapshot_linux_amd64.tar.gz
+cd goweb_0.0.1-snapshot_linux_amd64 ... and/or copy goweb to another folder
 ./goweb
+</pre>
 
-<pre style="font-family: Consolas,monospace">
+<pre style="font-family: Consolas,monospace; font-size:14px; margin-top:-40px; margin-bottom:-35px;">
 ps aux:
 USE       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 foo      3756  0.0  0.8  39468  8916 ?        S    Jun03  31:18 python -m SimpleHTTPServer 4235
 foo     27837  0.1  0.2   8988  2852 pts/0    Sl+  10:35   0:00 ./goweb
 </pre>
 
-summary:
-- goweb's binary footprint is 4+ times smaller than SimpleHTTPServer
+Apache benchmark tests (yes, there are better tools for doing this):
+goweb:
+<pre style="font-family: Consolas,monospace; font-size:14px; margin-bottom:-35px;">
+ab -n 200 -c 10 "http://cellipede.com/"
+  Concurrency Level:      10
+  Time taken for tests:   1.621 seconds
+  Complete requests:      200
+  Failed requests:        0
+  Total transferred:      4624600 bytes
+  HTML transferred:       4587200 bytes
+  Requests per second:    123.39 [#/sec] (mean)
+... test completed successfully on every run
+</pre>
+
+python -m SimpleHTTPServer:
+<pre style="font-family: Consolas,monospace; font-size:14px; margin-bottom:-35px;">
+ab -n 200 -c 10 "http://cellipede.com:1234/"
+  Concurrency Level:      10
+  Time taken for tests:   1.762 seconds
+  Complete requests:      200
+  Failed requests:        0
+  Total transferred:      4624600 bytes
+  HTML transferred:       4587200 bytes
+  Requests per second:    113.51 [#/sec] (mean)
+... this test failed to finish 1 out of 4 runs
+</pre>
+
+Summary:
+tl;dr -- goweb is smaller, faster, easily distributed, and more reliable
+- goweb's binary footprint is 4+ times smaller than SimpleHTTPServer -- see "ps aux" above
 - not to mention the fact that a python install is huge
-  ok, sure, python is already installed on most linux distros but not
-  all of them -- like Tiny Core
+    ok, sure, python is already installed on most linux distros but not all of them -- Tiny Core, et al
 - go's binary distribution makes using docker/containers much easier
-- go supports the arm/armhf architectures for linux/freebsd/netbsd os's
-- apache benchmark tests (yes, there are better tools for doing this):
-  tl;dr ... goweb is faster and more reliable
+- go supports the arm/armhf architectures for linux/freebsd/netbsd os's -- Raspberry Pi, et al
 
-  goweb:
-    ab -n 200 -c 10 "http://cellipede.com/"
-      Concurrency Level:      10
-      Time taken for tests:   1.621 seconds
-      Complete requests:      200
-      Failed requests:        0
-      Total transferred:      4624600 bytes
-      HTML transferred:       4587200 bytes
-      Requests per second:    123.39 [#/sec] (mean)
-    ... completed successfully on every run
-
-  python -m SimpleHTTPServer:
-    ab -n 200 -c 10 "http://cellipede.com:4235/"
-      Concurrency Level:      10
-      Time taken for tests:   1.762 seconds
-      Complete requests:      200
-      Failed requests:        0
-      Total transferred:      4624600 bytes
-      HTML transferred:       4587200 bytes
-      Requests per second:    113.51 [#/sec] (mean)
-    ... this failed to finish 1 out of 4 runs
+I think I have found a home language for the foreseeable future, well, at
+least for on-the-side open source projects.
+Go and goxc are simple but a powerful combination.
 </pre>
 
 <pre>

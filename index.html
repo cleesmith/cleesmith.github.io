@@ -62,6 +62,29 @@ one becoming a part of an unhealthy codependent relationship -- with all
 of that unknown middleware/packages/gems. There should be support groups
 and interventions for folks creating apps using interpreted languages.
 The 12 steps for interpreted coders anonymous.
+
+This <a href="" target="_blank">article</a> sums things up nicely, even if
+it's from the perspective of a sysadmin:
+<pre style="font-family: Consolas,monospace; font-size:14px;">
+Here is my wishlist:
+- No more Python, or Ruby. Managing the dependencies for these is ghastly. How about no interpreted  languages, at all?
+- Gimme a statically-compiled binary. In the worst-case scenario, all I would have to do is use scp(1) to copy, say a .tar.gz, to the to-be-managed node. This would also mitigate needing to have an up-to-date interpreter installed.
+
+That's it, really; two items. I don't give a hoot if it the tool has a master-minion architecture
+with agents, or it is is agent-less.
+
+I know it really cuts down on the development time to write these tools in an interpreted language,
+and you can do lots of nifty things like dynamically import other packages/modules/libraries, but
+you still run into the pain-in-the-ass situation of having to manage dependencies. For example,
+let's say you want to use tool X. It has a dependency on json-module-1.2.3, but your operating
+system-du-jour comes with json-module-0.2.4. You may try to build your own package of
+json-module-1.2.3, but most often, you will find that a crap-ton of other system packages rely
+on json-module-0.2.4, for stability's sake. You pretty much have to resort to doing something
+creaky, or downright hackish just to get things working.
+
+Ultimately, let's write something in Go, C, C++, or in any other language that can compile
+down, into a static binary, where the only run-time dependency, is that the system be powered on.
+</pre>
 </pre>
 
 <pre>

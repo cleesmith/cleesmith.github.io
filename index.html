@@ -52,15 +52,25 @@
 <div class="container">
 
 <pre>
+Total Control Maybe:
+
+While it takes a bit to remember how things use to be, it is cool how
+Go gives one total control over the http stack for a web server. I was
+able to write my own middleware/wrapper to handle the logging of
+http requests in a custom way. Django, Flask, and Rails turns you
+into a dummy.
+</pre>
+
+<pre>
 Loving Go Maybe:
 
 Ok, not just "maybe" but definitely.
 
 On a droplet debian server:
 <pre style="font-family: Consolas,monospace; font-size:14px;">
-wget https://github.com/cleesmith/goweb/releases/download/v0.0.1-snapshot/goweb_0.0.1-snapshot_linux_amd64.tar.gz
-tar zxvf goweb_0.0.1-snapshot_linux_amd64.tar.gz
-cd goweb_0.0.1-snapshot_linux_amd64 ... and/or copy goweb to another folder
+wget https://github.com/cleesmith/goweb/releases/download/v0.0.3-snapshot/goweb_0.0.3-snapshot_linux_amd64.tar.gz
+tar zxvf goweb_0.0.3-snapshot_linux_amd64.tar.gz
+cd goweb_0.0.3-snapshot_linux_amd64 ... and/or copy goweb to another folder
 ./goweb
 </pre>
 

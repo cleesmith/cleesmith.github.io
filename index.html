@@ -78,6 +78,7 @@ Enseomble should be comprised of the following separate projects:
             - e.g. "too many open files" due to ulimit settings
     - gathers data via apis, page scraping, and crawling
     - emphasis on speed and reliability (i.e. the opposite of pipulate)
+    - pipe-able input and output, maybe
     - separating out the core functionality means that this can be used in ways I never imagined
 
 (2) enseomble-CLI
@@ -89,6 +90,10 @@ Enseomble should be comprised of the following separate projects:
     - similar input/output as enseomble-cli but it's a web app
     - downloadable xlsx file, or maybe offer direct upload to google drive, big maybe due to oAuth issues
     - visualizations of data -- graphs, charts, and sparkles (think management/ceo types)
+
+(4) enseomble-SERVICE
+    - relies on enseomble-core
+    - offer the core functionality as a callable json api service
 
 Things learned from the pipulate project ...
 Don't:

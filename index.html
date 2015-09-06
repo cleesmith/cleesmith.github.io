@@ -57,7 +57,7 @@ Composing Enseomble Maybe:
 
 Enseomble should be comprised of the following separate projects:
 
-(1) enseomble-core
+(1) enseomble-CORE
     - the core functionality:
         - handles latency and other unresponsive interwebs issues
         - handles concurrency complications and limitations
@@ -65,11 +65,11 @@ Enseomble should be comprised of the following separate projects:
     - gathers data via apis, page scraping, and crawling
     - emphasis on speed and reliability (i.e. the opposite of pipulate)
 
-(2) enseomble-cli
+(2) enseomble-CLI
     - relies on enseomble-core
     - a command line tool that generates a xlsx file from a simple toml input file
 
-(3) enseomble-web
+(3) enseomble-WEB
     - relies on enseomble-core
     - similar input/output as enseomble-cli but it's a web app
     - downloadable xlsx file, or maybe offer direct upload to google drive, big maybe due to oAuth issues

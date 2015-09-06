@@ -53,6 +53,50 @@
 <div class="container">
 
 <pre>
+Composing Enseomble Maybe:
+
+Enseomble should be comprised of the following separate projects:
+
+(1) enseomble-core
+    - the core functionality:
+      - handles latency and other unresponsive interwebs issues
+      - handles concurrency complications and limitations
+        - e.g. "too many open files" due to ulimit settings
+    - gathers data via apis, page scraping, and crawling
+    - emphasis on speed and reliability (i.e. the opposite of pipulate)
+
+(2) enseomble-cli
+    - relies on enseomble-core
+    - a command line tool that generates a xlsx file from a simple toml input file
+
+(3) enseomble-web
+    - relies on enseomble-core
+    - similar input/output as enseomble-cli but as a web app
+    - downloadable xlsx file, or maybe offer direct upload to google drive
+    - visualizations of data -- graphs, charts, and sparkles (think management/ceo types)
+
+Things learned from the pipulate project ...
+Don't:
+  - be wrapped around the "google axle" -- why?
+    - it's too slow
+    - it's unreliable
+    - it's not a flexible solution
+    - google does not encourage the use of their apis, well, unless using google app engine
+  - have a smarmy ui/ux -- clever isn't always a good thing, in this case it's overkill
+  - be a chatty cathy
+
+Do:
+  - always be fast and reliable, something people don't do well, but machines do
+  - be repeatable, since it's the humans doing the seo brain work which
+    requires interations over the same data during different time frames
+
+Today's food idea is chicken tenders. No, not breaded just grilled. Before grilling
+slather on some olive oil, then sprinkle on some basil, garlic/onion powder, salt,
+and black pepper. Grill each side for 4 minutes. Maybe put them on a salad -- a
+big salad.
+</pre>
+
+<pre>
 Invent Reality Maybe:
 
 Very interesting presentations:

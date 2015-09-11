@@ -53,6 +53,23 @@
 <div class="container">
 
 <pre>
+Too Fast Maybe:
+
+Well, I never thought I would say this about code but Go code is too fast.
+Ok, C/C++ is also too fast.
+Back to Go, in the case of outbound http GET requests using goroutines
+the following issues arose in <a href="https://github.com/cleesmith/enseomble" target="_blank">Enseomble</a>:
+1. quickly exhausting file descriptors -- network connections (sockets)
+2. rate limit exceeded errors when calling the social APIs (like Twitter, etc.)
+
+A concurrent Go program can, in less than a second, overwhelm the operating system
+and remote service providers. Looks like it is time to review all of those algorithms
+for packet switched computer networks and telecommunications networks, such as
+the <a href="https://en.wikipedia.org/wiki/Token_bucket" target="_blank">token</a> and <a href="https://en.wikipedia.org/wiki/Leaky_bucket" target="_blank">leaky</a> bucket algorithms.
+I enjoy this networking stuff, but wish it wasn't a concern for app development.
+</pre>
+
+<pre>
 SnakeOil Mudskipper Maybe:
 
 For some reason this video about <a href="https://www.youtube.com/watch?v=KurTiX4FDuQ" target="_blank">mudskippers</a> reminds me of the creepy stalker dude and

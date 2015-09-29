@@ -61,6 +61,85 @@
 <div class="container">
 
 <pre>
+First Impression Sucks:
+
+1. pipulate does not work out-of-the-box
+   - sudo pip -r requirements.txt
+   - edit globs.py and change these to localhost or whatever is in your "OAuth 2.0 client IDs":
+      HOST =      "localhost"
+      DOMURL =    "http://localhost"
+   - edit webpipulate.py:
+      - comment out the "if-else" then add:
+        app.run(host='0.0.0.0', port=80, debug=True)
+
+2. 500 Internal Server Error
+   on a Mac, it must be run as root:
+    sudo python webpipulate.py
+
+3. fixing 2. causes:
+   IOError: [Errno 2] No such file or directory: '/var/opt/pipulate.pkl'
+    even thought the app claims to not write anything to your local hard drive,
+    yet it tries to "pickle" these variables:
+      CLIENT_ID, CLIENT_SECRET, APP_SECRET, refresh_token
+    to these files:
+      FILE =      "/var/opt/pipulate.cfg"                         # Flask server configuration
+      TOKEN =     "/var/opt/pipulate.pkl"                         # OAuth2 access token
+    which causes an unhandled error if "/var/opt" folder doesn't exist, which
+    it doesn't on a Mac and to create "opt" requires sudo which also means
+    the server has to run as root -- see 2. above
+
+4. a giant red STOP sign ... wtf?
+
+That's a lot of you-know-what just to try out an app.
+
+5. after all of that, this happens:
+   AttributeError: 'Spreadsheet' object has no attribute 'title'
+   yet another 500 error that's not handled
+   - edit pipulate.py:
+      # out("Loaded %s sheet." % gdoc.title)
+      globs.NAME = "Pipulate" # gdoc.title
+      ... there is not "title" attribute for gdoc
+
+6. then this happens for a simple spreadsheet with one row:
+    urls              | tweets
+    http://amazon.com | ?
+    - in UI:
+      Main Pipulation Sequence (?-Replacement)...
+      Pipulate Sheet Opened
+      Checking Tabs...
+      Tabs successfully found/created!
+      Counting rows in Sheet1 tab...
+      2 rows with question marks found in Sheet1.
+      Analyzing spreadsheet for request...
+      0 trending jobs found. Analyzing frequency.
+      Pipulate running in ?-replacement mode.
+      Beginning to process rows with question marks...
+      Pipulating row: 1 (item 1 of 1)...
+      We have a problem in tweets. Retrying in 10 seconds.
+      We have a problem in tweets. Retrying in 10 seconds.
+      We have a problem in tweets. Retrying in 10 seconds.
+      Something went wrong in the tweets function. Stopping.
+      which is causing this error:
+        TypeError: cannot concatenate 'str' and 'NoneType' objects
+        - yet another unhandled error
+
+7. after fixing the bugs, and restarting, and re-logging in a bunch of times
+   it kind of works -- but it's odd that you have to enter a Url in the
+   UI just fill in all of the "?"s in the spreadsheet
+   - instead of just doing the spreadsheet one gets this message:
+      "Please enter a URL to Pipulate."
+      and it doesn't matter what URL you enter as just does what's in the spreadsheet
+      ... very confusing UI/UX
+
+The only impression one can have is "what a mess".
+This is after a year of coding/testing ?  Really ?
+
+Plus it's way too slow -- takes 48 seconds to do the tweets for 20 url's.
+Enseomble, written in Go, does the same in under 3 seconds and that's with throttling to
+slow it down so it doesn't get blacklisted or rate-limited by the api provider.
+</pre>
+
+<pre>
 Dark Side Maybe:
 
 While I've known about Tor for a few years it was never interesting due to it's bent towards

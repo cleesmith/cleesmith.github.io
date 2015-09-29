@@ -101,7 +101,7 @@ That's a lot of you-know-what just to try out an app.
    - edit pipulate.py:
       # out("Loaded %s sheet." % gdoc.title)
       globs.NAME = "Pipulate" # gdoc.title
-      ... there is not "title" attribute for gdoc
+      ... there is not a "title" attribute for gdoc (gspread object)
 
 6. then this happens for a simple spreadsheet with one row:
     urls              | tweets
@@ -128,11 +128,11 @@ That's a lot of you-know-what just to try out an app.
 
 7. after fixing the bugs, and restarting, and re-logging in a bunch of times
    it kind of works -- but it's odd that you have to enter a Url in the
-   UI just fill in all of the "?"s in the spreadsheet
-   - instead of just doing the spreadsheet one gets this message:
+   UI just to fill in all of the "?"s in a spreadsheet, i.e.
+   instead of just doing the spreadsheet one gets this message:
       "Please enter a URL to Pipulate."
-      and it doesn't matter what URL you enter as just does what's in the spreadsheet
-      ... very confusing UI/UX
+   and it doesn't matter what URL you enter as just does what's in the spreadsheet
+   ... very confusing UI/UX
 
 The only impression one can have is "what a mess".
 This is after a year of coding/testing ?  Really ?

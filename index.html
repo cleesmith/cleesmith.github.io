@@ -86,8 +86,14 @@ Sep 30, 2015 update:
 The counts for 20 URLs has a sub-second response time, and especially for repeated
 queries -- which is great for test/development of code. They even cache the queries:
 "Values of queries may be cached for up to an hour for repeated URLs."
-Also, repeated queries -- i.e. same urls -- don't count against your daily quota.
-I am wishing I had found SharedCount a long time ago.
+Also, repeated queries -- i.e. the same urls -- don't count against your daily quota.
+I wish I had found SharedCount a long time ago ... passing this on to SEO friends.
+
+Just to be a good internet citizen I should probably throttle a tiny bit, say 100ms,
+between api calls. Testing has passed with successful results everytime, so far, which
+is much better than calling each api provider individually. Before as I was never fully
+successful on any batch of urls because of Stumbleupon's very strict rate limit.
+The joys of testing thoroughly, well, and getting lucky finding SharedCount.
 </pre>
 
 <pre>

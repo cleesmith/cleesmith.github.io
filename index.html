@@ -82,6 +82,12 @@ just 2 HTTP requests -- cool.
 After testing bummer: {"Error": "The Bulk API is not supported for users on the free plan."}
 Oh well, it's just a simple GET request for each url -- still cool -- besides the
 daily quota of 10,000 requests still holds whether it's a bulk or single request.
+And with Go's concurrency a bunch of single GET requests are just as fast as bulk.
+
+Sep 30, 2015 update:
+The counts for 20 URLs has a sub-second response time, and especially for repeated
+queries -- which is great for test/development of code. They even cache the queries:
+"Values of queries may be cached for up to an hour for repeated URLs."
 </pre>
 
 <pre>

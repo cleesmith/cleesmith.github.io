@@ -107,6 +107,15 @@ Oh well, it's just a simple GET request for each url -- still cool -- besides th
 daily quota of 10,000 requests still holds whether it's a bulk or single request.
 And with Go's concurrency a bunch of single GET requests are just as fast as bulk.
 
+Oct 1, 2015 update:
+Occasionally, especially for the first request of the day, SharedCount can be slower.
+By "slower" I mean around 5 seconds for 20+ get requests. I assume they are being
+throttled/rate-limited by the actual provider that they query. Even so, a few seconds
+is not that bad given the reliability of their service -- enseomble is always
+receiving a count in the response. The caching of counts for about an hour is also
+a great and unexpected feature -- makes dev/test fast. Repeated requests regarding
+the same url do not count against your quota, also great.
+
 Sep 30, 2015 update:
 The counts for 20 URLs has a sub-second response time, and especially for repeated
 queries -- which is great for test/development of code. They even cache the queries:

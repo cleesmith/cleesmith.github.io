@@ -109,7 +109,7 @@ Oh well, it's just a simple GET request for each url -- still cool -- besides th
 daily quota of 10,000 requests still holds whether it's a bulk or single request.
 And with Go's concurrency a bunch of single GET requests are just as fast as bulk.
 
-Oct 1, 2015 update:
+Oct 2, 2015 update:
 Occasionally, especially for the first request of the day, SharedCount can be slower.
 By "slower" I mean around 5 seconds for 20+ get requests. I assume they are being
 throttled/rate-limited by the actual provider that they query. Even so, a few seconds

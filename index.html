@@ -195,20 +195,39 @@ That's a lot of you-know-what just to try out an app.
    and it doesn't matter what URL you enter as it just does what's in the spreadsheet anyways ?
    ... very confusing UI/UX
 
+UPDATE:
+I finally got through most of the features in pipulate. It does work, well, sometimes,
+for the most part, but there are always errors thrown yet not handled. But it is simply not
+ready for daily use. Maybe that is supposed to be a feature? It is also very confusing
+as to how to use it -- I had the advantage of working in reverse by looking at
+the python code before using the UI. My findings/conclusions here were confirmed by two
+friends who work assisting clients with digital marketing (SEO, etc.) and found
+pipulate interesting but useless at this point in time. Plus its total reliance
+on Google Spreadsheets was not viewed as a desirable feature -- they want
+more flexibility in using the data they collect for their clients.
+
+Conclusions:
 The only impression one can have is "what a mess".
 This is after over a year of coding/testing ?
 Really ?
-Of course, any ole user knows how to read log messages then fix the bugs in an app.
-Or, is it more realistic to expect an app to "just work" ?
-At least the first time -- what a first impression.
-This app, if one can really call it that, is more like using a large boulder to
-open a wine bottle -- it's definitely not the stated swiss army knife, or maybe this
-is why the swiss always remain neutral.
+Of course, any "ole user" knows how to read log messages then fix the bugs in an app, right?
+Of course they don't, so isn't more realistic to expect an app to "just work" ?
+Well, at least the first time, otherwise that sour tasting first impression never goes away.
+The pipulate app, if one can really call it that, is like using a large boulder to
+open a wine bottle. It is definitely not the "all-purpose Swiss Army Knife" as stated on
+github. Then again, maybe a non-working army knife is why the swiss always remain neutral.
 
-Plus it's way too slow -- takes 48 seconds to do the tweets for 20 url's.
-Enseomble, written in Go, does the same work in under 2 seconds!
+On top of all of that, it's way too slow -- takes 48 seconds to do the tweets for 20 url's.
+This is the year 2015 with lot's of fast microprocessors, memory, and storage so the
+slowness is only due to poorly designed code. WTF?
+
+Alternative:
+Enseomble, written in Go, performs the tweets for 20 url's in under 1 second!
 And that includes throttling to slow it down, so it doesn't get blacklisted or
-rate-limited by the api providers. That also includes creating an xlsx file.
+rate-limited by the api providers. The time taken also includes creating an xlsx file.
+Sure, Enseomble is missing many other seo/marketing features, but these can be
+built over time around a core that is fast and easily distributed. That foundation
+makes all the difference in today's software.
 </pre>
 
 <pre>

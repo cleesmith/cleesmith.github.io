@@ -111,7 +111,7 @@ Oct 1, 2015 update:
 Occasionally, especially for the first request of the day, SharedCount can be slower.
 By "slower" I mean around 5 seconds for 20+ get requests. I assume they are being
 throttled/rate-limited by the actual provider that they query. Even so, a few seconds
-is not that bad given the reliability of their service -- enseomble is always
+is not that bad given the reliability of their service -- enseomble is ALWAYS
 receiving a count in the response. The caching of counts for about an hour is also
 a great and unexpected feature -- makes dev/test fast. Repeated requests regarding
 the same url do not count against your quota, also great.

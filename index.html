@@ -57,9 +57,9 @@
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-2">
                     <div class="post-heading" style="color:black;">
-                        <h1>Man Machine</h1>
+                        <h1>Coding</h1>
                         <h2 class="subheading">random thoughts on men and machines</h2>
-                        <span class="meta">Friday October 9, 2015</span>
+                        <span class="meta">Sunday January 17, 2016</span>
                     </div>
                 </div>
             </div>
@@ -79,123 +79,7 @@
 </p>
  -->
 
-<h2 class="section-heading">More Readable Maybe</h2>
-<p>
-I finally spent some time trying to make this blog more readable and more mobile friendly.
-I chose a Bootstrap based setup called <a href="http://startbootstrap.com/template-overviews/clean-blog/" target="_blank">Clean Blog</a>,
-but made a few changes. Mostly I changed it to be less focused on images. It seems to work ok so far, and
-it is a bit more search engine friendly. It is also easier to edit using the simple idea of headers and paragraphs.
-<span class="caption text-muted">I am slowly editing and adding content from the original blog.</span>
-</p>
-
-<h2 class="section-heading">Fallacies</h2>
-<p>
-<ul>
-  <li>Knobs and whistles
-    <span class="caption text-muted">they find no value in actually solving a problem, rather they have an over fascination with tech</span>
-  </li>
-  <li>Boil the ocean
-    <span class="caption text-muted">they have great ambition, but no real planning and just a desire to be the next <i>Uber whatever</i></span>
-  </li>
-  <li>Entourage
-    <span class="caption text-muted">they are not forming a team of collaborators but just trying to attract <b>hangers on</b> -- "listen to me"</span>
-  </li>
-</ul>
-<blockquote>Or to put it more simply, there exist <b>snake oil</b> developers and projects -- caveat emptor.</blockquote>
-</p>
-
-<h2 class="section-heading">An Obsession Maybe</h2>
-<p>
-I think I am obsessed with throttling and rate-limiting code. There is a lot of
-this for C/C++, but with Go there seems to be even more. I spend hours tinkering
-with it.
-</p>
-
-<h2 class="section-heading">Lazy Good Maybe</h2>
-<p>
-Someone once said that good programmers are naturally lazy. Well, I think I qualify after wrestling
-with the seo tool Enseomble. It turns out it was totally unnecessary. After re-coding the
-tool to use SharedCount and asking a friend to give it try, their response was that
-they currently do all of that with a product called <a href="https://www.blockspring.com/" target="_blank">Blockspring</a> as a plug-in for Excel.
-So I researched this a bit more and found that Blockspring also works as an
-add-on in Google Spreadsheets.
-And it is really easy to use. The exact same social counts are displayed as before but without any
-coding. It is just a matter of using the correct cell formulas, or blocks as blockspring calls them.
-But wait, it gets cooler. One can code your own blocks -- i.e. custom functions for use with
-either Excel or Google Spreadsheets -- and in your choice of language:
-Python, Ruby, R, PHP, NodeJS, Javascript, and others. So whatever you can code and do in a
-standalone or web app you can do in blockspring. The user never has to leave the spreadsheet
-nor have a programmer write a custom program to gather data.
-<br>
-Blocks/formulas have already been written for:
-<ul>
-<li><a href="http://www.sharedcount.com/" target="_blank">SharedCount</a></li>
-<li><a href="https://moz.com/" target="_blank">Moz</a></li>
-<li><a href="http://www.semrush.com/" target="_blank">SEMrush</a></li>
-<li>HTML content extractors</li>
-<li>Keyword analysis: mostly SEMrush and <a href="http://www.alchemyapi.com/" target="_blank">Alchemy API</a></li>
-</ul>
-</p>
-
-<h2 class="section-heading">SEO</h2>
-<p>
-Personally I do not work in marketing, seo, site promoting, or whatever it's called, I write software.
-But some of my family and friends do work in marketing and seo. They have tried on several occassions to
-code, in python, their own tools to help with gathering data. Sometimes with success but most often
-they contact me to improve or re-code their tools. So over the years I have picked up quite a bit
-of knowledge regarding marketing and seo -- well, I don't have any <i>secret knowledge, skills, or weapons</i>.
-But it has been interesting.
-<br>
-Here is a list of the tools commonly used:
-<ul>
-<li><a href="http://www.screamingfrog.co.uk/seo-spider/" target="_blank">Screaming Frog</a> -- free for 500 URI crawls</li>
-<li><a href="https://www.seopowersuite.com/" target="_blank">SEO PowerSuite</a></li>
-<li>Excel -- of course, who doesn't use this for everything</li>
-</ul>
-
-So with all of the above in mind, I do not think that <a href="https://github.com/cleesmith/enseomble" target="_blank">Enseomble</a> should reinvent software which
-already exists and does a great job. Also, it is important to remember that all of the data gathered
-is useless without someone organizing and analyzing it. So this type of work really boils
-down to people using spreadsheets in an intelligent way to offer their clients a beneficial
-service.
-<br>
-<a href="https://www.youtube.com/watch?v=dG9JK8W32Ss" target="_blank">Here is a general video of someone doing this.</a>
-<br><br>
-Enseomble should NOT:
-<ul>
-<li>crawl/spider web sites -- Screaming Frog does this and is free</li>
-<li>
-  scrape html content:
-  <br>
-  title, meta description, meta keywords(now ignored by google anyways), headings, etc.
-  <span class="caption text-muted">Screaming Frog does all of this and it is free.</span>
-</li>
-</ul>
-<br>
-Enseomble should:
-<ul>
-<li>gather social media counts as best it can using SharedCount</li>
-<li>assist with keywords and search rankings (SERPs) -- maybe ?</li>
-<li>create a xlsx file for use with Excel or Google Spreadsheets</li>
-<li>be as fast as possible given the expected throttling by api providers</li>
-<li>be simple to use</li>
-<li>run anywhere with no installation or dependencies</li>
-</ul>
-</p>
-<p>
-You might be thinking well I want something that does everything all at once and in a
-single software package. That sounds great, maybe someday, but for now I think the
-unifying piece is the spreadsheet. This allows someone doing seo work to copy, cut, paste,
-import, and export data as they see fit. And if the tools they need to gather that data
-run anywhere then they are free to focus on using spreadsheets for analysis.
-</p>
-<p>
-While it is all well and good that things like pipulate aim to both teach python (albeit poorly)
-and be an seo tool, but these two things are at cross purposes. The situation has yielded a
-tool that is cumbersome to use and difficult to learn anything from that is valuable to anyone.
-</p>
-
-<h2 class="section-heading">Me at medium.com</h2>
+<h2 class="section-heading">It's easier to write at medium.com</h2>
 <p>
 <script async src="https://static.medium.com/embed.js"></script>
 <a class="m-profile" data-width="100%" data-border="false" href="https://medium.com/@cleesmith">chRiS sMiTh</a>
@@ -211,7 +95,7 @@ tool that is cumbersome to use and difficult to learn anything from that is valu
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="copyright text-muted">Copyright &copy; cellipede.com 2015</p>
+                    <p class="copyright text-muted">Copyright &copy; cellipede.com 2015-2016</p>
                 </div>
             </div>
         </div>

@@ -407,3 +407,11 @@ body {
 .img-gap-right {
   margin-right: 10px; 
 }
+
+hr {
+  height: 2px;
+  background-color:#555;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 75%;
+}

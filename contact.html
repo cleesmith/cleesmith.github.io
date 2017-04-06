@@ -10,7 +10,7 @@
   <meta name="author" content="Chris Smith">
   <meta name="description" content="My thoughts about health, life, death, spirit, and spirituality.">
   <meta name="keywords" content="psychopomp, thoughts, health, life, death, spirit, spirituality">
-  <title>about me</title>
+  <title>contact me</title>
   <!-- Bootstrap Core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom CSS -->
@@ -89,14 +89,21 @@
  
 <h2 class="section-heading">contact</h2>
 <p>
-  <form action="https://formspree.io/cleesmith2006@gmail.com" method="POST">
-    <input type="email" name="email" placeholder="Your email">
-    <input type="text" name="name" placeholder="Your name">
-    <textarea name="message" placeholder="Your message"></textarea>
+  <form>
+    <div class="form-group" action="https://formspree.io/cleesmith2006@gmail.com" method="POST">
+      <!--<label for="exampleInputEmail1">Email address</label>-->
+      <input type="email" class="form-control" name="email" placeholder="Your email">
+    </div>
+    <div class="form-group" action="https://formspree.io/cleesmith2006@gmail.com" method="POST">
+      <input type="text" name="name" placeholder="Your name">
+    </div>
+    <div class="form-group" action="https://formspree.io/cleesmith2006@gmail.com" method="POST">
+      <textarea name="message" placeholder="Your message"></textarea>
+    </div>
     <input type="hidden" name="_format" value="plain" />
     <input type="text" name="_gotcha" style="display:none" />
     <input type="hidden" name="_subject" value="contact form" />
-    <input type="submit" value="Send">
+    <button type="submit" class="btn btn-default">Send</button>
   </form>
 </p>
 

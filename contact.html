@@ -92,7 +92,7 @@
   Feel free to share any thoughts -- especially about life, sleep, death, spirit, books, and videos.
 </p>
 <p>
-  <form action="https://formspree.io/cleesmith2006@gmail.com" method="POST">
+  <form action="HIDDEN" method="POST" id="contact-form" role="form" autocomplete="off">
     <div class="form-group">
       <input type="text" class="form-control" name="email" placeholder="Your email" required>
     </div>
@@ -133,6 +133,17 @@
     <script src="js/jquery.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    var base64_email = 'Y2xlZXNtaXRoMjAwNkBnbWFpbC5jb20=';
+    var base_url = 'https://formspree.io/';
+    var action = base_url + atob(base64_email);
+    $('#contact-form').attr('action', action);
+    // return "https://formspree.io/" + atob(base64_email);
+  });
+</script>
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

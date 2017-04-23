@@ -3,7 +3,7 @@ require 'nokogiri'
 
 TIME_REGEXP = /\d{1,}:\d{2}:\d{2}/
 
-cc = File.open("ccSubs_com_50-video-topics-for-youtube-witches_en.sbv") do |f|
+cc = File.open("16-witchy-questions.sbv") do |f|
 	Nokogiri::HTML(f)
 end
 cc = cc.text

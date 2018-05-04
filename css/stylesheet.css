@@ -1,0 +1,49 @@
+.backdrop {
+	width: 100vw;
+	height: 100vh;
+	background: url(../images/background/pixie1.jpg);
+	background-color: black;
+	background-size: auto; /* auto cover contain */
+	background-repeat: no-repeat;
+	background-position: fixed;
+}
+
+#deal:hover {
+	cursor: url(), auto;
+}
+
+.deckbackshuffle img, .deckbackshuffle input {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 5px;
+}
+
+.deckbackshuffle img {
+	height: 200px;
+}
+
+.deckbackshuffle input {
+	/*
+	margin-bottom: 20px;
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+	font-weight: 100;
+	font-size: 20px;
+	*/
+	background-color: transparent;
+	color: #fff;
+	padding-left: 20px;
+	padding-right: 20px;
+	border: 2px solid blue;
+}
+
+#hand img {
+	margin: 7px;
+	height: 225px;
+	border: 10px solid rgb(255, 255, 255);
+	border-radius: 10px;
+}
+
+.orientationDown {
+	transform: rotate(180deg);
+}

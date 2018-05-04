@@ -139,10 +139,11 @@ var dealCard = function(i) {
 
 //MODULE 3: Execution (JQuery)
 
-//jquery: deal cards when "deck" is clicked & shuffle the deck by reloading the page (find a more efficient way of doing this within the page)
+// jquery: deal cards when "deck" is clicked and 
+//         shuffle the deck by reloading the page
 $(document).ready(function() {
 	$('#deal').click(function() {
-		console.log(dealCard(random()));
+		dealCard(random());
 	});
 	$('#shuffle').click(function() {
 		location.reload();

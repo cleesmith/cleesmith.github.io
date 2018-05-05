@@ -1,15 +1,10 @@
-//Tarot Card App
-
-//MODULE 1: Declarations
-
 //create new object with cards
 var cards = new Array ();
 
-//create variables to limit cards dealt to 7 & to test in console
+//create variables to limit cards dealt:
 var cardsLeftToDeal = 7;
 var cardsDealt = 0;
 
-//array containing the 78 cards with their img names
 cards[00] = "00_Fool";
 cards[01] = "01_Magician";
 cards[02] = "02_High_Priestess";
@@ -89,11 +84,9 @@ cards[75] = "75_Knight_of_Swords";
 cards[76] = "76_Queen_of_Swords";
 cards[77] = "77_King_of_Swords";
 
-//MODULE 2: Functions
-
 // create function to randomly select a number that corresponds with the number of cards available. Used Math.floor to remove remainder from the random calculation, found that i could never get the King Of Swords because 78 was an impossibility. opted for math.round in order to achieve that possibility. 
 var random = function() {
-  	return Math.round(Math.random() * (77-cardsDealt));
+  return Math.round(Math.random() * (77-cardsDealt));
 };
 
 // create a function to randomly determine if the card will be oriented up or down, if randomOrient returns 0, do nothing. if randomOrient returns 1, rotate the card at a 180 degree angle.
@@ -110,8 +103,9 @@ var removeCard = function(k) {
 	cardsDealt++;
 };
 
-// create function to deal your random number as a card 
-// also orient the card up if randomOrient is 0 & down if randomOrient is 1
+// deal your random number as a card and orient:
+// up = randomOrient is 0
+// down = randomOrient is 1
 var dealCard = function(i) {
 	if (cardsLeftToDeal == 0) {
 		return false;
@@ -119,7 +113,7 @@ var dealCard = function(i) {
 		//display card chosen in HTML by creating an image element
 		var img = document.createElement("img");
 		var cardJustDealt = cards[i];
-		var orient = randomOrient();
+		var orient = 0; //randomOrient(); <-- allows reversals
 		$(img).addClass(cardJustDealt);
 		// addClass for card's position (1-7)
 		img.src = ("images/deck/" + cards[i] + ".jpg");
@@ -137,10 +131,8 @@ var dealCard = function(i) {
 	}
 };
 
-//MODULE 3: Execution (JQuery)
-
-// jquery: deal cards when "deck" is clicked and 
-//         shuffle the deck by reloading the page
+// deal cards when "deck" is clicked and 
+// shuffle the deck by reloading the page
 $(document).ready(function() {
 	$('#deal').click(function() {
 		dealCard(random());

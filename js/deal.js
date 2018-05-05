@@ -84,17 +84,27 @@ cards[75] = "75_Knight_of_Swords";
 cards[76] = "76_Queen_of_Swords";
 cards[77] = "77_King_of_Swords";
 
-// create function to randomly select a number that corresponds with the number of cards available. Used Math.floor to remove remainder from the random calculation, found that i could never get the King Of Swords because 78 was an impossibility. opted for math.round in order to achieve that possibility. 
+// create function to randomly select a number 
+// that corresponds with the number of cards available. 
+// Used Math.floor to remove remainder from the random 
+// calculation, found that i could never get the 
+// King Of Swords because 78 was an impossibility. 
+// opted for math.round in order to achieve that possibility. 
 var random = function() {
   return Math.round(Math.random() * (77-cardsDealt));
 };
 
-// create a function to randomly determine if the card will be oriented up or down, if randomOrient returns 0, do nothing. if randomOrient returns 1, rotate the card at a 180 degree angle.
+// create a function to randomly determine if the card 
+// will be oriented up or down, 
+// if randomOrient returns 0, do nothing. 
+// if randomOrient returns 1, rotate the card at a 180 degree angle.
 var randomOrient = function() {
 	return Math.round(Math.random());
 };
 
-//create a function to remove a card once it has been used. This is a basic way to avoid duplicates. Implies that to deal we must refresh the page. 
+// create a function to remove a card once it has been used. 
+// This is a basic way to avoid duplicates. 
+// Implies that to deal we must refresh the page. 
 var removeCard = function(k) {
 	for (var j=k; j<cards.length; j++) {
 		cards[j] = cards[j+1];	
@@ -113,6 +123,7 @@ var dealCard = function(i) {
 		//display card chosen in HTML by creating an image element
 		var img = document.createElement("img");
 		var cardJustDealt = cards[i];
+		// cls: 0 equals no reversals:
 		var orient = 0; //randomOrient(); <-- allows reversals
 		$(img).addClass(cardJustDealt);
 		// addClass for card's position (1-7)

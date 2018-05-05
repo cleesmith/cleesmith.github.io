@@ -1,16 +1,18 @@
 .backdrop {
 	width: 100vw;
 	height: 100vh;
-	background: url(../images/background/pixie1.jpg);
+	background: url(../images/background/bluenightsky.jpg);
 	background-color: black;
-	background-size: auto; /* auto cover contain */
+	background-size: contain; /* auto cover contain */
 	background-repeat: no-repeat;
 	background-position: fixed;
 }
 
+/*
 #deal:hover {
 	cursor: url(), auto;
 }
+*/
 
 .deckbackshuffle img, .deckbackshuffle input {
 	display: block;

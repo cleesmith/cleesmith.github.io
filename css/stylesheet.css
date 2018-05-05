@@ -3,7 +3,7 @@
 	height: 100vh;
 	background: url(../images/background/bluenightsky.jpg);
 	background-color: black;
-	background-size: contain; /* auto cover contain */
+	background-size: cover; /* auto cover contain */
 	background-repeat: no-repeat;
 	background-position: fixed;
 }

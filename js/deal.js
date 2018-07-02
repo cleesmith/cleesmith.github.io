@@ -84,6 +84,13 @@ cards[75] = "75_Knight_of_Swords";
 cards[76] = "76_Queen_of_Swords";
 cards[77] = "77_King_of_Swords";
 
+// cls: is this more random:
+// var array = new Uint32Array(7);
+// window.crypto.getRandomValues(array);
+// for (var i = 0; i < array.length; i++) {
+//		console.log(array[i] % 78);
+// }
+
 // create function to randomly select a number 
 // that corresponds with the number of cards available. 
 // Used Math.floor to remove remainder from the random 

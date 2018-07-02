@@ -68,5 +68,4 @@ step by step how to print cards:
      referenced
      - see: https://helpx.adobe.com/indesign/using/data-merge.html
 
-6. do video showing the above steps
-   - no glamor, it's just work
+6. the end ... aspirin time

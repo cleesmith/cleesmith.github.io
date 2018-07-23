@@ -1,7 +1,7 @@
 .backdrop {
 	width: 100vw;
 	height: 100vh;
-	background: url(../images/background/Starry-night-sky.jpg);
+	/* background: url(../images/background/Starry-night-sky.jpg); */
 	background-color: black;
 	background-size: cover; /* auto cover contain */
 	background-repeat: no-repeat;

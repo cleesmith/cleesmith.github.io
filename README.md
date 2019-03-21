@@ -1,2 +1,2 @@
-# [Blog](https://cleesmith.github.io/)
-blog about life, death, spirit, reviews of books and videos
+# [tarot](https://cleesmith.github.io/)
+tarot and oracle decks

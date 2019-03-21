@@ -1,0 +1,37 @@
+.backdrop {
+	width: 100vw;
+	height: 100vh;
+	/* background: url(../images/background/Starry-night-sky.jpg); */
+	background-color: black;
+	background-size: cover; /* auto cover contain */
+	background-repeat: no-repeat;
+	background-position: fixed;
+}
+
+.deckbackshuffle img, .deckbackshuffle input {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 5px;
+}
+
+.deckbackshuffle img {
+	height: 200px;
+}
+
+.deckbackshuffle input {
+	background-color: transparent;
+	color: #fff;
+	padding-left: 20px;
+	padding-right: 20px;
+	border: 2px solid blue;
+}
+
+#hand img {
+	margin: 7px;
+	height: 225px;
+}
+
+.orientationDown {
+	transform: rotate(180deg);
+}

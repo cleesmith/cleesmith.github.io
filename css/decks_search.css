@@ -1,0 +1,19 @@
+p {
+  padding-left: 35px;
+}
+
+a {
+  text-decoration: none;
+}
+
+li {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+[target=_blank] {
+  text-decoration: none;
+}

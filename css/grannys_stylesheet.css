@@ -1,12 +1,17 @@
 .backdrop {
-	width: 100vw;
-	height: 100vh;
-	/* background: url(../images/background/Starry-night-sky.jpg); */
+	width: 150vw;
+	height: 78vh;
 	background-color: black;
 	background-size: cover; /* auto cover contain */
 	background-repeat: no-repeat;
 	background-position: fixed;
 }
+
+/*
+#deal:hover {
+	cursor: url(), auto;
+}
+*/
 
 .deckbackshuffle img, .deckbackshuffle input {
 	display: block;
@@ -17,9 +22,16 @@
 
 .deckbackshuffle img {
 	height: 200px;
+	width: 150px;
 }
 
 .deckbackshuffle input {
+	/*
+	margin-bottom: 20px;
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+	font-weight: 100;
+	font-size: 20px;
+	*/
 	background-color: transparent;
 	color: #fff;
 	padding-left: 20px;
@@ -30,6 +42,8 @@
 #hand img {
 	margin: 7px;
 	height: 225px;
+	width: 150px;
+	float: left;
 }
 
 .orientationDown {

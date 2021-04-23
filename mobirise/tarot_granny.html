@@ -19,7 +19,7 @@
   <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css">
   <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
   <!-- Custom CSS -->
-  <link href="../css/pixies_stylesheet.css" rel="stylesheet">
+  <link href="../css/grannys_stylesheet.css" rel="stylesheet">
   <!--<link href="../css/clean-blog.css" rel="stylesheet">-->
 </head>
 
@@ -44,10 +44,7 @@
               </div>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
-                <li class="nav-item"><a class="nav-link link text-white text-primary display-4" href="tarot.html">Tarot</a></li>
-                <li class="nav-item"><a class="nav-link link text-white text-primary display-4" href="art.html">Art</a></li>
-              </ul>
+              <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item"><a class="nav-link link text-white text-primary display-4" href="tarot.html">Tarot</a></li><li class="nav-item"><a class="nav-link link text-white text-primary display-4" href="art.html">Art</a></li></ul>
               <div class="icons-menu">
                   <a class="iconfont-wrapper" href="https://www.youtube.com/c/SliptheTrap/" target="_blank" title="Slip the Trap videos on YouTube">
                       <span class="p-2 mbr-iconfont socicon-youtube socicon" style="color: rgb(228, 63, 63); fill: rgb(228, 63, 63);"></span>
@@ -62,72 +59,41 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
-                <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1"><strong>Tarot</strong></h1>
+                <h3><strong>Granny's Tarot</strong></h3>
                 <p class="mbr-text mbr-fonts-style display-7">
-                  I adore art, and well, cards are cheap art, so I started collecting a few decks in 2017.
-                  Since birth, tarot cards have always been around due to my grandmother.
-                  Until 2017 the only tarot deck I owned and used was the <br>Rider-Waite-Smith (hugs 🤗 to Pixie) ... but i just had to buy some of the wonderful new ones.&nbsp; &nbsp;<br>
-                  Love and Peace ☮️
+                  This deck is a reproduction (via MakePlayingCards) that I made of a RWS tarot deck my grandmother gave to me a long time ago. &nbsp;
+                  She had trimmed each card to remove the title and the numbers, which I suppose was to help me to "<i>sit with the cards</i>" and focus on the images. &nbsp;
+                  That's one approach to getting to know the tarot.🤔<br /><br />
+                  You may click/tap the "<b>pull</b>" button to randomly select up to seven cards one card at a time. &nbsp;
+                  No spreads are offered nor interpretations of the cards given ... all of that is up to you, but
+                  there are a lot of online resources regarding tarot. &nbsp; The following is free with no tracking of anything, so enjoy! ☮️
                 </p>
-                <div class="mbr-section-btn mt-3">
-                  <a class="btn btn-info display-4" href="https://www.youtube.com/c/SliptheTrap/about" target="_blank">
-                    <span class="p-2 mbr-iconfont socicon-youtube socicon" style="color: rgb(228, 63, 63); fill: rgb(228, 63, 63);"></span>
-                    Decks I have shown on my YouTube channel
-                  </a>
-                </div>
             </div>
         </div>
     </div>
 </section>
 
-<br /><br />
-<section class="content1" id="content1-8">
+<div class="clearfix"><br /></div>
+<section>
     <div class="container">
-        <div class="row justify-content-left">
-            <div class="title col-12 col-md-9">
-                <h3 class="mbr-section-title mbr-fonts-style align-left mb-4 display-2"><strong>Online Tarot</strong></h3>
-                <h4 class="mbr-section-subtitle align-left mbr-fonts-style mb-4 display-7">
-                  Are you undecided about tarot or you can't afford to buy a deck, then try these online decks.<br />
-                  You can shuffle and pull up to seven cards from the following tarot decks.<br />
-                  There are no fancy animations, no tracking, no interpretations, no spreads, no downloads, no app, and no signup/login ... <i>what happens here, stays here</i> and in your mind. 🤔<br />
-                  The following are free, as in free to use, so give them a try. Enjoy!
-                </h4>
-                <div class="mbr-section-btn mt-3"><a class="btn btn-warning display-4" href="tarot_pixie.html">1. the RWS tarot deck</a></div>
-                <div class="mbr-section-btn mt-3"><a class="btn btn-warning display-4" href="tarot_granny.html">2. my first tarot deck</a></div>
+      <div class="row justify-content-center">
+        <div class="backdrop">
+          <div class="frame1">
+            <div class="deckbackshuffle">
+              <div style="float: left;">
+                <img src="../images/zen_frog.jpg" title="A tarot deck my Grandmother gave me a long time ago with a Zen frog+bug on the back." alt="A tarot deck my Grandmother gave me long ago.">
+              </div>
+              <div style="float: left;">
+                <input type="button" value="shuffle" id="shuffle" style="margin-top: 8px;" />
+                <input type="button" value="pull" id="deal" style="margin-top: 8px; margin-left: 8px;" title="click to deal, pull, or sling up to 7 cards" />
+              </div>
             </div>
+            <div class="clearfix"><br /></div>
+            <div id="hand"></div>
+            <!-- <div id="reading"></div> -->
+          </div>
         </div>
-    </div>
-</section>
-
-<br /><br />
-<section class="content1" id="content1-8">
-    <div class="container">
-        <div class="row justify-content-left">
-            <div class="title col-12 col-md-9">
-                <h3 class="mbr-section-title mbr-fonts-style align-left mb-4 display-2"><strong>Decks I Own</strong></h3>
-                <h4 class="mbr-section-subtitle align-left mbr-fonts-style mb-4 display-7">
-                  A very simple, single-page, searchable database of the tarot and oracle decks that I have purchased since 2017. &nbsp;
-                  No card images are displayed, just some notes and a link to the video showing that deck in a YouTube video. &nbsp;
-                  This is probably only useful to me, but feel free to poke around.  Enjoy!
-                </h4>
-                <div class="mbr-section-btn mt-3"><a class="btn btn-danger display-4" href="decks.html">decks database</a></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- just a blank section to push the footer down the page -->
-<br /><br />
-<section class="content1" id="content1-8">
-    <div class="container">
-        <div class="row justify-content-left">
-            <div class="title col-12 col-md-9">
-                <h3 class="mbr-section-title mbr-fonts-style align-center mb-4 display-2"><strong>&nbsp;</strong></h3>
-                <h4 class="mbr-section-subtitle align-center mbr-fonts-style mb-4 display-7">
-                  &nbsp;<br /><br /><br />&nbsp;
-                </h4>
-            </div>
-        </div>
+      </div>
     </div>
 </section>
 
@@ -152,16 +118,12 @@
 <script src="assets/web/assets/jquery/jquery.min.js"></script>
 <script src="assets/popper/popper.min.js"></script>
 <script src="assets/tether/tether.min.js"></script>
-<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-<script src="assets/smoothscroll/smooth-scroll.js"></script>
-<script src="assets/dropdown/js/nav-dropdown.js"></script>
-<script src="assets/dropdown/js/navbar-dropdown.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>
+<script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>
 <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>
-<script src="assets/playervimeo/vimeo_player.js"></script>
-<script src="assets/theme/js/script.js"></script>
-<script src="../js/deal.js"></script>
+<script src="assets/playervimeo/vimeo_player.js"></script>  <script src="assets/theme/js/script.js"></script>
+<script src="../js/granny_deal.js"></script>
 <script src="../js/deck.js"></script>
-
 
 </body>
 </html>

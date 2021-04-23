@@ -1,8 +1,10 @@
 // load Lunr db and search functions
 
-var listSelector = "#deck-list-container li";
+//var listSelector = "#deck-list-container li"; // <-- changed on Apr 23, 2021
+var listSelector = "#deck-list-container li.deck-li";
 // cls: so we don't start with a blank page:
 showAll();
+//$(listSelector).removeClass("show");
 
 var idx = lunr(function() {
   // define searchable fields
@@ -14,11 +16,12 @@ var idx = lunr(function() {
   this.b(0)
 
   // create a list of all searchable entries by reading out the
-  // '#question-list-container' and saving it as a list of json doc's:
+  // '#deck-list-container' and saving it as a list of json doc's:
   var documents = htmlElementsToJSON(listSelector, function($element) {
-    var ref = $element.attr("deck-id"),
+  var ref = $element.attr("deck-id"),
       title = $element.find("h2 a").text(),
       body = $element.find("p").text();
+  //console.log("ref="+ref);
 
     return { id: ref, title: title, body: body };
   });
@@ -48,7 +51,8 @@ function search(searchTerm) {
   // console.log("found: "+results.length);
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
-    $(listSelector + "[deck-id=" + result.ref + "]").addClass("show");
+    //$(listSelector + "[deck-id=" + result.ref + "]").addClass("show");
+    $(listSelector + '[class="deck-li"]' + "[deck-id=" + result.ref + "]").addClass("show");
   }
 }
 

@@ -1,7 +1,6 @@
 .backdrop {
-	width: 100vw;
-	height: 100vh;
-	background: url(../images/background/bluenightsky.jpg);
+	width: 150vw;
+	height: 78vh;
 	background-color: black;
 	background-size: cover; /* auto cover contain */
 	background-repeat: no-repeat;
@@ -23,6 +22,7 @@
 
 .deckbackshuffle img {
 	height: 200px;
+	width: 150px;
 }
 
 .deckbackshuffle input {
@@ -42,8 +42,10 @@
 #hand img {
 	margin: 7px;
 	height: 225px;
+	width: 150px;
 	border: 10px solid rgb(255, 255, 255);
 	border-radius: 10px;
+	float: left;
 }
 
 .orientationDown {

@@ -134,7 +134,7 @@ var dealCard = function(i) {
 		var orient = 0; //randomOrient(); <-- allows reversals
 		$(img).addClass(cardJustDealt);
 		// addClass for card's position (1-7)
-		img.src = ("../images/deck/" + cards[i] + ".jpg");
+		img.src = ("images/deck/" + cards[i] + ".jpg");
 		img.alt = cards[i];
 
 		if (orient === 1) {

@@ -1,7 +1,7 @@
 .backdrop {
 	width: 150vw;
 	height: 78vh;
-	background-color: black;
+	background-color: white;
 	background-size: cover; /* auto cover contain */
 	background-repeat: no-repeat;
 	background-position: fixed;
@@ -31,9 +31,12 @@
 	font-family: "Helvetica Neue", Helvetica, sans-serif;
 	font-weight: 100;
 	font-size: 20px;
-	*/
+
 	background-color: transparent;
 	color: #fff;
+	*/
+	background-color: white;
+	color: black;
 	padding-left: 20px;
 	padding-right: 20px;
 	border: 2px solid blue;

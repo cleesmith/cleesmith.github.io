@@ -27,7 +27,8 @@
 
   <input id="file" type="file" multiple />
   <button onClick="go()">Go</button>
-  <div id="output"></div>
+  <!--<div id="output"></div>-->
+  <textarea id="output" rows="30" cols="60"></textarea>
 
   <script type="text/javascript">
     function go() {
@@ -35,7 +36,16 @@
       const outputDiv = document.getElementById('output');
       let html = '';
       for (const file of fileInput.files) {
-        html += '<img src="images/taropian_songs/' + file.name + '" /><br />';
+        // <div class="col-sm-2 col-md-2">
+        //  <a class="lightbox" href="images/taropian_songs/0_Art_Card_tiff.jpg">
+        //    <img src="images/taropian_songs/0_Art_Card_tiff.jpg" alt="Art Card">
+        //  </a>
+        // </div>
+        html += '<div class="col-sm-2 col-md-2">\n';
+        html += '<a class="lightbox" href="images/taropian_songs/' + file.name + '">\n';
+        html += '<img src="images/taropian_songs/' + file.name + '">\n';
+        html += '</a>\n';
+        html += '</div>\n';
       }
       outputDiv.textContent = html;
   }

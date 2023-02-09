@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Slip the Trap</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="images/me-hermit-1-121x119.png" type="image/x-icon">
+  <meta name="description" content="personal website for slip the trap">
+
+  <link rel="stylesheet" href="css/w3.css">
+  <link href="fontawesome/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="w3-black">
+
+<!-- navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-left-align w3-small">
+    <a href="index.html" class="w3-bar-item w3-button w3-white w3-padding"><i class="fa fa-home"></i></a>
+    <a href="tarot_taropian_songs.html" class="w3-bar-item w3-button w3-hover-white w3-padding">Tarot</a>
+  </div>
+
+  <!-- navbar on small screens -->
+  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-small w3-small">
+    <a href="index.html" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home"></i></a>
+    <a href="tarot_taropian_songs.html" class="w3-bar-item w3-button w3-padding">Tarot</a>
+  </div>
+</div>
+
+<div class="w3-row-padding w3-padding w3-container w3-margin-bottom w3-black">
+  <div class="w3-content">
+    <br><br><br>
+    <div class="w3-third w3-left">
+      <div class="w3-card-4 w3-margin-top w3-center" style="width:100%">
+        <img src="images/TTSwebapp.jpeg" alt="Taropian Songs Tarot" style="width:80%" class="w3-round-xlarge">
+        <div class="w3-container">
+          <div class="w3-bar w3-padding">
+            <a href="TaropianSongsTarotBook.html" style="text-decoration:none;">
+              <button class="w3-button w3-round-xxlarge w3-green" title="buy Taropian Songs">buy</button>
+            </a>
+            <button class="w3-button w3-round-xxlarge w3-yellow" onclick="shuffleDeck()" value="shuffle" id="shuffle" title=". . . . shuffle cards">shuffle</button>
+            <button class="w3-button w3-round-xxlarge w3-light-blue" onclick="pull7Cards()" value="pull" id="deal" title=". . . . click or tap to pull 7 cards">reveal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 card spread -->
+    <div class="w3-twothird">
+
+      <!-- 1st row of 3 cards -->
+      <div class="w3-row-padding">
+        <!-- card 1 -->
+        <div class="w3-third w3-margin-top">
+          <div class="w3-card w3-display">
+            <img id="card1" src="images/0_Backs_tiff.jpg" style="width:100%;cursor:grab" onclick="onClick(this)" class="w3-hover-greyscale w3-round-xlarge">
+            <div class="w3-container">
+              <h6 id="title1" class="w3-center"></h6>
+              <p id="cardNum1" hidden> </p>
+            </div>
+
+          </div>
+        </div>
+        <!-- card 2 -->
+        <div class="w3-third w3-margin-top">
+          <div class="w3-card">
+            <img id="card2" src="images/0_Backs_tiff.jpg" style="width:100%;cursor:grab" onclick="onClick(this)" class="w3-hover-greyscale w3-round-xlarge">
+            <div class="w3-container">
+              <h6 id="title2" class="w3-center"></h6>
+              <p id="cardNum2" hidden> </p>
+            </div>
+          </div>
+        </div>
+        <!-- card 3 -->
+        <div class="w3-third w3-margin-top">
+          <div class="w3-card">
+            <img id="card3" src="images/0_Backs_tiff.jpg" style="width:100%;cursor:grab" onclick="onClick(this)" class="w3-hover-greyscale w3-round-xlarge">
+            <div class="w3-container">
+              <h6 id="title3" class="w3-center"></h6>
+              <p id="cardNum3" hidden> </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2nd row of 3 cards -->
+      <div class="w3-row-padding w3-margin-top">
+        <!-- card 4 -->
+        <div class="w3-third w3-margin-top">
+          <div class="w3-card">
+            <img id="card4" src="images/0_Backs_tiff.jpg" style="width:100%;cursor:grab" onclick="onClick(this)" class="w3-hover-greyscale w3-round-xlarge">
+            <div class="w3-container">
+              <h6 id="title4" class="w3-center"></h6>
+              <p id="cardNum4" hidden> </p>
+            </div>
+          </div>
+        </div>
+        <!-- card 5 -->
+        <div class="w3-third">
+          <div class="w3-card w3-margin-top">
+            <img id="card5" src="images/0_Backs_tiff.jpg" style="width:100%;cursor:grab" onclick="onClick(this)" class="w3-hover-greyscale w3-round-xlarge">
+            <div class="w3-container">
+              <h6 id="title5" class="w3-center"></h6>
+              <p id="cardNum5" hidden> </p>
+            </div>
+          </div>
+        </div>
+        <!-- card 6 -->
+        <div class="w3-third">
+          <div class="w3-card w3-margin-top">
+            <img id="card6" src="images/0_Backs_tiff.jpg" style="width:100%;cursor:grab" onclick="onClick(this)" class="w3-hover-greyscale w3-round-xlarge">
+            <div class="w3-container">
+              <h6 id="title6" class="w3-center"></h6>
+              <p id="cardNum6" hidden> </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3rd row of 1 card: the 7th/last card needs extra margin before footer for mobile -->
+      <div class="w3-row-padding w3-margin-top w3-margin-bottom">
+        <!-- card 7 -->
+        <div class="w3-third w3-margin-top">
+          <div class="w3-card">
+            <img id="card7" src="images/0_Backs_tiff.jpg" style="width:100%;cursor:grab" onclick="onClick(this)" class="w3-hover-greyscale w3-round-xlarge">
+            <div class="w3-container w3-margin-bottom">
+              <h6 id="title7" class="w3-center"></h6>
+              <p id="cardNum7" hidden> </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+</div>
+
+
+<!-- modal popup = card detail -->
+<div class="w3-container">
+
+  <div id="modal01" class="w3-modal w3-animate-zoom w3-black">
+  <div class="w3-modal-content">
+    <span onclick="document.getElementById('modal01').style.display='none'" class="w3-button w3-tiny w3-grey w3-display-topright w3-round-medium">&times; close</span>
+
+    <!-- 50/50 row -->
+    <div class="w3-row">
+      <div class="w3-half w3-black w3-container w3-center" style="height:550px">
+        <div class="w3-padding" style="height:550px">
+          <div class="w3-padding">
+            <img id="imgTts" src="images/0_Backs_tiff.jpg" class="w3-margin w3-round-medium" alt="Taropian Songs" style="width:60%">
+          </div>
+        </div>
+      </div>
+
+      <div class="w3-half w3-blue-grey w3-container" style="height:550px">
+        <div class="w3-center">
+          <img id="imgRws" src="images/0_Backs_tiff.jpg" class="w3-margin w3-round-medium" alt="RWS" style="width:30%">
+          <div class="w3-left-align w3-padding w3-small">
+            <address>
+              <p id="txtRws"> 
+                <details>
+                  <summary style="cursor:grab;" class="w3-text-light-blue">click/tap to reveal old-school <b>fortune telling</b> advice</summary>
+                  <p id="txtFortune">
+                    MAX TEXTuld your decision be if you had to render a binding verdict right now?","How comfortable are you saying exactly what you mean? How often do you temper what you have to say for fear of offending others?","If you were to ask others, \"What's my area of expertise?\" what would they say?
+                    What would your decision be if you had to render a
+                    The End###
+                  </p>
+                </details>
+              </p>
+            </address>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="w3-container w3-black w3-padding-16">
+      <p class="w3-center">
+        Taropian Songs Tarot
+        <span onclick="document.getElementById('modal01').style.display='none'" class="w3-button w3-tiny w3-display-bottomright w3-round-medium">&times; close</span>
+      </p>
+    </footer>
+
+  </div>
+</div>
+
+<br><br>
+<div class="w3-black"> <!-- use: w3-bottom = display footer always at bottom of viewport -->
+  <div class="w3-center">
+    <footer class="w3-container w3-center w3-opacity">  
+      <div class="w3-medium w3-bar">
+        <div class="w3-bar-item w3-hover-greyscale">
+          <a href="https://slip-the-trap.pixels.com/" target="_blank" style="text-decoration: none;" title=". . . . .   Art">
+          <i class="fa-regular fa-image w3-text-deep-purple"></i>
+          <i class="fa-solid fa-pencil w3-text-orange"></i>
+        </a>
+        </div>
+
+        <div class="w3-bar-item w3-hover-greyscale">
+          <a href="https://www.amazon.com/Slip-the-Trap/e/B09QK39XW7" target="_blank" style="text-decoration: none;" title=". . . . . Language: Writing & Books">
+            <i class="fa-solid fa-book-open-reader w3-text-red"></i>
+            <i class="fa-regular fa-keyboard"></i>
+          </a>
+        </div>
+
+        <div class="w3-bar-item w3-hover-greyscale">
+          <a href="http://www.youtube.com/c/SliptheTrap/" target="_blank" style="text-decoration: none;" title=". . . . . YouTube">
+            <i class="fa-solid fa-video w3-text-blue"></i>
+            <i class="fa-solid fa-computer w3-text-amber"></i>
+            <i class="fa-brands fa-youtube w3-text-red"></i>
+          </a>
+        </div>
+
+        <div class="w3-bar-item w3-hover-greyscale">
+          <a href="https://www.amazon.com/s?i=fashion&rh=n%3A7141123011%2Cp_4%3ASlip+the+Trap" target="_blank" style="text-decoration: none;" title=". . . . . Shirts">
+            <i class="fa fa-shirt w3-hover-opacity"></i>
+          </a>
+        </div>
+
+        <div class="w3-bar-item">
+          <a href="https://www.facebook.com/cleesmithface" target="_blank" style="text-decoration: none;" title=". . . . . Facebook">
+            <i class="fa-brands fa-square-facebook w3-text-aqua w3-hover-greyscale"></i>
+          </a>
+          &nbsp;
+          <a href="https://instagram.com/slip_the_trap/" target="_blank" style="text-decoration: none;" title=". . . . . Instagram">
+            <i class="fa-brands fa-instagram w3-text-yellow w3-hover-greyscale"></i>
+          </a>
+        </div>
+
+      </div>
+      <div class="w3-bar w3-small">
+        <div class="w3-bar-item w3-text-gray">Copyright <i class="fa-regular fa-copyright"></i> 2017-2023</div>
+        <a href="#" class="w3-bar-item w3-button">Slip the Trap <i class="fa-solid fa-peace w3-text-purple" title=". . . . . Peace!"></i></a>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script src="js/deal.js"></script>
+<script src="js/deck.js"></script>
+<script src="js/tarot-images.js"></script>
+
+<script>
+// cls: plain old JS used to toggle the menu on small screens when clicking on the menu button
+function myFunction() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+/*
+// see: tarot-images.js:
+// for this to work properly; rwsTarot json and cards array must match indices, 
+// e.g. a 77 must be the same card in both datasets!
+alert(
+  rwsTarot.cards[77].number + ' ' +
+  rwsTarot.cards[77].name + "\n" +
+  rwsTarot.cards[77].Elemental + "\n" +
+  rwsTarot.cards[77].Affirmation
+);
+*/
+</script>
+
+<script>
+function onClick(element) {
+  var filepath = element.src;
+  var filenameExt = filepath.replace(/^.*[\\\/]/, '');
+  var fileName = filenameExt.substring(0, filenameExt.lastIndexOf('.')) || filenameExt;
+  fileName = fileName.replace("_tiff", "");
+  fileName = fileName.replaceAll("_", " ");
+  // replace the popup image with the spread card image:
+  document.getElementById("imgTts").src = element.src;
+
+  // add the RWS equivalent image, see: https://en.wikipedia.org/wiki/Rider%E2%80%93Waite_Tarot for more info:
+  // find info in rwsTarot using hidden cardNum
+  cardNum = filenameExt.split('#')[1];
+  if (cardNum == null) {
+    cardNum = 78; // user clicked on back of card image
+    fileName = " ";
+  }
+  document.getElementById("imgRws").src = "images/rws_tarot/" + rwsTarot.cards[cardNum].img;
+  // replace default text in p tag id=txtRws:
+  var fortune = "";
+  for (var key in rwsTarot.cards[cardNum].fortune_telling) {
+    fortune = fortune + rwsTarot.cards[cardNum].fortune_telling[key] + "\n";
+  }
+  document.getElementById("txtFortune").innerText = fortune;
+  // maybe \u2014 (em dash) instead of pips: ♥ ♦ ♣ ♠ 
+  document.getElementById("txtRws").innerText = 
+    rwsTarot.cards[cardNum].name + "\n" +
+    "\u2014 " +
+    "elemental: " + (rwsTarot.cards[cardNum].Elemental || "none") + "\n" +
+    "\u2014 " +
+    "affirmation: " + (rwsTarot.cards[cardNum].Affirmation || "none");
+
+  // display altered popup modal:
+  document.getElementById("modal01").style.display = "block";
+}
+</script>
+
+</body>
+</html>

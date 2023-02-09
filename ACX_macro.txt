@@ -1,6 +1,0 @@
-FilterCurve:f0="50" f1="60" f10="224.71681" f11="309.21256" f12="440.01799" f13="524.90062" f14="7847.1593" f15="10011.58" f16="11645.696" f2="65" f3="70" f4="80" f5="90" f6="100" f7="115.73071" f8="133.49455" f9="171.75192" FilterLength="8191" InterpolateLin="0" InterpolationMethod="B-spline" v0="-120" v1="-50" v10="4.3237247" v11="3.3924618" v12="1.5299339" v13="0.19955635" v14="0.19955635" v15="0.19955635" v16="-5.7871399" v2="-24" v3="-12" v4="-4" v5="-1" v6="0" v7="2.0620842" v8="3.2594242" v9="4.3237247"
-Compressor:AttackTime="0.2" NoiseFloor="-40" Normalize="0" Ratio="3" ReleaseTime="1" Threshold="-10" UsePeak="0"
-LoudnessNormalization:DualMono="1" LUFSLevel="-20" NormalizeTo="1" RMSLevel="-20" StereoIndependent="0"
-Limiter:gain-L="0" gain-R="0" hold="10" makeup="No" thresh="-3.5" type="SoftLimit"
-De-clicker:control-action-choice="Apply changes" control-crackle-threshold="-45" control-crossfade-interval="5" control-frequency-bound1="150" control-frequency-bound2="9600" control-max-steps="2" control-n-bands="12" control-passes="2" control-relative-threshold="6" control-separation="3" control-step-dur-ms="5"
-AcxCheck:Use_Preset="<Factory Defaults>"

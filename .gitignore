@@ -1,5 +1,5 @@
 .DS_Store
-cls.txt
-contact_form.txt
-cls_youtube_comment.txt
-ccSubs*
+./tmp.drivedownload
+./tmp.driveupload
+.log
+.env

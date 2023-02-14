@@ -8,32 +8,37 @@
 
 <url>
   <loc>https://slipthetrap.com/index.html</loc>
-  <lastmod>2023-02-10T06:00:00+00:00</lastmod>
+  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
+  <changefreq>daily</changefreq>
+</url>
+<url>
+  <loc>https://slipthetrap.com/about.html</loc>
+  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/art.html</loc>
-  <lastmod>2023-02-10T06:00:00+00:00</lastmod>
+  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/literature.html</loc>
-  <lastmod>2023-02-10T06:00:00+00:00</lastmod>
+  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/technology.html</loc>
-  <lastmod>2023-02-10T06:00:00+00:00</lastmod>
+  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/tarot_taropian_songs.html</loc>
-  <lastmod>2023-02-10T06:00:00+00:00</lastmod>
+  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/TaropianSongsTarotBook.html</loc>
-  <lastmod>2023-02-10T06:00:00+00:00</lastmod>
+  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
   <changefreq>daily</changefreq>
 </url>
 </urlset>

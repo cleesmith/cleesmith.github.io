@@ -215,6 +215,16 @@ function myFunction() {
 }
 </script>
 
+<script>
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "https://api.countapi.xyz/hit/7dbda121-3fd7-4ca4-83bf-310d2b89d1b2/visits");
+xhr.responseType = "json";
+xhr.onload = function() {
+    document.getElementById('visits').innerText = this.response.value;
+}
+xhr.send();
+</script>
+
 <script async data-id="101406506" src="//static.getclicky.com/js"></script>
 </body>
 </html>

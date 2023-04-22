@@ -174,13 +174,13 @@ function myFunction() {
 </script>
 
 <script>
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "https://api.countapi.xyz/hit/www.slipthetrap.com/visits");
-xhr.responseType = "json";
-xhr.onload = function() {
-    document.getElementById('visits').innerText = this.response.value;
-}
-xhr.send();
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "https://api.countapi.xyz/hit/www.slipthetrap.com/visits");
+  xhr.responseType = "json";
+  xhr.onload = function() {
+    // document.getElementById('visits').innerText = this.response.value;
+  }
+  xhr.send();
 </script>
 
 <script async data-id="101406506" src="//static.getclicky.com/js"></script>

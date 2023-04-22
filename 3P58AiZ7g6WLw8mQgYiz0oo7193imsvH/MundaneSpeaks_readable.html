@@ -490,6 +490,7 @@
     <p>Hope you enjoyed reading and listening!</p>
     <div class="fa-3x">
       <i class="fa-sharp fa-solid fa-frog fa-bounce w3-text-green" style="--fa-bounce-start-scale-x: 1; --fa-bounce-start-scale-y: 1; --fa-bounce-jump-scale-x: 1; --fa-bounce-jump-scale-y: 1; --fa-bounce-land-scale-x: 1; --fa-bounce-land-scale-y: 1; --fa-animation-iteration-count:20;"></i>
+      <span id="visits" class="w3-small"></span>
     </div>
   </div>
 
@@ -514,6 +515,16 @@
   </div>
 </div>
 
-<script async data-id="101406506" src="//static.getclicky.com/js"></script>
+
+<script>
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "https://api.countapi.xyz/hit/TheMundaneSpeaks/visits");
+xhr.responseType = "json";
+xhr.onload = function() {
+  document.getElementById('visits').innerText = this.response.value;
+  // alert(`${this.response.value} visits!`);
+}
+xhr.send();
+</script>
 </body>
 </html>

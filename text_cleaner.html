@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Cleaner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        textarea {
+            width: calc(100% - 40px);
+            height: calc(100% - 110px);
+            box-sizing: border-box;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            color: white;
+            transition: all 0.3s ease;
+            border-radius: 15px; /* Change this value to adjust the roundness of the corners */
+        }
+        button:active {
+            transform: scale(0.9); /* More noticeable scale transformation */
+            opacity: 0.8; /* Darker background color when pressed */
+        }
+        button {
+            transition: all 0.3s ease;
+        }
+        button:disabled {
+            background-color: grey !important;
+            transform: none !important;
+            opacity: 1 !important;
+         }
+        #cleanButton {
+            background-color: blue;
+        }
+        #copyButton {
+            background-color: green;
+        }
+        #deleteButton {
+            background-color: red;
+        }
+        .title {
+            text-align: center;
+            color: blue;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Text Cleaner</div>
+    <textarea id="inputText"></textarea>
+    <div class="buttons">
+        <button id="cleanButton">Clean Text</button>
+        <button id="copyButton">Copy to Clipboard</button>
+        <button id="deleteButton">Delete Text</button>
+    </div>
+
+<!--
+    <script>
+        window.onload = function() {
+            document.getElementById('inputText').focus();
+        };
+
+        document.getElementById('cleanButton').addEventListener('click', function() {
+            var inputText = document.getElementById('inputText').value;
+            var cleanedText = cleanText(inputText);
+            document.getElementById('inputText').value = cleanedText;
+        });
+
+        document.getElementById('copyButton').addEventListener('click', function() {
+            var inputText = document.getElementById('inputText').value;
+            navigator.clipboard.writeText(inputText);
+        });
+
+        document.getElementById('deleteButton').addEventListener('click', function() {
+            document.getElementById('inputText').value = '';
+        });
+
+        function cleanText(text) {
+            // Replace HTML entity number &#8233; with a newline
+            var cleanedText = text.replace(/&#8233;/g, '\n');
+            // Replace Paragraph Separator character with a newline
+            cleanedText = cleanedText.replace(/\u2029/g, '\n');
+            // Replace non-breaking spaces and multiple white spaces excluding new lines
+            cleanedText = cleanedText.replace(/&nbsp;|[ \t]{2,}/g, ' ');
+            // Remove blank lines
+            cleanedText = cleanedText.replace(/^\s*$(?:\r\n?|\n)/gm, '');
+            // Trim leading and trailing spaces
+            cleanedText = cleanedText.trim();
+            return cleanedText;
+        }
+    </script>
+-->
+
+    <script>
+        window.onload = function() {
+            document.getElementById('inputText').focus();
+        };
+
+        document.getElementById('cleanButton').addEventListener('mousedown', function() {
+            var inputText = document.getElementById('inputText').value;
+            var cleanedText = cleanText(inputText);
+            document.getElementById('inputText').value = cleanedText;
+            this.disabled = true;
+            setTimeout(() => this.disabled = false, 500);
+        });
+
+        document.getElementById('copyButton').addEventListener('mousedown', function() {
+            var inputText = document.getElementById('inputText').value;
+            navigator.clipboard.writeText(inputText);
+            this.disabled = true;
+            setTimeout(() => this.disabled = false, 500);
+        });
+
+        document.getElementById('deleteButton').addEventListener('mousedown', function() {
+            document.getElementById('inputText').value = '';
+            this.disabled = true;
+            setTimeout(() => this.disabled = false, 500);
+        });
+
+        function cleanText(text) {
+          // Replace HTML entity number &#8233; with a newline
+          var cleanedText = text.replace(/&#8233;/g, '\n');
+          // Replace Paragraph Separator character with a newline
+          cleanedText = cleanedText.replace(/\u2029/g, '\n');
+          // Replace non-breaking spaces and multiple white spaces excluding new lines
+          cleanedText = cleanedText.replace(/&nbsp;|[ \t]{2,}/g, ' ');
+          // Remove blank lines
+          cleanedText = cleanedText.replace(/^\s*$(?:\r\n?|\n)/gm, '');
+          // Trim leading and trailing spaces
+          cleanedText = cleanedText.trim();
+          return cleanedText;
+        }
+    </script>
+
+</body>
+</html>

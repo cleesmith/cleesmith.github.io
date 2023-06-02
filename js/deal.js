@@ -89,6 +89,7 @@ const randomUnique = (range, count) => {
 };
 
 var dealCards = function() {
+	document.getElementById('spreadCards').value = 'Please use the proper RWS tarot card number and name in your reading, and I have the following cards for a Tarot Horseshoe spread: ';
 	// 7 card spread
 	spread = randomUnique(78, 7); // includes 0 to 78 = verified!
 	i = 0;
@@ -105,7 +106,11 @@ var dealCards = function() {
 		var cardtitle = document.getElementById(titlePos);
 		cleanTitle = cards[spread[i]].replace("_tiff", "");
 		cardtitle.innerHTML = cleanTitle.replaceAll("_", " ");
-
+		if (i === 0) {
+			document.getElementById('spreadCards').value += cardtitle.innerHTML;
+		} else {
+			document.getElementById('spreadCards').value += ', ' + cardtitle.innerHTML;
+		};
 		// hide/remember card number for cards array
 		cardNumPos = "cardNum" + (i+1);
 		var cardnum = document.getElementById(cardNumPos);

@@ -47,6 +47,14 @@
             <button class="w3-button w3-round-xxlarge w3-light-blue" onclick="pull7Cards()" value="pull" id="deal" title=". . . . click or tap to pull 7 cards">reveal</button>
           </div>
         </div>
+        <div class="w3-container">
+          <div class="w3-bar w3-padding">
+            <textarea id="spreadCards" class="w3-input w3-border" style="height: 300px; resize: none;" readonly></textarea>
+            <div class="w3-center">
+              <button id="copyButton" class="w3-button w3-round-medium w3-blue w3-margin-top">copy</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -286,6 +294,14 @@ function onClick(element) {
   // display altered popup modal:
   document.getElementById("modal01").style.display = "block";
 }
+</script>
+
+<script>
+  document.getElementById('copyButton').addEventListener('click', function() {
+    // Copy the textarea content to the clipboard
+    var textarea = document.getElementById('spreadCards');
+    navigator.clipboard.writeText(textarea.value);
+  });
 </script>
 
 </body>

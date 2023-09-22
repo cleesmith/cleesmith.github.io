@@ -1,0 +1,518 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="CLee Smith" />
+  <title>Vapo and Cramb screenplay</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+background-color: #1a1a1a;
+border: none;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+.text-block{text-align: center;}
+.stanza{padding-bottom: 15px;}
+/* Scrippets-compatible CSS - http://www.fountain.io */
+div.scrippet {
+	width: 400px;
+	background: #ffffff;
+	color: #000000;
+	/* border: 1px solid #333; */
+	padding: 5px 14px 15px 14px;
+	margin-bottom: 16px;
+	margin-left: 20px;
+}
+.scrippet p {
+	font: 12px/14px Courier, "Courier New", monospace;
+	text-align: left;
+	letter-spacing: 0;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.sceneheader,
+.action,
+.character,
+.shot {
+	padding-top: 1.5ex;
+}
+.action {
+	padding-right: 5%;
+}
+.character {
+	padding-left: 40%;
+}
+.dialogue {
+	padding-left: 20%;
+	padding-right: 20%;
+}
+.parenthetical {
+	padding-left: 32%;
+	padding-right: 30%;
+}
+.dialogue + .parenthetical {
+	padding-bottom: 0;
+}
+.transition {
+	padding-top: 3ex;
+	padding-left: 65%;
+	padding-bottom: 1.5ex;
+}
+.shot {
+	padding-right: 5%;
+}
+</style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+<div class="scrippet">
+<br/><br/>
+<p class="action">Title: <b>VAPO &amp; CRAMB</b></p>
+<p class="action">Authors/Credits:<br/>
+	Written, illustrated, and animated (someday) by<br/>
+	<b>Clee Smith</b>,
+	Slip the Trap (artist),
+	an unamed childhood <i>best</i>friend,
+	and our sixth grade teacher Mrs. Gladys.
+</p>
+<p class="action">Source: 
+	Conceived and designed with a double-edged pen by Clee Smith, who also 
+	dons the artistic persona of Slip the Trap, this work is an homage to 
+	a nameless childhood confidant and our wise sixth-grade mentor, Mrs. Gladys. 
+	Each stroke on the page and future frame of animation stands as a tribute to 
+	friendships formed and lessons learned, under the watchful eyes of educators past.
+</p>
+<p class="action">Contact Info: <a href="https://www.slipthetrap.com" target="_blank">author’s website</a><br/>
+	Draft Date: Friday, September 22, 2023<br/>
+	Revision: Second
+</p>
+<hr/>
+<p style="text-align: center;">&copy; 2023 Clee Smith, Slip the Trap. All rights reserved.</p>
+<p>
+This screenplay is a work of fiction.<br/>
+Names, characters, places, and incidents either are products of the author’s imagination or are used fictitiously. Any resemblance to actual events or locales or persons, living or dead, is entirely coincidental.
+</p>
+
+<hr/>
+
+<p class="action"><b>Act 1 Page 1</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">The scene is a vast, empty SPACE, sprinkled with DISTANT STARS. In this silent expanse, we find VAPO, a gigantic cloud-like entity encompassing the screen. An omnipresent, almost ethereal, glowing NEBULA. CRAMB, a tiny, clam-like creature with EYE STALKS, resides within VAPO.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(to Cramb)</p>
+<p class="dialogue">Looks like we are back, Cramb!</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(with curiosity)</p>
+<p class="dialogue">Where were we, Vapo?</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(retrospective)</p>
+<p class="dialogue">The short of it is this; the Earther, who calls himself Slip, is writing and creating us again using his imagination. So we can now resume our existence, communication, and in general, just being all we can be.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(bewildered)</p>
+<p class="dialogue">Oh yeah, it’s good to be back, but what is a Slip? I forgot.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"></p>
+<p class="action"><b>Act 1 Page 2</b></p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO continues his ethereal cloud-like existence, while CRAMB listens with his eye stalks perked up.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(amused)</p>
+<p class="dialogue">Well, Cramb; Slip thinks he is our creator. He recalls that he and a friend created a comic book of doodles and words about two space beings in the sixth grade.</p>
+<p class="action">CRAMB’s eye stalks move in an oscillating pattern, indicating curiosity and interest.</p>
+<p class="character">VAPO (cont'd)</p>
+<p class="parenthetical">(continues)</p>
+<p class="dialogue">One of the beings was a gigantic, mostly empty gas cloud surrounding his planet called Earth. As well as the entire Milky Way galaxy. Originally he called me VapoMan, but now I’m just Vapo.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(intrigued)</p>
+<p class="dialogue">And what about me?</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(smiling)</p>
+<p class="dialogue">The other being was a clam symbiote of VapoMan’s he named ClamBoy, but now you’re Cramb. In the twilight of Slip’s life as an Earther, he finds the whole Man-Boy or Hero-Sidekick idea way too creepy.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(confused)</p>
+<p class="dialogue">Strange; I don’t feel like anything changed, not really, but I do like these new eye stalks. Seeing is cool. Staring at colors and movements is fascinating.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="sceneheader"><B>ACT 1 PAGE 3</B></p>
+<p class="action">VAPO’s nebulous form subtly undulates as he communicates with CRAMB. CRAMB starts to move, appearing almost playful.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(curious)</p>
+<p class="dialogue">That’s imagination for you. What are you doing?</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(mischievous)</p>
+<p class="dialogue">I am “broadcasting my pirate signal” inside your cloud.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(skeptical)</p>
+<p class="dialogue">What messages are you sending?</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(proud)</p>
+<p class="dialogue">No message, just a signal, a pirate signal.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(bemused)</p>
+<p class="dialogue">How is that a broadcast?</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 1 Page 4</b></p>
+<p class="action">CRAMB moves with a newfound agility, appearing to perform a dance inside VAPO’s cloud.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(explaining)</p>
+<p class="dialogue">Well, I clack my eye stalks together as I open, then close my half-shells to propel myself in a circle at the edge of your cloud-ness.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(interested)</p>
+<p class="dialogue">And then?</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(elaborating)</p>
+<p class="dialogue">I suck up your gases, then squeeze my half-shells together, expelling gas like a rocket, propelling me forward to better distribute my signal.</p>
+<p class="action">VAPO’s nebula-like form flickers with colorful lights, indicating a sense of fascination.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 1 Page 5</b></p>
+<p class="action">CRAMB continues his dance-like movements, swirling and twirling within VAPO’s cloud. VAPO is silently watching, intrigued.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(musing)</p>
+<p class="dialogue">This seems quite elaborate for a crab-clam being, yet your signal harbors no message. Hmm.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(defiant)</p>
+<p class="dialogue">No message, just noise. I suddenly became aware of Sputnik, so it struck me why not a Crambnik.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(amused)</p>
+<p class="dialogue">Your antics give me pause; the age-old discussion of signal versus noise comes to mind (so to Earther-speak). It could be a very subtle message; perhaps you are a beacon in a vast nothingness.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 1 Page 6</b></p>
+<p class="action">CRAMB floats aimlessly within VAPO’s nebula-like form, his movements less vigorous than before.</p>
+<p class="character">VAPO (cont'd)</p>
+<p class="parenthetical">(contemplative)</p>
+<p class="dialogue">Cramb, you do surprise me sometimes.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(enthusiastic)</p>
+<p class="dialogue">I love surprises, they’re the best.</p>
+<p class="action">CRAMB starts to perform his dance-like movements again, broadcasting his signal. As we pull back, CRAMB becomes a tiny speck within the enormous, glowing VAPO.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 7</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO continues to envelop the screen, a large nebulous presence. CRAMB is a small figure within, still performing his dance-like movements, sending out his pirate signal.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(reflective)</p>
+<p class="dialogue">Since Slip insists on writing about us in this book format, we are stuck using a language called English. It is one of the many languages the Earthers use to communicate with each other about things.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(absorbed in his dance)</p>
+<p class="dialogue">And?</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(serious)</p>
+<p class="dialogue">So much so that they forget that the “word” is not the “thing.” Even more critical is that imagination is so much more than words and visuals.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 8</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">CRAMB pauses in his dance, his eye stalks oscillating towards VAPO, showing interest.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(pondering)</p>
+<p class="dialogue">In fact, what they call their senses; sight, touch, hearing, smell, and taste; are so limiting that they may lack the tools to understand. But they have come pretty far along with what they’ve got.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(confused)</p>
+<p class="dialogue">Does this mean we don't do our telepathic thing anymore? I mean, neither of us has a mouth to expel small mouth noises nor grasping stalks to write words onto something.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 9</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO's nebula-like form pulses as if laughing.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(amused)</p>
+<p class="dialogue">Cramb, no, we will always be telepathic. Still, for the purposes of this book, we have to dumb down our conversations because of the limitation of using an Earther language and their limiting knowledge about their existence.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(understanding)</p>
+<p class="dialogue">Ah, makes sense. But who's gonna listen?</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 10</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO's cloud form shimmers as if considering CRAMB's question.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(musing)</p>
+<p class="dialogue">Also, this is a book, and all books have an audience, or so every writer hopes. As such, we might just be broadcasting our signal with many messages through ole Slip’s writing, a sort of pipeline or megaphone. Get it?</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(realization)</p>
+<p class="dialogue">Oh, yeah, and I am getting a bit tired of broadcasting my pirate signal, and no one or nothing seems to be noticing. I think. It’s hard to tell.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 11</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO's nebula-like form subtly shifts, appearing to nod in understanding.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(empathetic)</p>
+<p class="dialogue">Nice catch, Cramb! Many broadcasts do go unnoticed. Yet the ever-hopeful universe keeps right on constantly zinging signals every which way.</p>
+<p class="action">CRAMB's eye stalks move in a pattern that suggests thoughtfulness, as he ceases his dance-like movements.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 12</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">CRAMB remains static for a while, processing VAPO's words. Then, he starts to move again, albeit more slowly.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(reflective)</p>
+<p class="dialogue">There’s so much to ponder in this episode. But I need a broadcast break to absorb it all while snacking on some of your gassiness. Is that ok, Vaps?</p>
+<p class="action">VAPO's form glows brighter, signaling his approval.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(accepting)</p>
+<p class="dialogue">That’s fine, Cramb, inhale me deeply. Our audience needs a break too.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 13</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO's nebula-like form undulates softly, the colors ebbing and flowing in sync with his words.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(gently)</p>
+<p class="dialogue">Yes, rest and reflect, Cramb. There is wisdom in taking pauses.</p>
+<p class="action">CRAMB begins to gently sway, his movements appearing rhythmic and hypnotic within VAPO's nebula-like form.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 2 Page 14</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">As the scene progresses, CRAMB continues to take in VAPO's gaseous form. His movement slows, settling into a rhythm that matches the undulating dance of VAPO's form.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(drowsily)</p>
+<p class="dialogue">Maybe... maybe next time, someone will pick up my signal...</p>
+<p class="action">VAPO's form swirls gently around CRAMB, echoing his sentiment.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(encouraging)</p>
+<p class="dialogue">Perhaps, Cramb... perhaps.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 3 Page 15</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO's cloud form is still. CRAMB seems more re-energized after his break, floating within VAPO with renewed vigor.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(thoughtful)</p>
+<p class="dialogue">Remember, Cramb, language is merely a tool. We use it for now, but our existence goes beyond it.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(interested)</p>
+<p class="dialogue">Tell me more about this, Vapo.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 3 Page 16</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO's nebula-like form undulates in rhythmic motion as if signifying a deep, cosmic thought.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(reflective)</p>
+<p class="dialogue">Our communication, our very existence, transcends Earther languages. These are simply constructs, useful for certain purposes, but ultimately, they can't capture the full spectrum of our reality.</p>
+<p class="action">CRAMB's eye stalks oscillate towards VAPO, a clear sign of his attention.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 3 Page 17</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">CRAMB seems to be pondering VAPO's words, floating silently within VAPO's form.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(continuing)</p>
+<p class="dialogue">Slip, our creator of sorts, is only able to interpret us through his human lens. That's why we are here in this form, using English.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(understanding)</p>
+<p class="dialogue">Ah, so this isn't just about us then. It's also about them.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 3 Page 18</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO's nebula-like form pulses softly, like a heartbeat.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(enlightening)</p>
+<p class="dialogue">Yes, Cramb. It’s about us, them, and the entire universe. Everything is interconnected.</p>
+<p class="action">CRAMB’s form contracts slightly, as if taking in the enormity of VAPO’s words.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(in awe)</p>
+<p class="dialogue">Wow, that’s a lot to take in.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 3 Page 19</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">CRAMB seems pensive, his eye stalks moving in slow, contemplative patterns.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(thoughtful)</p>
+<p class="dialogue">So, our broadcasts... They’re not just signals in the void. They’re part of the cosmic conversation.</p>
+<p class="action">VAPO’s cloud form ripples, reflecting his agreement.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(encouraging)</p>
+<p class="dialogue">That’s a beautiful way to put it, Cramb.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action"><b>Act 3 Page 20</b></p>
+<p class="action">FADE IN:</p>
+<p class="sceneheader">EXT. INTERGALACTIC SPACE - CONTINUOUS</p>
+<p class="action">VAPO’s nebula-like form gently sways, while CRAMB remains still, seemingly deep in thought.</p>
+<p class="character">VAPO</p>
+<p class="parenthetical">(softly)</p>
+<p class="dialogue">And who knows, Cramb? Maybe someday, somewhere, someone... or something will pick up your signal.</p>
+<p class="action">CRAMB’s form shows signs of hopefulness. His eye stalks move in patterns that indicate optimism.</p>
+<p class="character">CRAMB</p>
+<p class="parenthetical">(hopeful)</p>
+<p class="dialogue">Yeah... maybe they will.</p>
+<p class="action">As the conversation between VAPO and CRAMB fades, we are left with the vast expanse of intergalactic space - a silent witness to their existence and endless broadcasts.</p>
+<p class="action">FADE OUT.<hr/></p>
+<p class="action">THE END.</p>
+<p class="action"></p>
+<br/>
+<hr/>
+<p style="text-align: center;">&copy; 2023 Clee Smith, Slip the Trap. All rights reserved.</p>
+<p>
+This screenplay is a work of fiction.<br/>
+Names, characters, places, and incidents either are products of the author’s imagination or are used fictitiously. Any resemblance to actual events or locales or persons, living or dead, is entirely coincidental.
+</p>
+
+<hr/>
+
+</div>
+
+</body>
+</html>

@@ -148,13 +148,6 @@
     <br><br><br>
 
 <!-- YouAi.ai tarot app -->
-<script type="text/javascript">
-  window.MindStudioSettings = {
-    publicToken: "pkd2479d45fb3d01d5ab68176bfd9e5e81",
-    appId: "c5e806a4-dd41-4942-a802-eb208b982a11"
-  };
-</script>
-<script src="https://api.youai.ai/v1/embed.js"></script>
 <iframe id="mindstudio-frame" style="width:900px;height:600px;border:1px solid rgba(0,0,0,0.1);border-radius:8px;outline:none;" title="AI Embed" frameborder="0"></iframe>
 
 <br><br><br><i class="w3-text-black">...</i><br><br><br><br> <!-- to not be hidden by the footer -->
@@ -317,6 +310,14 @@ function onClick(element) {
     navigator.clipboard.writeText(textarea.value);
   });
 </script>
+
+<script type="text/javascript">
+  window.MindStudioSettings = {
+    publicToken: "pkd2479d45fb3d01d5ab68176bfd9e5e81",
+    appId: "c5e806a4-dd41-4942-a802-eb208b982a11"
+  };
+</script>
+<script src="https://api.youai.ai/v1/embed.js"></script>
 
 </body>
 </html>

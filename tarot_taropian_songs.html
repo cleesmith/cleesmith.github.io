@@ -352,10 +352,10 @@ function onClick(element) {
   // of the page:
   let preventScroll = true;
   window.onload = function() {
-    // prevent any scrolling for 2 seconds after the page loads
+    // prevent any scrolling for x seconds after the page loads
     setTimeout(() => {
       preventScroll = false;
-    }, 2000);
+    }, 3000);
   };
   window.addEventListener('scroll', function() {
     if (preventScroll) {
@@ -363,6 +363,7 @@ function onClick(element) {
     }
   });
 
+/*
 document.addEventListener('DOMContentLoaded', function() {
   const iframe = document.getElementById('mindstudio-frame');
 
@@ -381,6 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
     insertTextButton.addEventListener('click', insertText);
   });
 });
+*/
 </script>
 
 

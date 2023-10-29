@@ -92,29 +92,30 @@ var dealCards = function() {
 	document.getElementById('spreadCards').value = 'Please use the proper RWS tarot card number and name in your reading, and I have the following cards for a Tarot Horseshoe spread: ';
 	// 7 card spread
 	spread = randomUnique(78, 7); // includes 0 to 78 = verified!
-	i = 0;
-	for (i; i <= 6; i++) {
-		spreadPosition = "card" + (i+1);
+	var iCard = 0;
+	for (iCard; iCard<= 6; iCard++) {
+		spreadPosition = "card" + (iCard+1);
 		// setup "drawn/pulled card" image
 		var img = document.getElementById(spreadPosition);
-		// spread[i] is a number = 0 to 77 from an array of 7 random numbers including 0-78, and 
+		// spread[iCard] is a number = 0 to 77 from an array of 7 random numbers including 0-78, and 
 		// appending a ".jpg#?"" to the end of a URL makes the value available as a parameter
-		img.src = ("images/taropian_songs/" + cards[spread[i]] + ".jpg#" + spread[i]);
+		// console.log("images/taropian_songs/" + cards[spread[iCard]] + ".jpg#" + spread[iCard]);
+		img.src = ("images/taropian_songs/" + cards[spread[iCard]] + ".jpg#" + spread[iCard]);
 		
 		// setup card title
-		titlePos = "title" + (i+1);
+		titlePos = "title" + (iCard+1);
 		var cardtitle = document.getElementById(titlePos);
-		cleanTitle = cards[spread[i]].replace("_tiff", "");
+		cleanTitle = cards[spread[iCard]].replace("_tiff", "");
 		cardtitle.innerHTML = cleanTitle.replaceAll("_", " ");
-		if (i === 0) {
+		if (iCard=== 0) {
 			document.getElementById('spreadCards').value += cardtitle.innerHTML;
 		} else {
 			document.getElementById('spreadCards').value += ', ' + cardtitle.innerHTML;
 		};
 		// hide/remember card number for cards array
-		cardNumPos = "cardNum" + (i+1);
+		cardNumPos = "cardNum" + (iCard+1);
 		var cardnum = document.getElementById(cardNumPos);
-		cardnum.innerHTML = spread[i];
+		cardnum.innerHTML = spread[iCard];
 	}
 };
 

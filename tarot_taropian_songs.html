@@ -165,8 +165,7 @@
   </button>
 </div>
 -->
-<iframe id="mindstudio-frame" style="width:600px;height:600px;border:1px solid rgba(0,0,0,0.1);border-radius:8px;outline:none;color:white;background-color:black;" title="YouAi Embed" frameborder="0"></iframe>
-
+<iframe id="mindstudio-frame" style="width:900px;height:600px;border:1px solid rgba(0,0,0,0.1);border-radius:8px;outline:none;" title="YouAi Embed" frameborder="0"></iframe>
 
 <br><br><br><i class="w3-text-black">...</i><br><br><br><br> <!-- to not be hidden by the footer -->
 </div>
@@ -327,7 +326,7 @@ function onClick(element) {
   });
 </script>
 
-<!-- YouAi = broke page!
+<!-- YouAi = broke page:
 <script type="text/javascript">
   window.MindStudioSettings = {
     publicToken: "pkd2479d45fb3d01d5ab68176bfd9e5e81",
@@ -340,13 +339,36 @@ function onClick(element) {
   window.addEventListener('load', () => {
     window.MindStudioSettings = {
       publicToken: "pkd2479d45fb3d01d5ab68176bfd9e5e81",
-      appId: "c5e806a4-dd41-4942-a802-eb208b982a11"
+      appId: "c5e806a4-dd41-4942-a802-eb208b982a11",
+      // debugging: true, = not so helpful, only at load time
+      options: {
+        // control whether the text input automatically focuses
+        autoFocus: false,
+
+        // use launch variables to set dynamic variables that are available inside
+        // your app at launch time. For example, if your site already knows the
+        // user's name, you could set a variable here called "userName" and then
+        // use it inside your app. Access these variables in youur preamble or
+        // automations with the syntax {{$launchVariables->myVariable}}
+        //
+        // Note that these variables must be set BEFORE your app loads or they
+        // will not be available.
+        launchVariables: {
+          myVariable: "Slip the Trap"
+        }
+      }
     };
     const script = document.createElement('script');
     script.src = 'https://api.youai.ai/v1/embed.js';
     document.body.appendChild(script);
   });
 
+  /*
+     cls: no longer needed, as:
+           options: {
+              // control whether the text input automatically focuses
+              autoFocus: false,
+          ... fixes the scrolling issue
   // the above code + the iframe causes this page to auto-scroll
   // down to the iframe, so let's force a scroll back to the top 
   // of the page:
@@ -362,6 +384,7 @@ function onClick(element) {
       window.scrollTo(0, 0);
     }
   });
+  */
 
 /*
 document.addEventListener('DOMContentLoaded', function() {
@@ -388,3 +411,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+<script type="text/javascript">
+  window.MindStudioSettings = {
+    publicToken: "pkd2479d45fb3d01d5ab68176bfd9e5e81",
+    appId: "c5e806a4-dd41-4942-a802-eb208b982a11",
+
+    // If your site/app has its own user IDs, replace this with the ID of the
+    // current user. Otherwise, delete this line.
+    userId: "YOUR_USER_ID",
+
+    // Mount the app on an iframe with a custom ID
+    targetId: "mindstudio-frame",
+
+    // Log additional debugging information to the console. Disable this for
+    // production.
+    debugging: true,
+
+    options: {
+      // Control whether the text input automatically focuses
+      autoFocus: false,
+
+      // Use launch variables to set dynamic variables that are available inside
+      // your app at launch time. For example, if your site already knows the
+      // user's name, you could set a variable here called "userName" and then
+      // use it inside your app. Access these variables in youur preamble or
+      // automations with the syntax {{$launchVariables->myVariable}}
+      //
+      // Note that these variables must be set BEFORE your app loads or they
+      // will not be available.
+      launchVariables: {
+        myVariable: "Slip the Trap"
+      }
+    }
+  };
+</script>

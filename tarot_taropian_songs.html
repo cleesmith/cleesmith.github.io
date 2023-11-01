@@ -148,25 +148,6 @@
   </div>
     <br><br><br>
 
-<!-- YouAi.ai tarot app 
-<div class="SendMessage__Container-sc-1ieb5c3-0 cOiLga">
-  <textarea placeholder="Write something..." class="SendMessage__MessageInput-sc-1ieb5c3-1 kNcAPu custom-scrollbar" style="height: 53px !important;"></textarea>
-  <button class="SendMessage__SendButton-sc-1ieb5c3-2 dVLZrE">
-    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SendIcon">
-      <path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"></path>
-    </svg>
-    <div class="SendMessage__SendButtonLoadingOverlay-sc-1ieb5c3-3 cOfKwP">
-      <div size="16" class="LoadingSpinner__Container-sc-1fgu2wt-0 dDWezS">
-        <svg viewBox="25 25 50 50" xmlns="http://www.w3.org/2000/svg">
-          <circle fill="none" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" cx="50" cy="50" r="20"></circle>
-        </svg>
-      </div>
-    </div>
-  </button>
-</div>
--->
-<iframe id="mindstudio-frame" style="width:780px;height:600px;border:1px solid rgba(0,0,0,0.1);border-radius:8px;outline:none;" title="YouAi Embed" frameborder="0"></iframe>
-
 <br><br><br><i class="w3-text-black">...</i><br><br><br><br> <!-- to not be hidden by the footer -->
 </div>
 
@@ -324,83 +305,6 @@ function onClick(element) {
     var textarea = document.getElementById('spreadCards');
     navigator.clipboard.writeText(textarea.value);
   });
-</script>
-
-<script type="text/javascript">
-  // if window is big enough, allow YouAi embed:
-  if (window.innerWidth > 800) {
-    // YouAi embed stuff (see iframe earlier):
-    window.addEventListener('load', () => {
-      window.MindStudioSettings = {
-        publicToken: "pkd2479d45fb3d01d5ab68176bfd9e5e81",
-        appId: "c5e806a4-dd41-4942-a802-eb208b982a11",
-        // debugging: true, = not so helpful, only a load time thing?
-        options: {
-          // control whether the text input automatically focuses
-          autoFocus: false,
-
-          // use launch variables to set dynamic variables that are available inside
-          // your app at launch time. For example, if your site already knows the
-          // user's name, you could set a variable here called "userName" and then
-          // use it inside your app. Access these variables in youur preamble or
-          // automations with the syntax {{$launchVariables->myVariable}}
-          //
-          // Note that these variables must be set BEFORE your app loads or they
-          // will not be available.
-          launchVariables: {
-            myVariable: "Slip the Trap"
-          }
-        }
-      };
-      const script = document.createElement('script');
-      script.src = 'https://api.youai.ai/v1/embed.js';
-      document.body.appendChild(script);
-    });
-  }
-
-  /*
-     cls: no longer needed, as:
-           options: {
-              // control whether the text input automatically focuses
-              autoFocus: false,
-          ... fixes the scrolling issue
-  // the above code + the iframe causes this page to auto-scroll
-  // down to the iframe, so let's force a scroll back to the top 
-  // of the page:
-  let preventScroll = true;
-  window.onload = function() {
-    // prevent any scrolling for x seconds after the page loads
-    setTimeout(() => {
-      preventScroll = false;
-    }, 3000);
-  };
-  window.addEventListener('scroll', function() {
-    if (preventScroll) {
-      window.scrollTo(0, 0);
-    }
-  });
-  */
-
-/*
-document.addEventListener('DOMContentLoaded', function() {
-  const iframe = document.getElementById('mindstudio-frame');
-
-  iframe.addEventListener('load', function() {
-    const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-    const textarea = innerDoc.querySelector('.SendMessage__MessageInput-sc-1ieb5c3-1');
-
-    // Assuming you have an "Insert Text" button in your main document
-    const insertTextButton = document.getElementById('copyButton');
-  
-    const insertText = () => {
-      const textToInsert = 'This is the text I want to insert.';
-      textarea.value = textToInsert;
-    };
-  
-    insertTextButton.addEventListener('click', insertText);
-  });
-});
-*/
 </script>
 
 </body>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI Example in HTML/JavaScript</title>
+    <style>
+        #streamOutput {
+            white-space: pre-wrap;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>OpenAI API Example</h1>
+    <button onclick="listModels()">List Models</button>
+    <button onclick="retrieveModel()">Retrieve Model Information</button>
+    <br>
+    <button onclick="chatCompletion()">Get Chat Completion</button>
+    <button onclick="streamChatCompletion()">Stream Chat Completion</button>
+    <div id="streamOutput"></div>
+
+    <script>
+        const baseURL = 'http://localhost:11434/v1/';
+        const apiKey = 'ollama';  // required but not actually used
+
+        // Existing functions...
+        async function chatCompletion() {
+            const requestBody = {
+                messages: [{ role: 'user', content: 'list planets' }],
+                model: 'llama3.2:1b'
+            };
+            try {
+                const response = await fetch(`${baseURL}chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                const data = await response.json();
+                console.log('Chat Completion:', data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function streamChatCompletion() {
+            // Clear previous output
+            const outputDiv = document.getElementById('streamOutput');
+            outputDiv.textContent = '';
+
+            const requestBody = {
+                messages: [{ role: 'user', content: 'Explain the solar system in 5 sentences' }],
+                model: 'llama3.2:1b',
+                stream: true  // Important: set to true for streaming
+            };
+
+            try {
+                const response = await fetch(`${baseURL}chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                // Check if the response is okay
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Create a reader to handle the streaming response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+
+                    if (done) {
+                        break;
+                    }
+
+                    // Decode the chunk
+                    const chunk = decoder.decode(value);
+
+                    // Split the chunk into individual lines
+                    const lines = chunk.split('\n');
+
+                    // Process each line
+                    lines.forEach(line => {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                // Remove 'data: ' prefix and parse JSON
+                                const jsonStr = line.slice(6).trim();
+                                if (jsonStr && jsonStr !== '[DONE]') {
+                                    const parsedData = JSON.parse(jsonStr);
+                                    
+                                    // Check if the parsed data has a content field
+                                    if (parsedData.choices && 
+                                        parsedData.choices[0].delta && 
+                                        parsedData.choices[0].delta.content) {
+                                        // Append the streamed content to the output div
+                                        outputDiv.textContent += parsedData.choices[0].delta.content;
+                                    }
+                                }
+                            } catch (parseError) {
+                                console.error('Error parsing stream data:', parseError);
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Streaming Error:', error);
+                outputDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Existing model retrieval and list functions...
+        async function retrieveModel() {
+            try {
+                const response = await fetch(`${baseURL}models/llama3.2:1b`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+                const data = await response.json();
+                console.log('Model Information:', data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function listModels() {
+            try {
+                const response = await fetch(`${baseURL}models`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+                const data = await response.json();
+                console.log('Model List:', data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

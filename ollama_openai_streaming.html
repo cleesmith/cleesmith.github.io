@@ -19,6 +19,8 @@
     <button onclick="listModels()">List Models</button>
     <button onclick="retrieveModel()">Retrieve Model Information</button>
     <br>
+    <textarea id="chatPrompt" rows="4" cols="50" placeholder="Enter your chat prompt here..."></textarea>
+    <br>
     <button onclick="chatCompletion()">Get Chat Completion</button>
     <button onclick="streamChatCompletion()">Stream Chat Completion</button>
     <div id="streamOutput"></div>
@@ -27,10 +29,10 @@
         const baseURL = 'http://localhost:11434/v1/';
         const apiKey = 'ollama';  // required but not actually used
 
-        // Existing functions...
         async function chatCompletion() {
+            const prompt = document.getElementById('chatPrompt').value;
             const requestBody = {
-                messages: [{ role: 'user', content: 'list planets' }],
+                messages: [{ role: 'user', content: prompt }],
                 model: 'llama3.2:1b'
             };
             try {
@@ -50,14 +52,14 @@
         }
 
         async function streamChatCompletion() {
-            // Clear previous output
+            const prompt = document.getElementById('chatPrompt').value;
             const outputDiv = document.getElementById('streamOutput');
             outputDiv.textContent = '';
 
             const requestBody = {
-                messages: [{ role: 'user', content: 'Explain the solar system in 5 sentences' }],
+                messages: [{ role: 'user', content: prompt }],
                 model: 'llama3.2:1b',
-                stream: true  // Important: set to true for streaming
+                stream: true
             };
 
             try {
@@ -70,12 +72,11 @@
                     body: JSON.stringify(requestBody)
                 });
 
-                // Check if the response is okay
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                // Create a reader to handle the streaming response
+                // create a reader to handle the streaming response
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
 
@@ -85,23 +86,14 @@
                     if (done) {
                         break;
                     }
-
-                    // Decode the chunk
                     const chunk = decoder.decode(value);
-
-                    // Split the chunk into individual lines
                     const lines = chunk.split('\n');
-
-                    // Process each line
                     lines.forEach(line => {
                         if (line.startsWith('data: ')) {
                             try {
-                                // Remove 'data: ' prefix and parse JSON
                                 const jsonStr = line.slice(6).trim();
                                 if (jsonStr && jsonStr !== '[DONE]') {
                                     const parsedData = JSON.parse(jsonStr);
-                                    
-                                    // Check if the parsed data has a content field
                                     if (parsedData.choices && 
                                         parsedData.choices[0].delta && 
                                         parsedData.choices[0].delta.content) {
@@ -121,7 +113,6 @@
             }
         }
 
-        // Existing model retrieval and list functions...
         async function retrieveModel() {
             try {
                 const response = await fetch(`${baseURL}models/llama3.2:1b`, {

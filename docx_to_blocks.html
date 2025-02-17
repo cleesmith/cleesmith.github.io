@@ -106,6 +106,15 @@
       align-items: center;
       margin-top: 10px;
     }
+    /* A small message style if nothing is found */
+    .emptyMessage {
+      font-style: italic;
+      margin-top: 20px;
+      color: #888;
+    }
+    body.dark-mode .emptyMessage {
+      color: #ccc;
+    }
   </style>
 </head>
 <body class="dark-mode">
@@ -121,14 +130,10 @@
   <!-- Include Mammoth.js -->
   <script src="js/mammoth.browser.min.js"></script>
   <script>
-    // If we encounter these headings, we skip everything after them.
-    const STOP_TITLES = ["about the author", "website"];
-
     // Toggle dark/light mode using a simple symbol button.
     document.getElementById('darkModeToggle').addEventListener('click', function() {
       document.body.classList.toggle('dark-mode');
-      // If dark mode is active, show ☀️ (indicating switch to light mode); otherwise, show 🌑.
-      this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌑';
+      this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
     
     document.getElementById("docxInput").addEventListener("change", function(event) {
@@ -136,59 +141,42 @@
       if (!file) return;
       
       const reader = new FileReader();
-      reader.onload = function(event) {
-        const arrayBuffer = event.target.result;
+      reader.onload = function(e) {
+        const arrayBuffer = e.target.result;
         mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
           .then(function(result) {
-            // Parse the generated HTML.
+            // Parse the generated HTML
             const parser = new DOMParser();
             const doc = parser.parseFromString(result.value, "text/html");
-            // Select paragraphs and heading elements.
+            // Select paragraphs and heading elements
             const blocks = doc.querySelectorAll("p, h1, h2, h3, h4, h5, h6");
             
             const resultsDiv = document.getElementById("docxResults");
             resultsDiv.innerHTML = "";  // Clear previous results
 
-            let ignoreFrontMatter = true; // Skip everything until we find first <h1>
-            let ignoreRest = false;       // Once we see a "stop" heading, skip all subsequent blocks
+            // If no blocks found, show a small message
+            if (blocks.length === 0) {
+              const emptyMsg = document.createElement("div");
+              emptyMsg.className = "emptyMessage";
+              emptyMsg.textContent = "No text blocks found in the .docx file.";
+              resultsDiv.appendChild(emptyMsg);
+              return;
+            }
 
             blocks.forEach((block, index) => {
-              if (ignoreRest) return; // skip remaining blocks
-
-              // Determine tag name, defaulting to "p"
               const textRaw = block.textContent.trim();
               const tagName = block.tagName ? block.tagName.toLowerCase() : "p";
-              const textLower = textRaw.toLowerCase();
-
-              // If we haven't encountered the first <h1> yet, check if this block is <h1>
-              if (ignoreFrontMatter) {
-                if (tagName === "h1") {
-                  ignoreFrontMatter = false; // Found the first <h1>, start processing blocks
-                } else {
-                  // Skip this block
-                  return;
-                }
-              }
-
-              // If the block is a heading that starts with a "stop" title, skip subsequent blocks
-              if (
-                tagName.startsWith('h') &&
-                STOP_TITLES.some(title => textLower.startsWith(title))
-              ) {
-                ignoreRest = true;
-                return;
-              }
-
-              // Create a container for each block.
+              
+              // Create a container for each block
               const container = document.createElement("div");
               container.className = "docxBlock";
               
-              // Identify "chapter" headings
+              // Identify "chapter" headings (optional)
               if (tagName.startsWith('h') || /^chapter\s+\d+/i.test(textRaw)) {
                 container.classList.add("chapter");
               }
               
-              // Create a header with the block number, plus the tag type.
+              // Create a header with the block number + tag type
               const headerDiv = document.createElement("div");
               headerDiv.className = "docxHeader";
               headerDiv.textContent = `Block ${index + 1} <${tagName}>`;
@@ -204,20 +192,28 @@
               
               headerDiv.appendChild(copyButton);
               
-              // Create a content container to hold the block's HTML.
+              // Create a content container to hold the block's HTML
               const contentDiv = document.createElement("div");
               contentDiv.innerHTML = block.outerHTML;
               
-              // Assemble the container.
+              // Assemble the container
               container.appendChild(headerDiv);
               container.appendChild(contentDiv);
               
-              // Add the container to the results.
+              // Add the container to the results
               resultsDiv.appendChild(container);
             });
           })
           .catch(function(error) {
             console.error("Error converting DOCX:", error);
+
+            // If an error occurs, we can show a message
+            const resultsDiv = document.getElementById("docxResults");
+            resultsDiv.innerHTML = "";
+            const errorMsg = document.createElement("div");
+            errorMsg.className = "emptyMessage";
+            errorMsg.textContent = "Failed to parse the .docx file. Check the console for details.";
+            resultsDiv.appendChild(errorMsg);
           });
       };
       reader.readAsArrayBuffer(file);

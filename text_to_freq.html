@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Word Frequency Counter</title>
+  <style>
+    :root {
+      --button-bg-color: #007bff;
+      --button-text-color: #ffffff;
+    }
+    /* Base (Light Mode) styles */
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #ffffff;
+      color: #000000;
+      margin: 0;
+    }
+    /* Dark Mode overrides */
+    body.dark-mode {
+      background: #121212;
+      color: #e0e0e0;
+    }
+    /* Top row container styling */
+    .topRow {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    /* Dark/light toggle button */
+    #darkModeToggle {
+      font-size: 20px;
+      background-color: transparent;
+      color: inherit;
+      border: 1px solid currentColor;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    /* Styling for the text area */
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    body.dark-mode textarea {
+      background: #2e2e2e;
+      color: #e0e0e0;
+      border: 1px solid #444;
+    }
+    /* Custom button style */
+    .custom-button {
+      padding: 10px 15px;
+      background-color: var(--button-bg-color);
+      color: var(--button-text-color);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 14px;
+    }
+    .custom-button:hover {
+      background-color: #0056b3;
+    }
+    /* Results container */
+    #results {
+      margin-top: 20px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      font-family: monospace;
+      background: #f7f7f7;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    body.dark-mode #results {
+      background: #2e2e2e;
+      border: 1px solid #444;
+    }
+    /* Label style */
+    #wordFreqLabel {
+      font-size: 14px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <!-- Top row with controls -->
+  <div class="topRow">
+    <button id="darkModeToggle">☀️</button>
+    <span id="wordFreqLabel">Text to Word Frequency → </span>
+    <button id="frequencyBtn" class="custom-button">freq out</button>
+    <button id="sortAZBtn" class="custom-button">sort a‑z</button>
+    <button id="sortCountBtn" class="custom-button">sort count</button>
+    <button id="copyBtn" class="custom-button">copy</button>
+    <button id="clearBtn" class="custom-button">clear</button>
+  </div>
+  
+  <!-- Text input -->
+  <textarea id="textInput" placeholder="Enter text here to count the frequency of each word . . ."></textarea>
+  
+  <!-- Results will appear here -->
+  <div id="results"></div>
+  
+  <script>
+    // var output_by_word = [];
+
+    function countWords(str) {
+      if (str.length === 0) {
+        return {};
+      }
+      var output = {};
+
+      console.log('str=', str.length);
+      // replace newlines (unix/mac/windows) with space:
+      const noNewlines = str.replace(/(\r\n|\r|\n)/g, " ");
+      console.log('noNewlines=', noNewlines.length);
+      var strArr = noNewlines.split(" ");
+      console.log('strArr=', strArr.length);
+
+      // loop through each token/word after splitting
+      for (var i = 0; i < strArr.length; i++) {
+        // remove punctuation from the word and convert to lowercase
+        var word = strArr[i].replace(/[!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~]/g, "").toLowerCase();
+        // skip empty tokens (which can occur if there are extra spaces)
+        if (word === "") continue;
+
+        if (output[word] === undefined) {
+          output[word] = 1;
+        } else {
+          output[word] += 1;
+        }
+        // output_by_word += ` ${word}=${output[word]} `;
+      }
+
+      // return output_by_word;
+      return output;
+    }
+
+    
+    let currentFrequency = {};
+
+    // function to render frequency results in alphabetical or count order.
+    function renderResults(order) {
+      if (!currentFrequency || Object.keys(currentFrequency).length === 0) {
+        document.getElementById('results').textContent = "No frequency data available.";
+        return;
+      }
+
+      let entries = Object.entries(currentFrequency);
+      if (order === 'alphabetical') {
+        entries.sort((a, b) => a[0].localeCompare(b[0]));
+      } else if (order === 'count') {
+        entries.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+      }
+      const uniqueCount = entries.length;
+      const header = `Unique words: ${uniqueCount}\n\n`;
+
+      const outputLines = entries.map(([word, count]) => `${word} ${count}`);
+
+      // let outputLines = [];
+      // for (let word in currentFrequency) {
+      //   if (currentFrequency.hasOwnProperty(word)) {
+      //     outputLines.push(word + " " + currentFrequency[word]);
+      //   }
+      // }
+      // let words = Object.keys(currentFrequency);
+      // words.sort((a, b) => currentFrequency[b] - currentFrequency[a]); // Sort words by count (highest first)
+      // for (let i = 0; i < words.length; i++) {
+      //   outputLines.push(words[i] + " " + currentFrequency[words[i]]);
+      // }
+
+      document.getElementById('results').textContent = header + outputLines.join("\n");
+      // document.getElementById('results').textContent = output_by_word;
+    }
+    
+    // Toggle dark/light mode.
+    document.getElementById('darkModeToggle').addEventListener('click', function() {
+      document.body.classList.toggle('dark-mode');
+      this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
+    
+    // Compute word frequency when "Freq" is clicked.
+    document.getElementById('frequencyBtn').addEventListener('click', function() {
+      // const text = document.getElementById('textInput').value;
+      const text = document.getElementById('textInput').value
+              .trim()
+              .replace(/[\r\n]+/g, " ") // replace newline sequences with a space
+              .replace(/\s+/g, " ");    // collapse multiple spaces into one
+
+      if (!text.trim()) {
+        alert("Please enter some text.");
+        return;
+      }
+      // *********************************
+      currentFrequency = countWords(text);
+      // *********************************
+      renderResults('alphabetical');
+    });
+    
+    // Sort a‑z button: render results alphabetically.
+    document.getElementById('sortAZBtn').addEventListener('click', function() {
+      if (!currentFrequency || Object.keys(currentFrequency).length === 0) {
+        alert("Please compute frequency first.");
+        return;
+      }
+      renderResults('alphabetical');
+    });
+    
+    // Sort count button: render results sorted by frequency (descending).
+    document.getElementById('sortCountBtn').addEventListener('click', function() {
+      if (!currentFrequency || Object.keys(currentFrequency).length === 0) {
+        alert("Please compute frequency first.");
+        return;
+      }
+      renderResults('count');
+    });
+    
+    // Copy the results to the clipboard.
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      const resultsText = document.getElementById('results').textContent;
+      if (!resultsText) {
+        alert("No results to copy.");
+        return;
+      }
+      navigator.clipboard.writeText(resultsText)
+        .then(() => alert("Results copied to clipboard!"))
+        .catch(() => alert("Failed to copy results."));
+    });
+    
+    // Clear the text area, results, and frequency data.
+    document.getElementById('clearBtn').addEventListener('click', function() {
+      document.getElementById('textInput').value = "";
+      document.getElementById('results').textContent = "";
+      currentFrequency = {};
+    });
+  </script>
+</body>
+</html>

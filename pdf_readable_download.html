@@ -102,6 +102,9 @@
   <!-- PDF.js library -->
   <script src="js/pdf.min.js"></script>
   <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "js/pdf.worker.min.js";
+  </script>
+  <script>
     // Toggle dark/light mode
     document.getElementById('darkModeToggle').addEventListener('click', function() {
       document.body.classList.toggle('dark-mode');
@@ -112,10 +115,16 @@
     const pdfTextDiv = document.getElementById("pdfText");
     const downloadButton = document.getElementById("downloadButton");
     let combinedText = "";
+
+    let pdfBaseName = "pdfToText";
   
     pdfInput.addEventListener("change", async (event) => {
       const file = event.target.files[0];
       if (!file) return;
+
+      // derive base name (remove .pdf extension)
+      // e.g. MyStory.pdf => MyStory
+      pdfBaseName = file.name.replace(/\.[^/.]+$/, "");
       
       // Read the file as an ArrayBuffer
       const arrayBuffer = await file.arrayBuffer();
@@ -147,7 +156,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "extracted_text.txt";
+      a.download = pdfBaseName + ".txt";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

@@ -93,13 +93,13 @@
   <div class="buttons">
     <button id="uploadButton">process text</button>
     <button id="vellumButton">vellum</button>
-    <button id="downloadDocxButton">download .docx</button>
+    <button id="downloadDocxButton">download docx</button>
     <button id="copyButton">copy</button>
     <button id="clearButton">clear</button>
     <button id="darkModeToggle">☀️</button>
   </div>
 
-  <!-- Changed the script source to a more reliable version -->
+  <!-- Using locally hosted script file -->
   <script src="js/index.js"></script>
 
   <script>
@@ -154,10 +154,9 @@
       });
     });
 
-    // Clear button: empty the textarea
+    // Clear button: reset everything by reloading the page
     document.getElementById('clearButton').addEventListener('click', function() {
-      document.getElementById('inputText').value = '';
-      focusTextarea();
+      window.location.reload();
     });
 
     // Dark mode toggle

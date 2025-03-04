@@ -138,8 +138,8 @@
       
       reader.readAsText(file);
     });
-
-    // Process the text file content
+    
+    // Extremely simple approach to find chapters
     function processTextFile(text) {
       // Reset chapters array
       chapters = [];
@@ -150,87 +150,56 @@
         contentText = text.split("=== END OUTLINE ===")[1].trim();
       }
       
-      // Split by chapter patterns
-      const chapterPattern = /Chapter \d+: .+?(?=Chapter \d+:|$)/gs;
-      const chapterMatches = [...contentText.matchAll(chapterPattern)];
+      // Simply divide the text whenever we see a "Chapter N:" or "Chapter N." pattern
+      // First, get all the positions where chapters start
+      const chapterMarkers = [];
       
-      if (chapterMatches && chapterMatches.length > 0) {
-        // Process each chapter
-        chapterMatches.forEach(match => {
-          const chapterText = match[0].trim();
-          const titlePattern = /Chapter (\d+): (.+?)(?:\r?\n|\r)/;
-          const titleMatch = chapterText.match(titlePattern);
-          
-          if (titleMatch) {
-            const chapterNumber = titleMatch[1];
-            const chapterTitle = titleMatch[2].trim();
-            // Content is everything after the title line
-            const content = chapterText.replace(titlePattern, '').trim();
-            
-            // Add to chapters array
-            chapters.push({
-              number: chapterNumber,
-              title: chapterTitle,
-              content: content
-            });
-          }
+      // This regex matches "Chapter" followed by a space, one or more digits, and then either a colon or period
+      const searchPattern = /Chapter \d+[:.]/g;
+      let match;
+      
+      while ((match = searchPattern.exec(contentText)) !== null) {
+        chapterMarkers.push({
+          position: match.index,
+          text: match[0]
         });
-      } else {
-        // If no chapter pattern is found, try to identify chapters another way
-        // For example, look for lines that start with "Chapter"
-        const lines = contentText.split(/\r?\n/);
-        let currentChapter = null;
-        let currentContent = [];
-        let chapterCount = 0;
-
-        lines.forEach(line => {
-          const chapterTitleMatch = line.match(/^Chapter (\d+):\s*(.+)$/);
-          
-          if (chapterTitleMatch) {
-            // Save the previous chapter if it exists
-            if (currentChapter) {
-              chapters.push({
-                number: currentChapter.number,
-                title: currentChapter.title,
-                content: currentContent.join('\n\n')
-              });
-            }
-            
-            // Start a new chapter
-            currentChapter = {
-              number: chapterTitleMatch[1],
-              title: chapterTitleMatch[2].trim()
-            };
-            currentContent = [];
-            chapterCount++;
-          } else if (currentChapter && line.trim() !== '') {
-            // Add non-empty lines to current chapter content
-            if (currentContent.length > 0 && line.trim() === '') {
-              // Add paragraph breaks
-              currentContent.push('');
-            } else {
-              currentContent.push(line.trim());
-            }
-          }
-        });
+      }
+      
+      // Now extract each chapter
+      for (let i = 0; i < chapterMarkers.length; i++) {
+        const startPos = chapterMarkers[i].position;
+        const endPos = (i < chapterMarkers.length - 1) ? chapterMarkers[i + 1].position : contentText.length;
         
-        // Add the last chapter
-        if (currentChapter) {
+        // Get the chapter text
+        const chapterText = contentText.substring(startPos, endPos).trim();
+        
+        // Extract the first line as the title
+        const firstLineEnd = chapterText.indexOf('\n');
+        const titleLine = firstLineEnd > -1 ? chapterText.substring(0, firstLineEnd).trim() : chapterText;
+        const content = firstLineEnd > -1 ? chapterText.substring(firstLineEnd).trim() : '';
+        
+        // Extract chapter number and title
+        const titleMatch = titleLine.match(/Chapter (\d+)[:.]\s*(.*)/);
+        if (titleMatch) {
+          const chapterNumber = titleMatch[1];
+          const chapterTitle = titleMatch[2].trim();
+          
+          // Add to chapters array
           chapters.push({
-            number: currentChapter.number,
-            title: currentChapter.title,
-            content: currentContent.join('\n\n')
+            number: chapterNumber,
+            title: chapterTitle,
+            content: content
           });
         }
-        
-        // If no chapters were found, create a single chapter with all content
-        if (chapterCount === 0) {
-          chapters.push({
-            number: "1",
-            title: txtBaseName,
-            content: contentText
-          });
-        }
+      }
+      
+      // If we didn't find any chapters, use the entire text as one chapter
+      if (chapters.length === 0) {
+        chapters.push({
+          number: "1",
+          title: txtBaseName,
+          content: contentText
+        });
       }
       
       // Display chapters and show download button

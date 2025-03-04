@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sophie's Story</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.light-mode {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        body.dark-mode {
+            background-color: #222;
+            color: #eee;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body.dark-mode header {
+            border-bottom-color: #555;
+        }
+        
+        h1 {
+            margin: 0;
+        }
+        
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        body.light-mode button {
+            background-color: #333;
+            color: #fff;
+        }
+        
+        body.dark-mode button {
+            background-color: #eee;
+            color: #333;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        h2 {
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body.dark-mode h2 {
+            border-bottom-color: #555;
+        }
+        
+        .outline {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        
+        body.dark-mode .outline {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .chapter {
+            margin-bottom: 40px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container">
+        <header>
+            <h1>Sophie's Story</h1>
+            <button id="mode-toggle">Dark Mode</button>
+        </header>
+        
+        <div class="outline">
+            <h2>OUTLINE: Notes from Sophie's Psychiatrist</h2>
+            
+            <h3>PART I: EARLY FOUNDATIONS</h3>
+            <ol>
+                <li>My earliest memory?</li>
+                <li>Did we ever get along?</li>
+                <li>Tell me about the Russian dolls</li>
+                <li>A memorable childhood experience I actually enjoyed?</li>
+                <li>When did you first try alcohol?</li>
+            </ol>
+            
+            <h3>PART II: FRACTURES AND FAULTLINES</h3>
+            <ol start="6">
+                <li>What was your parents' marriage like?</li>
+                <li>Do I know why I'm here?</li>
+                <li>I was ten when my parents divorced</li>
+                <li>I arrived in France with a suitcase and my mother</li>
+                <li>You want to return to the Paris years?</li>
+                <li>The trip to Nice was a Christmas gift</li>
+            </ol>
+            
+            <h3>PART III: THE NICE TURNING POINT</h3>
+            <ol start="12">
+                <li>Back to the trip?</li>
+                <li>What happened when you arrived in Nice?</li>
+                <li>Why did you call Raul that night?</li>
+                <li>Tell me about the woman who helped you</li>
+                <li>How did you get back to Paris?</li>
+            </ol>
+            
+            <h3>PART IV: DESCENT AND DISCOVERY</h3>
+            <ol start="17">
+                <li>In full disclosure...</li>
+                <li>Welcome to the club where up is down, down is up</li>
+                <li>What happened when your mother returned?</li>
+                <li>Tell me about the abandoned building</li>
+                <li>Then you ended up in court?</li>
+            </ol>
+            
+            <h3>PART V: THERAPY AND REVELATION</h3>
+            <ol start="22">
+                <li>Are our sessions confidential?</li>
+                <li>Let's go back to your childhood</li>
+                <li>Would you like to draw something today?</li>
+                <li>Did that story really happen?</li>
+                <li>How did the divorce affect you?</li>
+            </ol>
+            
+            <h3>PART VI: RECONSTRUCTION AND RESOLUTION</h3>
+            <ol start="27">
+                <li>Your grandmother has agreed to join us today</li>
+                <li>How do you feel about seeing your mother today?</li>
+                <li>Your father sent this letter</li>
+                <li>Where do you want to live, Sophie?</li>
+                <li>So how has the past year been?</li>
+            </ol>
+        </div>
+        
+        <div class="chapters">
+            <div class="chapter">
+                <h2>Chapter 1: My earliest memory?</h2>
+                <p>My earliest memory? I was in my father's arms. I suspect I was around three. We were in my parent's bedroom. They were going out because she was dressed in a blue fluttery thing and smelled lemony. My mother was on the floor screaming, railing about not finding a shoe. She tended to be hysterical. After all, if one shoe was lost, the other had to be pretty close. I watched her crouch and crawl along the floor.</p>
+                <p>Beneath the bed was a shoe, but not the shoe she was looking for. She threw it into the air; it hit a lamp and crashed to the floor. The lightbulb popped, and shards of glass flew everywhere. My father had to call the cleaning lady, who spent the rest of the day washing and vacuuming every surface. My mother had been a ballet dancer. Just the thought of the slimmest slice into her "livelihood" would mean "unbearable pain." By the way, her last performance was before I was born. I guess when people have unmaterialized, unrealized, and stupid dreams, it gives them carte blanche to speak endlessly of regrets and lost opportunities. Whine, Whine. She could have become a contender, but then she got pregnant with me. What was I supposed to do? Force birth control pills down her throat?</p>
+                <p>Anyway, they never went out, and later that evening, I found the shoe. It was remarkably buried in the bathroom trash basket. I was very proud of myself and took it to her as she was lying on the couch—excuse me, the divan—after a couple of whiskeys. Do you see where this is going? No, of course not. No one ever did. She told me it was the original shoe and to put it back in the bathroom, which I did. Years later, I realized she must have known where I found the shoe because she told me where to return it: in the bathroom basket. I had never told her where I had found it. I simply brought it to her. Of course, it could have been the first shoe I had seen, but why would she have put it in the bathroom bin under the sink beneath a pile of tissues? The point was my mother was an alcoholic, and I lived in a household where stories made little sense, and everyone lied. I learned from the best.</p>
+                <p>Where was my father? Do you mean during the incident? Good question. Let me think... He held me for a while, then put me down. While the cleaning lady was there, he hovered, and I went back to playing with my dolls. I enjoyed pretending they had broken arms or legs. That's why I had gone into the bathroom in the first place. I could often find used tissues from my mother's makeup to wrap up their legs or arms.</p>
+                <p>Huh? No, I wasn't being mean. I was showing how brave the little girls were. They jumped off railings, dressers, and even the second-floor window. They were preteen superheroes. Upon landing, they broke a body part but didn't cry. They were heroic. I bandaged them up, and the other dolls treated them with respect and awe. In case you were wondering, I never dismembered any of my dolls, sliced them, or put them in the microwave. I like bandaging them up with tissue and tape. When they were better, I took the bandages off, and they fully recovered. Well, until the next time. Looking back on it, I think I was a fairly sensitive child.</p>
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 2: Did we ever get along?</h2>
+                <p>Did we ever get along? I guess. She enjoyed picking out my clothes when I started school. I certainly had her attention back then. Whatever she bought, I wore. I sensed that if I complied with her fashion sense, she'd leave me alone. She took a ton of pictures of me during my kindergarten year. And to be honest, I looked pretty darn good: leggings, tunics, prairie dresses, farmers' overalls, cargo shorts, pleated skirts, cable sweaters, blazers, headbands, bracelets, sunglasses, T-shirts, Mary Janes, work, rain, and cowboy boots and a ton of multi-colored, multi-patterned tights and socks—all mixed and matched. I particularly remember the cowboy boots. I had to make sure my socks didn't go above the boot line. She wanted me to have only my bare legs or tights above the boot. Otherwise, she said it looked "too busy." It must have made an impression because I never wore cowboy boots after that year.</p>
+                <p>The school was a couple of blocks away. She told me to hold her left hand, never her right. Her right hand was for waving to people on the sidewalk or in cars. She must have been popular in the neighborhood because cars would beep, and people, most of the male variety, would call out, "Hey, Mrs. Jamison." She'd yell back, "Bonjour." I liked the walk to school because she seemed happy and smiled a lot. Far more than she ever did at home.</p>
+                <p>What else did she seem to like? Do you mean besides drinking? Shopping for hours and spending money, of course. Once, she bought me a set of those Russian Nesting dolls. The first few were cute. I mean, what's not to love about little fat ladies hidden inside each other? But before long, we had about twenty sets in a curio cabinet, and it got weird.</p>
+                <p>One night, after a few too many, she put them on the kitchen table and called me from my bedroom. I was still pretty young, maybe six.</p>
+                <p>"Sophie, I need to show you something."</p>
+                <p>She had three in a row, different colors, black, yellow, and pink.</p>
+                <p>"Which one do you like?"</p>
+                <p>I picked the black one because I thought that wasn't one of her favorites. She pulled it from the line and placed it in front of me. Then she talked out loud.</p>
+                <p>"Okay, I have to choose. Yellow or pink? I like yellow because it's sunny and bright, but I don't feel sunny or bright. The pink is pretty but a little too girly."</p>
+                <p>I didn't know what to do. Offer her mine or keep quiet? Either could have consequences. Racine was unpredictable.</p>
+                <p>"Sophie, what do you think?"</p>
+                <p>Suddenly I was in the bull's eye. I thought fast. "You like bananas more than strawberries."</p>
+                <p>She thought for a moment. "That's true. But there's more to it than just the colors, right?"</p>
+                <p>I must have shrugged, trying to grasp what she was saying or implying or rambling on about. I was utterly lost.</p>
+                <p>"Look into their eyes." She picked up the yellow one. "What do these eyes say to you?"</p>
+                <p>At first, all the eyes looked the same as the others, but when I compared the yellow and pink dolls, the differences were noticeable. The pink one had more eyelashes, and the yellow only had a couple. It made her look sad, forgotten. I showed my mother what I meant, and she agreed with me. She then picked the yellow one and put it in front of her.</p>
+                <p>"Sophie, these are hand-painted and rare. Probably over one hundred years old. It makes them very special, but what's most remarkable is that whoever painted them is with us in this very room."</p>
+                <p>Now here's the thing: when you're young and impressionable, this observation seems plausible. I looked at my black doll. Its lips were so red; they looked bloody. I remember pushing it away and saying I didn't like it.</p>
+                <p>"No! There's a lesson here. You picked that doll, and now you must learn from it." She shoved it in my face. "What is the doll saying to you?"</p>
+                <p>I started to cry. If this was a game, it was going badly. But she wouldn't give up and demanded to know what it said to me.</p>
+                <p>I was beside myself and yelled. "I'm a witch, and I'm evil."</p>
+                <p>She sat back in the chair. "Just as I thought."</p>
+                <p>And so went an unforgettable evening with mother.</p>
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 3: Tell me about the Russian dolls <small>(written by Claude 3.7 Sonnet with 31K thinking enabled)</small></h2>
+                <p>Tell me about the Russian dolls? Well, that's a strange place to start, but sure. My mother had this thing about shopping. Not just normal shopping, obsessive, compulsive, fill-the-void-with-stuff shopping. Everything had to be perfect: our clothes, the furniture, the artwork, even the damn hand soap. People always commented on how "put together" our house was, which made her beam. What they didn't see was the mountain of credit card debt that would sometimes reduce her to tears when my father was out of town.</p>
+                <p>The Russian dolls started innocently enough. We were at an antique market when I was about six. She spotted this set of nesting dolls, matryoshkas, she called them, and became completely entranced. They were hand-painted, the woman told her, from some remote village outside Moscow. The outermost doll was a plump woman with rosy cheeks wearing a red and gold scarf, her eyes slightly downcast as if she were hiding something. Inside her were six more dolls, each smaller but with subtle differences in their expressions.</p>
+                <p>"Sophie, look at the craftsmanship," she whispered, holding the largest doll close to my face. I remember the smell of dust and old wood. "Each one is an individual, but they belong together. A family inside a family."</p>
+                <p>My father rolled his eyes but paid the exorbitant price she'd already negotiated down somewhat. He knew better than to fight her when she got that look, the one where her eyes widened and her voice got higher, like she'd discovered the secret to happiness.</p>
+                <p>One set wasn't enough, of course. Within six months, we had five different sets. By the time I was seven, there were fifteen. Eventually, there was an entire curio cabinet in our living room devoted to these wooden families, staring out with their painted smiles and vacant eyes. Sometimes when I was alone, I'd open the glass doors and arrange them differently, mixing families together or standing them in rows like a wooden army.</p>
+                <p>My mother would periodically take them all out, dust them, and reorganize them. It was one of the few household tasks she did herself instead of leaving for our cleaning lady, Maria. She'd handle each doll with reverence, occasionally showing me a particularly interesting one. "Look at this one, Sophie. See how the artist painted tiny tears in her eyes? You can barely see them unless you know to look."</p>
+                <p>I never saw the tears she talked about, but I nodded anyway.</p>
+                <p>The drinking and the dolls seemed to go together. She'd pour herself a glass of something, usually whiskey, sometimes vodka, and sit in front of the cabinet, staring at her collection. Sometimes she'd talk to them. Sometimes to me. Sometimes to no one at all.</p>
+                <p>The night of the kitchen table incident happened when I was six and a half. It was past midnight, and I should have been asleep. I'd gotten up to get water and found her sitting at the kitchen table with three sets of dolls arranged in front of her. An empty whiskey glass sat nearby, and she was working on a second. The overhead light was off, but the small lamp above the stove cast everything in a yellow glow.</p>
+                <p>"Sophie," she said, not looking up. "Perfect timing. Come sit with me."</p>
+                <p>I knew better than to refuse. So I climbed into the chair across from her, my bare feet dangling above the floor. The house was quiet except for the hum of the refrigerator.</p>
+                <p>She had arranged three dolls in a row, black, yellow, and pink, just like I told you before. Each was the outermost doll of a different set. The black one was my least favorite. It had always unsettled me with its blood-red lips and eyes that seemed to follow you.</p>
+                <p>"Sophie, I need to show you something important," she said, her words slightly stretched, the way they always were after her second drink.</p>
+                <!-- Continued content for Chapter 3 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 4: A memorable childhood experience I actually enjoyed?</h2>
+                <p>What was a memorable childhood experience I enjoyed? This is the thing, I always had great hopes for myself, meaning I looked forward to doing things like skateboarding, swimming, and going on rides. But I hated them all. I was either piss poor at them or got scared. I don't like being scared. It's my Achilles heel and something I need to work on. But whenever I challenge myself and fail, the scary inside me gets more resistant and weightier, like some anvil wrapped around my waist.</p>
+                <!-- Continued content for Chapter 4 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 5: Do I know why I'm here?</h2>
+                <p>Do I know why I'm here? Sure, my mother sent me. Said I was drunk and out of control. Ironic that she's not sitting here beside me. What the heck has she been exposing me to all my life? Shouldn't it be understood I'm the duckling who imprinted, not the duck who led the way? Who's the crazy here? Besides, moving to France wasn't my idea. Neither was the divorce. The point is drinking is makes me happy. You got AA meetings here for twelve-year-olds? It may be a better fit. No offense.</p>
+                <!-- Continued content for Chapter 5 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 6: In full disclosure…</h2>
+                <p>In full disclosure and to figure out what really happened, my mother told me that you told her I was being uncooperative. First, I was under the impression our conversations were private. Second, is this true? Third, how am I being uncooperative?</p>
+                <!-- Continued content for Chapter 6 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 7: Welcome to the club where up is down, down is up</h2>
+                <p>Welcome to the club where up is down, down is up, and it's not Wonderland.</p>
+                <p>I once knew a guy, a father to a fellow student, who manufactured a world to his liking, which, to be honest, is not the worse thing. However, it became problematic when his world was on a collision course with mine…</p>
+                <!-- Continued content for Chapter 7 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 8: I was ten when my parents divorced</h2>
+                <p>I was ten when my parents divorced. It was great. The warm-up to the divorce was the problem. For the three previous years, there was a lot of drama. They both took lovers. That's what they called them, 'lovers.' We'd be sitting at the dinner table, and one would say. "Can you go to the teachers' conference on Thursday? And the other one would answer, "No, I'm meeting my lover." And the other would say, "Well, can't you go a little later? The conference starts at six." And an argument would ensue, not about being a lover or having a lover, but about lover time and how scheduling and rescheduling were problematic. Thinking back on it, I wonder if it was a paid service or a quid pro quo thing. However, since my mother didn't work, I suspect a lover's pool was aggregated from the marriage counselor's clients. The counselor had questionable ethics.</p>
+                <!-- Continued content for Chapter 8 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 9: I arrived in France with a suitcase and my mother</h2>
+                <p>I arrived in France with a suitcase and my mother. She enjoyed traveling light. The plan was to move in with her parents and slowly bring over valuables (Russian nesting dolls, Blahniks, Dali's promotional jewelry) as we, or she, or my father, traveled by plane for visits, holidays, legal affairs, and art openings. Did I mention my mother had a freelance job? She went to galleries, took videos, and submitted them to art dealers who had buyers on both sides of the Atlantic. With the internet, she did well in the emerging artist field, charging a 20% finder's fee.</p>
+                <!-- Continued content for Chapter 9 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 10: You want to return to the Paris years?</h2>
+                <p>You want to return to the Paris years? No prob. Let's see where did I leave off? Oh yes…</p>
+                <p>For the first year, living with my grandparents was exciting. Everything was new, even the air, its oxygen, and how it affected my body and mind. It felt like a deep cleanse, a realignment of sorts. You know when you're on vacation, walking down a strange street, and suddenly your mind gets refreshed, rebooted? Everything's brighter, cleaner, and you feel calm, mythic, and aligned as if you are on the edge of discovery. You've felt that, right? No? Hmm. You must only go to Cancun.</p>
+                <!-- Continued content for Chapter 10 -->
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 11: The trip to Nice was a Christmas gift</h2>
+                <p>The trip to Nice was a Christmas gift from both my grandparents; only Mamie had no intention of going. The holidays always wore her out, and her best present would be a quiet January to recuperate, do yoga, and have Pachelbel play 24-7. Papi hated Pachelbel. He referred to him as the Warhol of the 17th Century, whose compositions were insipidly simple and redundant. My grandparents took out their frustrations on each other, not by arguing but by expressing an extreme distaste for what the other one liked. For example, in retaliation to her husband's Pachelbel rant, Mamie would parry, lunge and call jazz the trailer trash output of heroin addicts. Of course, I had the sense to stay out of it and listen to my playlist of Ani DiFranco and Natalie Merchant with my AirPods.</p>
+                <p>
+Anyway, Papi and I spent a lot of time planning the trip. He wanted to meet up with some of his old friends. One lived in Milan, and the other in Barcelona. They knew each other in the sixties when they were in their radical phase. Nice was a good midway point for all of them and especially beautiful in the winter. I was looking forward to it since I got along well with the Parisian crew, who were a fun group, always talking about politics, books, and women. Gave me a peephole into how men thought, or at least French men of a certain age.
+
+When I was first brought around, they were a little standoffish. Maybe I was too. Soon, they started asking me questions, and we were having conversations. However, one guy, Raul, wasn’t won over so quickly.
+
+At one point, when Raul came late and had to sit next to me, he asked me what I liked to do. I said I enjoyed reading, drinking coffee, and smoking. He then asked if I played chess. I told him I learned from my father. He went behind the bar, got a chess set, and challenged me to a game. I wasn’t sure if the gesture was friendly or sinister. He was indifferent toward me.
+
+Before my first move, I asked him, “Do you want to lose, or do you want to win?”
+
+He got a kick out of that. “But of course, I want to win.”
+
+In twenty minutes, he had me in checkmate. His pompous ass won, but I could tell he realized his mistake by answering my question. The win wasn’t clean. Was it possible I let him win? Was it a one-off, a fluke?
+
+“Let’s play one more,” he said, adding, “This time I want to lose.”
+
+Fifteen minutes later, I had him in checkmate. I could tell by the bulge in the vein in his neck he was pissed. He had no intention of throwing the game by losing. His friends roared. He was a stubborn old guy.
+
+He then wanted to play best of three.
+
+I asked him again if he wanted to lose or win. He refused to answer and packed up the chess set.
+
+I was relieved he folded. He played well, and I didn’t want to push my luck. We talked about the game the following week. Chess is a game of skill. But a little psych can turn the tables. Once that question was asked and answered, the game, whether won or lost, became tainted. It was a psych, a head game.
+
+Anyway, Raul and I became great friends. He was more protective of me than my grandfather. He had my back, and that meant the world to me. Still does.
+</p>
+
+            </div>
+            
+            <div class="chapter">
+                <h2>Chapter 12: Back to the trip?</h2>
+                <p>Back to the trip? Yes.</p>
+                <p>Trips are exciting. There's the planning, packing, the sense of adventure, and excitement if you're open to it. Unfortunately, Papi wasn't, and it surprised me.</p>
+                <p>On the morning of the trip, the talkative man with a quick smile and wit struggled from the first minute he woke up.</p>
+                <p>
+We left on a Thursday morning, thus upsetting his usual routine, no waking up to then dawdle in the bathroom, no feeding the birds, no going online to read the latest news or check the weather. He had to pack, which put him on edge.
+
+When I walked into his room, he had laid out four days of clothing on the bed. It was the first time I realized how the man was not so much fastidious but conscious of his appearance and mask. I didn’t think that at the time. It came to me after four days of being with him.
+
+I’ve often asked myself if it would have been better not to have gone. Four days, a blink of an eye, set me on an alternative path, specifically here. Who would have thunk? It was inevitable. Trip or no trip. I just didn’t know it at the time.
+
+By early afternoon, we were cruising along the French countryside. He pulled out a small watercolor set, brush and suggested I do some paintings. “Look at the colors of the landscape and do wide swipes.” Sounded easy enough. Before then, I had shown no consistent interest in art. I opened my journal, found a clean page, and did as he suggested.
+
+The countryside rolled by. As I tried to capture one scene, another took over—large vistas of rolling hills passed into tight clumps of trees that sped by. I kept two pictures going, one at the top of the page, the other at the bottom.
+
+His first comment to me was to not mix the colors in the pans but to take dabs of paint and use the ridged underside of the tin as my palette. He also suggested I dry the watercolor nib between colors. I found an old tissue in my backpack and followed his directions. My first dismal page ended up puckered, soaked, and colorless.
+
+“This will never do,” he said. “Try again.”
+
+I felt a brief stab in my heart. He had never been so critical. I asked, “How can I get the color darker?” He opened the newspaper and didn’t answer. His reaction reminded me of my mother, his daughter, when I was left to my counsel. Point being I was used to it.
+
+I used less water on my next attempt and swirled the brush deep into the pan. The paint became thicker, and the color denser. I then laid the watercolor pen onto the page, squeezing the cartridge to dilute the paint as I pulled the brush across the paper. The result was an improvement, but hardly anything pleasant to look at or interesting to continue. I ripped the page out of my journal, cleaned the pen, and slapped the top shut on the watercolors.
+
+He looked over the newspaper. “You’re quitting?”
+
+I said yes, but I wanted to challenge him, to tell him if he wanted me to do what he asked, he needed to show me first.
+
+“Learning can be challenging,” he said. “It’s important not to give up unless you’ve committed to at least try, not dabble. Dabbling erodes your confidence.”
+
+“Why are you asking me to paint? I’ve never known you to paint.”
+
+“Of course, I’ve painted. For years. I’ll show you some of my work that’s put away.”
+
+“Why don’t you show me now? I’d like to see how you do it.”
+
+“Don’t be difficult,” he said and returned to the newspaper.
+
+My brief excursion into painting was a revelation. Say no when you don’t have the slightest interest and lead your own friggin’ life.
+
+We rode in silence the rest of the way.
+</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.body;
+            const toggle = document.getElementById('mode-toggle');
+            
+            toggle.addEventListener('click', function() {
+                if (body.classList.contains('light-mode')) {
+                    body.classList.remove('light-mode');
+                    body.classList.add('dark-mode');
+                    toggle.textContent = 'Light Mode';
+                } else {
+                    body.classList.remove('dark-mode');
+                    body.classList.add('light-mode');
+                    toggle.textContent = 'Dark Mode';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

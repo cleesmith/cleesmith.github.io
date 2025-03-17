@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 <url>
+  <loc>https://slipthetrap.com/writing/index.html</loc>
+  <priority>1.0</priority>
+  <lastmod>2025-03-17</lastmod>
+  <changefreq>daily</changefreq>
+</url>
+<url>
   <loc>https://slipthetrap.com/books.html</loc>
   <priority>1.0</priority>
-  <lastmod>2023-09-04</lastmod>
+  <lastmod>2025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/shop.html</loc>
   <priority>1.0</priority>
-  <lastmod>2023-09-04</lastmod>
+  <lastmod>2025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/about.html</loc>
-  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
+  <lastmod>025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/art.html</loc>
   <priority>1.0</priority>
-  <lastmod>2023-09-04</lastmod>
+  <lastmod>2025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/literature.html</loc>
   <priority>1.0</priority>
-  <lastmod>2023-09-04</lastmod>
-  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
+  <lastmod>2025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/technology.html</loc>
   <priority>1.0</priority>
-  <lastmod>2023-09-04</lastmod>
-  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
+  <lastmod>2025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/tarot_taropian_songs.html</loc>
   <priority>1.0</priority>
-  <lastmod>2023-09-04</lastmod>
-  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
+  <lastmod>2025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/TaropianSongsTarotBook.html</loc>
   <priority>1.0</priority>
-  <lastmod>2023-09-04</lastmod>
-  <lastmod>2023-02-14T12:00:00+00:00</lastmod>
+  <lastmod>2025-03-17</lastmod>
   <changefreq>daily</changefreq>
 </url>
 </urlset>

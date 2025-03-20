@@ -18,8 +18,67 @@
   <link href="fontawesome/css/all.min.css" rel="stylesheet">
   <!-- <script src="https://kit.fontawesome.com/51f425cc73.js" crossorigin="anonymous"></script> -->
   <style>
+    :root {
+      /* Color variables for both themes */
+      --background-light: #f5f5f5;
+      --text-light: #333333;
+      --grid-light: #f1f1f1;
+      --grid-alt-light: #ffffff;
+      
+      --background-dark: #2c3035;
+      --text-dark: #ffffff;
+      --grid-dark: #222;
+      --grid-alt-dark: #333;
+    }
+    
     body, h1, h2, h3, h4, h5, h6  {
       font-family: Helvetica, Arial, sans-serif;
+    }
+    
+    /* Dark mode is default */
+    body {
+      background-color: var(--background-dark);
+      color: var(--text-dark);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* Light mode class to be toggled */
+    body.light-mode {
+      background-color: var(--background-light);
+      color: var(--text-light);
+    }
+    
+    /* Override grid colors */
+    .w3-light-grey {
+      background-color: var(--grid-dark) !important;
+      transition: background-color 0.3s;
+    }
+    
+    body.light-mode .w3-light-grey {
+      background-color: var(--grid-light) !important;
+    }
+    
+    /* Ensure text in the second grid changes color */
+    .w3-light-grey h1, 
+    .w3-light-grey h5, 
+    .w3-light-grey p,
+    .w3-light-grey .w3-text-gray,
+    .w3-light-grey b {
+      color: var(--text-dark);
+      transition: color 0.3s;
+    }
+    
+    body.light-mode .w3-light-grey h1, 
+    body.light-mode .w3-light-grey h5, 
+    body.light-mode .w3-light-grey p,
+    body.light-mode .w3-light-grey .w3-text-gray,
+    body.light-mode .w3-light-grey b {
+      color: var(--text-light);
+    }
+    
+    /* Add transitions to other elements */
+    .w3-container, .w3-content, .w3-row-padding {
+      transition: background-color 0.3s, color 0.3s;
     }
 
     @keyframes jiggle {
@@ -43,7 +102,22 @@
     .attention-jiggle:hover {
       animation-play-state: running;
     }
+    
+    /* Dark mode toggle styling */
+    #darkModeToggle {
+      font-size: 16px;
+      background-color: transparent;
+      color: inherit;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+      margin-left: 10px;
+    }
 
+    #darkModeToggle:hover {
+      transform: scale(1.1);
+    }
   </style>
 </head>
 
@@ -80,40 +154,6 @@
       </p>
    </div>
 </div>
-
-<!-- Keys2Text Grid 
-<div class="w3-row-padding w3-light-grey w3-padding-16 w3-container">
-  <div class="w3-content">
-    <div class="w3-third w3-left w3-hover-sepia">
-      <a href="https://keys2text-chat.onrender.com/" target="_blank" style="text-decoration:none;" title="click to use Keys2Text">
-        <i class="fa-solid fa-robot w3-text-green" style="font-size:100px;"></i>
-        <i class="fa-solid fa-hat-wizard w3-text-blue" style="font-size:80px;"></i>
-        <div class="w3-text-gray w3-padding">
-          <i class="fa-solid fa-people-arrows w3-large"></i>
-          <i class="fa-regular fa-comments w3-large"></i>
-          <b class="w3-tiny"><b class="w3-medium">click</b> to try Keys2Text . . .</b>
-        </div>
-      </a>
-    </div>
-    <div class="w3-twothird">
-      <h1>Keys2Text Chat</h1>
-      <h5 class="w3-padding">
-        Keys2Text Chat is your gateway to seamless interactions with the most powerful AI models from multiple providers, all in one place.
-        <br>
-        <p>
-          Here's another version of Keys2Text that works along side 
-          <a href="https://www.novelcrafter.com" target="_blank" title="click to see novelcrafter">novelcrafter</a>
-          allowing you to use all of API keys;<br>
-          for more details see:
-          <a href="https://github.com/cleesmith/keys2text_proxy" target="_blank" title="click to see Keys2Text Proxy">
-            Keys2Text Proxy
-          </a>
-        </p>
-      </h5>
-    </div>
-  </div>
-</div>
--->
 
 <!-- 1st grid -->
 <div class="w3-row-padding w3-padding-16 w3-container">
@@ -221,7 +261,10 @@
         </div>
       </div>
       <div class="w3-bar w3-medium">
-        <div class="w3-bar-item w3-text-gray"><i class="fa-regular fa-copyright"></i> 2017-2025</div>
+        <div class="w3-bar-item w3-text-gray">
+          <i class="fa-regular fa-copyright"></i> 2017-2025
+          <button id="darkModeToggle" title="Switch dark and light mode">☀️</button>
+        </div>
         <a href="about.html" class="w3-bar-item w3-button w3-circle" style="text-decoration: none;" title=". . . . . About">
           <i class="fa-solid fa-person-hiking w3-text-green"></i>
           &nbsp;<i class="w3-text-light-gray">Slip the Trap</i>&nbsp;
@@ -233,7 +276,7 @@
 </div>
 
 <script>
-// cls: plain old JS used to toggle the menu on small screens when clicking on the menu button
+// Toggle menu on small screens
 function myFunction() {
   var x = document.getElementById("navDemo");
   if (x.className.indexOf("w3-show") == -1) {
@@ -242,6 +285,26 @@ function myFunction() {
     x.className = x.className.replace(" w3-show", "");
   }
 }
+
+// Dark/light mode toggle
+document.getElementById('darkModeToggle').addEventListener('click', function() {
+  document.body.classList.toggle('light-mode');
+  // Change the icon based on the current mode
+  this.textContent = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
+  
+  // Save the user's preference in localStorage
+  localStorage.setItem('lightMode', document.body.classList.contains('light-mode'));
+});
+
+// Check for saved preference on page load
+window.addEventListener('DOMContentLoaded', function() {
+  // Default is dark mode (no class needed)
+  const lightMode = localStorage.getItem('lightMode') === 'true';
+  if (lightMode) {
+    document.body.classList.add('light-mode');
+    document.getElementById('darkModeToggle').textContent = '🌙';
+  }
+});
 </script>
 
 </body>

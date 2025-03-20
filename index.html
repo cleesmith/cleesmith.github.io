@@ -21,6 +21,29 @@
     body, h1, h2, h3, h4, h5, h6  {
       font-family: Helvetica, Arial, sans-serif;
     }
+
+    @keyframes jiggle {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      50% { transform: rotate(0deg); }
+      75% { transform: rotate(5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    
+    .jiggle-on-hover:hover {
+      animation: jiggle 0.5s ease-in-out;
+    }
+
+    /* Alternative animation that continues */
+    .attention-jiggle {
+      animation: jiggle 1s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+    
+    .attention-jiggle:hover {
+      animation-play-state: running;
+    }
+
   </style>
 </head>
 
@@ -132,7 +155,14 @@
       </a>
     </div>
     <div class="w3-twothird">
-      <h1>Literature</h1>
+      <h1>Literature &nbsp;&nbsp;
+        <span style="font-size: 0.6em; display: inline-block; vertical-align: middle;">
+          <a href="writing/index.html" target="_blank" class="w3-bar-item w3-button w3-transparent w3-hover-pale-red w3-border w3-border-red w3-round-large attention-jiggle" title=". . . . click to read my writing">
+            <i class="fa-solid fa-file-pen w3-text-red" style="font-size: 1.3em;"></i>
+            <b><i>read my writing</i></b>
+          </a>
+        </span>
+      </h1>
       <h5 class="w3-padding">
         Enjoy spending time reading, pondering and reviewing. 
         <br>

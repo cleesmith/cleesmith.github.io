@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>EPUB to DOCX Converter</title>
+  <style>
+    :root {
+      --background-color: #ffffff;
+      --text-color: #333333;
+      --button-bg-color: #007bff;
+      --button-hover-bg-color: #0056b3;
+      --button-text-color: #ffffff;
+      --textarea-bg: #f5f5f5;
+      --border-color: #cccccc;
+      --status-bg: #f0f0f0;
+      --file-button-bg: #e0e0e0;
+      --file-button-text: #333333;
+    }
+    
+    body.dark-mode {
+      --background-color: #121212;
+      --text-color: #e0e0e0;
+      --button-bg-color: #1e90ff;
+      --button-hover-bg-color: #1a73e8;
+      --button-text-color: #ffffff;
+      --textarea-bg: #1e1e1e;
+      --border-color: #333333;
+      --status-bg: #2a2a2a;
+      --file-button-bg: #333333;
+      --file-button-text: #ffffff;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      padding: 10px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    .header {
+      padding: 5px 0;
+    }
+    
+    .main-title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 22px;
+      margin-bottom: 0;
+    }
+    
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 10px;
+    }
+    
+    .file-input-container {
+      margin: 5px 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .custom-file-input {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .custom-file-input input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .file-input-button {
+      background-color: var(--file-button-bg);
+      color: var(--file-button-text);
+      padding: 8px 12px;
+      border-radius: 5px;
+      display: inline-block;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    .file-name {
+      margin-left: 10px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+    
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin: 5px 0;
+      min-height: 0; /* Important for flex child to shrink properly */
+    }
+    
+    textarea {
+      flex: 1;
+      width: 100%;
+      background-color: var(--textarea-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      resize: none;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      border-radius: 5px;
+      min-height: 100px; /* Minimum height to avoid disappearing */
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0;
+      padding-bottom: 5px;
+    }
+    
+    button {
+      padding: 8px 12px;
+      background-color: var(--button-bg-color);
+      color: var(--button-text-color);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    button:hover {
+      background-color: var(--button-hover-bg-color);
+    }
+    
+    button:active {
+      transform: scale(0.95);
+      opacity: 0.9;
+    }
+    
+    #darkModeToggle {
+      font-size: 18px;
+      background-color: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      padding: 0;
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+    
+    #status {
+      padding: 8px;
+      background-color: var(--status-bg);
+      border-radius: 5px;
+      display: none;
+      margin-bottom: 5px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .progress-bar-container {
+      width: 100%;
+      background-color: var(--border-color);
+      height: 4px;
+      border-radius: 2px;
+      margin-top: 5px;
+    }
+    
+    .progress-bar {
+      height: 4px;
+      background-color: var(--button-bg-color);
+      width: 0%;
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <div class="header">
+    <div class="main-title">EPUB to DOCX Converter</div>
+    <div class="subtitle">Upload your EPUB file, extract content, and download as DOCX</div>
+  
+    <div class="file-input-container">
+      <div class="custom-file-input">
+        <div class="file-input-button">Select .epub File</div>
+        <input type="file" id="epubInput" accept=".epub">
+      </div>
+      <div class="file-name" id="fileName">No file selected</div>
+    </div>
+  
+    <div id="status">
+      <div id="statusText">Ready to convert</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="content-area">
+    <textarea id="bookContent" placeholder="EPUB content will appear here after processing. You can edit before downloading as DOCX."></textarea>
+  </div>
+  
+  <div class="buttons">
+    <button id="processButton">Process EPUB</button>
+    <button id="formatButton">Format for Vellum</button>
+    <button id="downloadDocxButton" disabled>Download DOCX</button>
+    <button id="downloadHtmlButton" disabled>Download HTML</button>
+    <button id="copyButton">Copy Text</button>
+    <button id="clearButton">Clear</button>
+    <button id="darkModeToggle">☀️</button>
+  </div>
+
+  <!-- Load JSZip for EPUB extraction (local version) -->
+  <script src="js/jszip.min.js"></script>
+  
+  <!-- Using locally hosted script file (should contain or load docx.js) -->
+  <script src="js/index.js"></script>
+
+  <script>
+    // DOM elements
+    const epubInput = document.getElementById('epubInput');
+    const fileName = document.getElementById('fileName');
+    const bookContent = document.getElementById('bookContent');
+    const processButton = document.getElementById('processButton');
+    const formatButton = document.getElementById('formatButton');
+    const downloadDocxButton = document.getElementById('downloadDocxButton');
+    const downloadHtmlButton = document.getElementById('downloadHtmlButton');
+    const copyButton = document.getElementById('copyButton');
+    const clearButton = document.getElementById('clearButton');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const status = document.getElementById('status');
+    const statusText = document.getElementById('statusText');
+    const progressBar = document.getElementById('progressBar');
+    
+    // Update filename when a file is selected
+    epubInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        fileName.textContent = this.files[0].name;
+      } else {
+        fileName.textContent = 'No file selected';
+      }
+    });
+    
+    // Book data
+    let bookData = {
+      title: '',
+      author: '',
+      content: [],
+      rawContent: ''
+    };
+    
+    // Event listeners
+    processButton.addEventListener('click', processEpub);
+    formatButton.addEventListener('click', formatForVellum);
+    downloadDocxButton.addEventListener('click', downloadDocx);
+    downloadHtmlButton.addEventListener('click', downloadHtml);
+    copyButton.addEventListener('click', copyTextToClipboard);
+    clearButton.addEventListener('click', clearAll);
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    
+    // Focus textarea
+    function focusTextarea() {
+      bookContent.focus();
+    }
+    
+    // Process EPUB file
+    async function processEpub() {
+      const file = epubInput.files[0];
+      if (!file) {
+        alert('Please select an EPUB file first.');
+        return;
+      }
+      
+      try {
+        showStatus('Reading EPUB file...', 10);
+        
+        // Check if JSZip is available
+        if (typeof JSZip === 'undefined') {
+          throw new Error('JSZip library not loaded. Please check your internet connection or try a different browser.');
+        }
+        
+        // Read the file
+        const arrayBuffer = await readFileAsArrayBuffer(file);
+        
+        // Use JSZip to extract the EPUB contents
+        const zip = new JSZip();
+        const epubData = await zip.loadAsync(arrayBuffer);
+        
+        showStatus('Analyzing EPUB structure...', 30);
+        
+        // Extract metadata
+        await extractMetadata(epubData);
+        
+        showStatus('Extracting content...', 50);
+        
+        // Extract content
+        const extractedContent = await extractContent(epubData);
+        
+        showStatus('Formatting content...', 70);
+        
+        // Format content for display
+        formatContentForDisplay(extractedContent);
+        
+        showStatus('EPUB processed successfully!', 100);
+        
+        // Enable the download buttons
+        downloadDocxButton.disabled = false;
+        downloadHtmlButton.disabled = false;
+        
+      } catch (error) {
+        console.error('Error processing EPUB:', error);
+        showStatus('Error: ' + error.message, 0);
+      }
+    }
+    
+    // Read file as ArrayBuffer
+    function readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = e => reject(e.target.error);
+        reader.readAsArrayBuffer(file);
+      });
+    }
+    
+    // Extract metadata from EPUB
+    async function extractMetadata(epubData) {
+      try {
+        // Look for content.opf file
+        const contentOpfFile = Object.keys(epubData.files).find(filename => 
+          filename.endsWith('content.opf')
+        );
+        
+        if (contentOpfFile) {
+          const opfContent = await epubData.files[contentOpfFile].async('text');
+          const parser = new DOMParser();
+          const opfDoc = parser.parseFromString(opfContent, 'application/xml');
+          
+          // Extract title
+          const titleElement = opfDoc.querySelector('dc\\:title, title');
+          if (titleElement) {
+            bookData.title = titleElement.textContent.trim();
+          }
+          
+          // Extract author
+          const authorElement = opfDoc.querySelector('dc\\:creator, creator');
+          if (authorElement) {
+            bookData.author = authorElement.textContent.trim();
+          }
+        }
+      } catch (error) {
+        console.warn('Error extracting metadata:', error);
+        // Continue even if metadata extraction fails
+      }
+    }
+    
+    // Extract content from EPUB
+    async function extractContent(epubData) {
+      const contentFiles = [];
+      
+      // Pattern for content files
+      const contentPattern = /\.(xhtml|html)$/;
+      // Pattern for chapter files
+      const chapterPattern = /(chapter|vol)-\d+\.(xhtml|html)$/;
+      
+      // Get all content files
+      const contentFilenames = Object.keys(epubData.files)
+        .filter(filename => contentPattern.test(filename))
+        .sort();
+      
+      // If we have properly named chapter files, use those
+      const chapterFilenames = contentFilenames.filter(filename => 
+        chapterPattern.test(filename)
+      ).sort((a, b) => {
+        // Extract chapter/volume numbers for proper sorting
+        const getNumbers = filename => {
+          const volMatch = filename.match(/vol-(\d+)/);
+          const chapterMatch = filename.match(/chapter-(\d+)/);
+          return {
+            vol: volMatch ? parseInt(volMatch[1], 10) : 0,
+            chapter: chapterMatch ? parseInt(chapterMatch[1], 10) : 0
+          };
+        };
+        
+        const aNum = getNumbers(a);
+        const bNum = getNumbers(b);
+        
+        if (aNum.vol !== bNum.vol) return aNum.vol - bNum.vol;
+        return aNum.chapter - bNum.chapter;
+      });
+      
+      // Use chapter files if available, otherwise use all content files
+      const filesToProcess = chapterFilenames.length > 0 ? 
+        chapterFilenames : contentFilenames;
+      
+      // Extract content from each file
+      for (const filename of filesToProcess) {
+        // Skip navigation and TOC files
+        if (filename.includes('toc.') || 
+            filename.includes('nav.') ||
+            filename.includes('copyright.') ||
+            filename.includes('title-page.')) {
+          continue;
+        }
+        
+        try {
+          const content = await epubData.files[filename].async('text');
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(content, 'application/xhtml+xml');
+          
+          // Try to extract title
+          let title = '';
+          const h1 = doc.querySelector('h1');
+          const h2 = doc.querySelector('h2');
+          if (h1) {
+            title = h1.textContent.trim();
+          } else if (h2) {
+            title = h2.textContent.trim();
+          }
+          
+          // Extract body content
+          const body = doc.querySelector('body');
+          if (body) {
+            // Extract text content
+            contentFiles.push({
+              filename: filename,
+              title: title,
+              content: body.textContent.trim()
+            });
+          }
+        } catch (error) {
+          console.warn(`Error processing ${filename}:`, error);
+          // Continue with other files
+        }
+      }
+      
+      return contentFiles;
+    }
+    
+    // Format content for display
+    function formatContentForDisplay(contentFiles) {
+      // Add book title and author if available
+      let formattedContent = '';
+      
+      if (bookData.title) {
+        formattedContent += bookData.title + '\n\n';
+      }
+      
+      if (bookData.author) {
+        formattedContent += 'by ' + bookData.author + '\n\n';
+      }
+      
+      formattedContent += '\n\n';
+      
+      // Add each chapter
+      contentFiles.forEach((file, index) => {
+        // Add chapter title if available
+        if (file.title) {
+          formattedContent += file.title + '\n\n';
+        } else {
+          formattedContent += 'Chapter ' + (index + 1) + '\n\n';
+        }
+        
+        // Add chapter content
+        let chapterContent = file.content;
+        
+        // Format paragraphs
+        chapterContent = chapterContent.replace(/\s{2,}/g, ' ').trim();
+        
+        // Split into paragraphs based on natural breaks
+        const paragraphs = chapterContent.split(/\n+/);
+        
+        paragraphs.forEach(paragraph => {
+          if (paragraph.trim()) {
+            formattedContent += paragraph.trim() + '\n\n';
+          }
+        });
+        
+        // Add separator between chapters
+        formattedContent += '\n\n\n\n\n\n\n\n\n\n';
+      });
+      
+      // Store the raw content
+      bookData.rawContent = formattedContent;
+      
+      // Show the content in the textarea
+      bookContent.value = formattedContent;
+    }
+    
+    // Format text for Vellum
+    function formatForVellum() {
+      const text = bookContent.value;
+      
+      if (!text.trim()) {
+        alert('Please process an EPUB file first or enter text to format.');
+        return;
+      }
+      
+      const formattedText = formatTextForVellum(text);
+      bookContent.value = formattedText;
+      focusTextarea();
+      
+      // Enable download buttons
+      downloadDocxButton.disabled = false;
+      downloadHtmlButton.disabled = false;
+    }
+    
+    // Format text for Vellum following best practices
+    function formatTextForVellum(text) {
+      // Trim leading/trailing whitespace
+      let formattedText = text.trim();
+      
+      // Replace sequences of 8 or more blank lines with a special marker for chapter breaks
+      formattedText = formattedText.replace(/\n{8,}/g, '\n\n###CHAPTER_BREAK###\n\n');
+      
+      // Replace any remaining sequences of multiple blank lines with a single blank line (scene break)
+      formattedText = formattedText.replace(/\n{2,}/g, '\n\n');
+      
+      // Find chapter headings and format them according to Vellum best practices
+      // Look for patterns like "Chapter 1", "Chapter One", "CHAPTER 1", "Prologue", "Epilogue", etc.
+      const lines = formattedText.split('\n');
+      const formattedLines = [];
+      
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        
+        // If this is a chapter break marker, add a page break before the next chapter heading
+        if (line === '###CHAPTER_BREAK###') {
+          formattedLines.push('[PAGE_BREAK]');
+          continue;
+        }
+        
+        // Check if this line looks like a chapter heading
+        const chapterPattern = /^(chapter\s+\w+|prologue|epilogue|acknowledgments|acknowledgements|afterword|foreword|introduction|preface|appendix|conclusion)/i;
+        if (chapterPattern.test(line.trim())) {
+          // If we're not at the beginning of the document, add a page break before the chapter
+          if (i > 0 && formattedLines[formattedLines.length - 1] !== '[PAGE_BREAK]') {
+            formattedLines.push('[PAGE_BREAK]');
+          }
+          
+          // Mark this as a heading for the DOCX conversion
+          formattedLines.push('[HEADING1]' + line);
+        } else {
+          formattedLines.push(line);
+        }
+      }
+      
+      return formattedLines.join('\n');
+    }
+    
+    // Download as DOCX (using local docx.js from index.js)
+    function downloadDocx() {
+      try {
+        // Check if docx is available in global scope
+        if (typeof docx === 'undefined') {
+          alert("DOCX library not available. Use the 'Download HTML' option instead, which can be opened in Word.");
+          return;
+        }
+        
+        showStatus('Creating DOCX file...', 50);
+        
+        const text = bookContent.value;
+        generateDocx(text);
+        
+      } catch (error) {
+        console.error('Error generating DOCX:', error);
+        showStatus('Error: ' + error.message, 0);
+        alert("Error generating DOCX. Try the 'Download HTML' option instead.");
+      }
+    }
+    
+    // Generate DOCX file
+    function generateDocx(text) {
+      const { Document, Packer, Paragraph, HeadingLevel, PageBreak } = docx;
+      
+      // Split text into lines
+      let lines = text.split('\n');
+      let docElements = [];
+      let inParagraph = false;
+      let currentParagraph = '';
+      
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        
+        // Handle page breaks
+        if (line === '[PAGE_BREAK]') {
+          // If we were in a paragraph, add it before the page break
+          if (inParagraph && currentParagraph.trim()) {
+            docElements.push(new Paragraph(currentParagraph.trim()));
+            currentParagraph = '';
+            inParagraph = false;
+          }
+          
+          // Add page break
+          docElements.push(new Paragraph({
+            children: [new PageBreak()]
+          }));
+          continue;
+        }
+        
+        // Handle headings (Chapter titles, Prologue, etc.)
+        if (line.startsWith('[HEADING1]')) {
+          // If we were in a paragraph, add it before the heading
+          if (inParagraph && currentParagraph.trim()) {
+            docElements.push(new Paragraph(currentParagraph.trim()));
+            currentParagraph = '';
+            inParagraph = false;
+          }
+          
+          // Add heading (remove the [HEADING1] marker)
+          const headingText = line.substring(10);
+          docElements.push(new Paragraph({
+            text: headingText,
+            heading: HeadingLevel.HEADING_1
+          }));
+          continue;
+        }
+        
+        // Handle empty lines (scene breaks)
+        if (line === '') {
+          // If we were in a paragraph, add it before the scene break
+          if (inParagraph && currentParagraph.trim()) {
+            docElements.push(new Paragraph(currentParagraph.trim()));
+            currentParagraph = '';
+            inParagraph = false;
+          }
+          
+          // Add an empty paragraph for the scene break
+          docElements.push(new Paragraph(''));
+          continue;
+        }
+        
+        // Handle regular text
+        if (!inParagraph) {
+          inParagraph = true;
+          currentParagraph = line;
+        } else {
+          // If we already have text in the current paragraph, add a space
+          if (currentParagraph) {
+            currentParagraph += ' ';
+          }
+          currentParagraph += line;
+        }
+      }
+      
+      // Add any remaining paragraph
+      if (inParagraph && currentParagraph.trim()) {
+        docElements.push(new Paragraph(currentParagraph.trim()));
+      }
+      
+      // Create the document
+      let doc = new Document({
+        title: bookData.title || 'Converted Book',
+        author: bookData.author || 'Unknown Author',
+        sections: [{
+          children: docElements
+        }]
+      });
+      
+      // Generate and download the DOCX file
+      Packer.toBlob(doc).then(blob => {
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = (bookData.title || 'converted_book') + '.docx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        showStatus('DOCX file downloaded successfully!', 100);
+      }).catch(error => {
+        showStatus('Error generating DOCX: ' + error.message, 0);
+      });
+    }
+    
+    // Download as HTML
+    function downloadHtml() {
+      try {
+        showStatus('Creating HTML file...', 50);
+        
+        // Get the content from the textarea
+        const text = bookContent.value;
+        
+        // Create an HTML document that Word can open
+        let html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${bookData.title || 'Converted Book'}</title>
+  <style>
+    body { font-family: Calibri, Arial, sans-serif; margin: 2cm; line-height: 1.5; }
+    h1 { font-size: 24pt; text-align: center; page-break-after: avoid; }
+    h2 { font-size: 18pt; margin-top: 2em; page-break-after: avoid; }
+    p { text-align: justify; margin-bottom: 0.8em; }
+    .chapter { page-break-before: always; }
+    .chapter-title { font-size: 18pt; font-weight: bold; margin-bottom: 1em; }
+    .book-title { font-size: 28pt; font-weight: bold; text-align: center; margin-bottom: 1cm; }
+    .book-author { font-size: 16pt; text-align: center; margin-bottom: 3cm; }
+    .page-break { page-break-before: always; }
+  </style>
+</head>
+<body>`;
+        
+        // Add title page
+        if (bookData.title || bookData.author) {
+          html += `
+  <div style="text-align: center; margin-top: 5cm;">
+    <div class="book-title">${bookData.title || 'Converted Book'}</div>
+    ${bookData.author ? `<div class="book-author">by ${bookData.author}</div>` : ''}
+  </div>
+  <div class="page-break"></div>`;
+        }
+        
+        // Process the text content from the textarea
+        const lines = text.split('\n');
+        let inParagraph = false;
+        let paragraphText = '';
+        
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          
+          // Handle page breaks
+          if (line === '[PAGE_BREAK]') {
+            if (inParagraph) {
+              html += `  <p>${paragraphText}</p>\n`;
+              paragraphText = '';
+              inParagraph = false;
+            }
+            html += '  <div class="page-break"></div>\n';
+            continue;
+          }
+          
+          // Handle headings
+          if (line.startsWith('[HEADING1]')) {
+            if (inParagraph) {
+              html += `  <p>${paragraphText}</p>\n`;
+              paragraphText = '';
+              inParagraph = false;
+            }
+            const headingText = line.substring(10);
+            html += `  <h1>${headingText}</h1>\n`;
+            continue;
+          }
+          
+          // Handle empty lines (separating paragraphs)
+          if (line === '') {
+            if (inParagraph) {
+              html += `  <p>${paragraphText}</p>\n`;
+              paragraphText = '';
+              inParagraph = false;
+            }
+            continue;
+          }
+          
+          // Handle regular text (paragraph content)
+          if (!inParagraph) {
+            inParagraph = true;
+            paragraphText = line;
+          } else {
+            paragraphText += ' ' + line;
+          }
+        }
+        
+        // Close any open paragraph
+        if (inParagraph) {
+          html += `  <p>${paragraphText}</p>\n`;
+        }
+        
+        // Close the HTML document
+        html += '</body>\n</html>';
+        
+        // Create a blob and download the HTML file
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (bookData.title || 'converted_book') + '.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        showStatus('HTML file created successfully! Open it in Microsoft Word.', 100);
+        
+      } catch (error) {
+        console.error('Error creating HTML:', error);
+        showStatus('Error: ' + error.message, 0);
+      }
+    }
+    
+    // Copy text to clipboard
+    function copyTextToClipboard() {
+      bookContent.select();
+      document.execCommand('copy');
+      alert('Text copied to clipboard!');
+      focusTextarea();
+    }
+    
+    // Clear all
+    function clearAll() {
+      epubInput.value = '';
+      fileName.textContent = 'No file selected';
+      bookContent.value = '';
+      downloadDocxButton.disabled = true;
+      downloadHtmlButton.disabled = true;
+      status.style.display = 'none';
+      bookData = {
+        title: '',
+        author: '',
+        content: [],
+        rawContent: ''
+      };
+      focusTextarea();
+    }
+    
+    // Toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      // Update the icon
+      if (document.body.classList.contains('dark-mode')) {
+        darkModeToggle.textContent = '☀️'; // Sun icon for dark mode (to switch to light)
+      } else {
+        darkModeToggle.textContent = '🌑'; // Moon icon for light mode (to switch to dark)
+      }
+      focusTextarea();
+    }
+    
+    // Show status with progress
+    function showStatus(message, progress) {
+      status.style.display = 'block';
+      statusText.textContent = message;
+      progressBar.style.width = progress + '%';
+    }
+    
+    // Initialize
+    window.onload = focusTextarea;
+  </script>
+</body>
+</html>

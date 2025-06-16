@@ -295,6 +295,56 @@
             font-weight: 500;
         }
 
+        /* Personal Story Section */
+        .personal-story {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.03), rgba(30, 90, 115, 0.03));
+            text-align: center;
+        }
+
+        .personal-story-content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: var(--background-primary);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .personal-story-content::before {
+            content: '📚';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            background: var(--background-primary);
+            padding: 0 1rem;
+        }
+
+        .personal-story h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .personal-story p {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .personal-signature {
+            font-style: italic;
+            color: var(--text-light);
+            margin-top: 2rem;
+            font-size: 1rem;
+        }
+
         /* Features Section */
         .features {
             padding: 8rem 0;
@@ -673,12 +723,8 @@
                     From developmental editing to copy editing, plot analysis to character tracking - 
                     StoryGrind provides professional-grade manuscript editing tools that rival other more expensive options.
                     This desktop/laptop app is free for writers, authors, and editors worldwide - just bring at least one of your own A.I. API keys.
-                    <br><b><i>Why free?</i></b><br>
-                    Personally it's my way of giving back for all of the 
-                    great stories I've read. 
-                    <br>Everyone <i>is a story</i> and 
-                    has stories in them, so this app can help us 
-                    <br>publish shiny ✨ new ones for all readers. 📚 🤓 💻
+                    <br><br>
+                    <em>Built with love by a book lover, for book lovers who write.</em>
                 </p>
                 <div class="hero-cta">
                     <a href="#download" class="btn btn-primary">
@@ -705,6 +751,29 @@
                         <div class="stat-number">∞</div>
                         <div class="stat-label">Unlimited Projects<br><i style="color:grey">depends on local/offline/cloud storage solution</i></div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="personal-story">
+        <div class="container">
+            <div class="personal-story-content">
+                <h3>Why It's Free Forever</h3>
+                <p>
+                    This isn't a startup looking for users or a company planning to monetize later.
+                </p>
+                <p>
+                    I'm retired, I love books, and I wanted to help writers access AI editing without the usual tech industry nonsense.
+                </p>
+                <p>
+                    That's it. That's the business model, as in not one at all.
+                </p>
+                <p>
+                    If you find StoryGrind helpful, just tell another writer about it.
+                </p>
+                <div class="personal-signature">
+                    — From a retired programmer who reads too much
                 </div>
             </div>
         </div>

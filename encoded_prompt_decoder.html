@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Encoded Prompt Decoder (Base64 + Gzip → JSON/Text)</title>
+  <style>
+    :root{
+      --bg: #0b0f14; --panel:#0f141b; --muted:#778; --text:#e6e9ef; --accent:#7cd3ff; --good:#7ef59a; --bad:#ff8b8b; --warn:#ffd670;
+      --border:#1e2530; --code:#0b1117; --btn:#16202b; --btnh:#1b2734; --ring:#2b394a;
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f7f8fb; --panel:#ffffff; --muted:#6b7280; --text:#0b1220; --accent:#2563eb; --good:#059669; --bad:#dc2626; --warn:#b45309; --border:#e5e7eb; --code:#f3f4f6; --btn:#eef2f7; --btnh:#e6ebf2; --ring:#cbd5e1; }
+    }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--text); }
+    .wrap{ max-width:1100px; margin:40px auto; padding:0 16px; }
+    h1{ font-size:clamp(1.5rem, 2.5vw, 2rem); letter-spacing:.2px; margin:0 0 16px; }
+    p.lede{ color:var(--muted); margin:0 0 22px; }
+    .card{ background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow: 0 1px 0 rgba(0,0,0,.05), 0 10px 30px rgba(0,0,0,.12); }
+    .grid{ display:grid; grid-template-columns: 1fr; gap:16px; }
+    @media (min-width:900px){ .grid{ grid-template-columns: 1.1fr .9fr; } }
+    textarea, pre, input[type="text"]{ width:100%; border:1px solid var(--border); background:var(--code); color:var(--text); border-radius:12px; padding:12px; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    textarea{ min-height:180px; resize:vertical; }
+    .row{ display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+    button{ appearance:none; border:1px solid var(--border); background:var(--btn); color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600; }
+    button:hover{ background:var(--btnh); }
+    button.primary{ border-color: transparent; background: linear-gradient(180deg, var(--accent), #4aa8ff); color:#001524; }
+    .hint{ color:var(--muted); font-size:12px; }
+    .pill{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--panel); padding:8px 10px; border-radius:999px; }
+    .kv{ display:grid; grid-template-columns: 140px 1fr; gap:10px; padding:10px; border:1px dashed var(--border); border-radius:12px; }
+    .kv div:first-child{ color:var(--muted); }
+    .tabs{ display:flex; gap:8px; margin:8px 0 12px; }
+    .tabs button{ padding:8px 12px; }
+    .tabs button.active{ outline: 2px solid var(--ring); }
+    .hidden{ display:none !important; }
+    .ok{ color:var(--good); }
+    .warn{ color:var(--warn); }
+    .err{ color:var(--bad); }
+    .footer{ margin-top:24px; color:var(--muted); font-size:12px; }
+    .copybar{ display:flex; gap:8px; margin:8px 0; }
+    /* Wrap long outputs in <pre> so content doesn’t run off-screen */
+  pre{ white-space: pre-wrap; overflow-wrap:anywhere; word-break: break-word; max-height:60vh; overflow:auto; }
+  code{ white-space: pre-wrap; overflow-wrap:anywhere; word-break: break-word; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Encoded Prompt Decoder</h1>
+    <p class="lede">Paste a <strong>base64 + gzip</strong> string (e.g., Novelcrafter exports that start with <code>H4sIA…</code>). I’ll decode, gunzip, and show JSON/text. If it matches Novelcrafter’s shape, I’ll also extract a clean “system prompt” for easy copy/paste.</p>
+
+    <div class="grid">
+      <div class="card">
+        <label for="encoded" class="hint">Encoded input</label>
+        <textarea id="encoded" placeholder="Paste your base64-gz string here…"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button id="decodeBtn" class="primary">Decode →</button>
+          <button id="clearBtn">Clear</button>
+          <span id="status" class="hint"></span>
+        </div>
+        <div class="hint" style="margin-top:8px">Tip: Works best in modern Chromium browsers (uses <code>DecompressionStream('gzip')</code>).</div>
+      </div>
+
+      <div class="card">
+        <div class="kv">
+          <div>Status</div>
+          <div id="kvStatus">Waiting for input…</div>
+          <div>Base64 bytes</div>
+          <div id="kvB64">—</div>
+          <div>Gunzip bytes</div>
+          <div id="kvGunzip">—</div>
+          <div>Parsed as</div>
+          <div id="kvParsed">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="results" class="card hidden" style="margin-top:16px">
+      <div class="tabs">
+        <button data-tab="pretty" class="active">Pretty JSON</button>
+        <button data-tab="raw">Raw text</button>
+        <button data-tab="extracted">Extracted prompt</button>
+        <button data-tab="downloads">Downloads</button>
+      </div>
+
+      <div id="tab-pretty">
+        <div class="copybar">
+          <button id="copyPretty">Copy JSON</button>
+        </div>
+        <pre id="pretty"></pre>
+      </div>
+
+      <div id="tab-raw" class="hidden">
+        <div class="copybar">
+          <button id="copyRaw">Copy raw text</button>
+        </div>
+        <pre id="raw"></pre>
+      </div>
+
+      <div id="tab-extracted" class="hidden">
+        <div class="copybar">
+          <button id="copyExtracted">Copy extracted</button>
+        </div>
+        <pre id="extracted"></pre>
+      </div>
+
+      <div id="tab-downloads" class="hidden">
+        <div class="row">
+          <button id="dlJson">Download JSON</button>
+          <button id="dlRaw">Download raw.txt</button>
+          <button id="dlExtracted">Download extracted.txt</button>
+        </div>
+        <p class="hint" style="margin-top:10px">Downloads are created in your browser (no uploads).</p>
+      </div>
+    </div>
+
+    <div class="footer">No data leaves this page. All decoding happens locally in your browser.</div>
+  </div>
+
+<script>
+(function(){
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => document.querySelectorAll(sel);
+
+  const els = {
+    encoded: $('#encoded'),
+    decodeBtn: $('#decodeBtn'),
+    clearBtn: $('#clearBtn'),
+    status: $('#status'),
+    kvStatus: $('#kvStatus'),
+    kvB64: $('#kvB64'),
+    kvGunzip: $('#kvGunzip'),
+    kvParsed: $('#kvParsed'),
+    results: $('#results'),
+    pretty: $('#pretty'),
+    raw: $('#raw'),
+    extracted: $('#extracted'),
+    copyPretty: $('#copyPretty'),
+    copyRaw: $('#copyRaw'),
+    copyExtracted: $('#copyExtracted'),
+    dlJson: $('#dlJson'),
+    dlRaw: $('#dlRaw'),
+    dlExtracted: $('#dlExtracted'),
+  };
+
+  // Tab handling
+  $$('.tabs button').forEach(btn => btn.addEventListener('click', () => {
+    $$('.tabs button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.getAttribute('data-tab');
+    ['pretty','raw','extracted','downloads'].forEach(name => {
+      const el = document.getElementById('tab-'+name);
+      if (!el) return;
+      el.classList.toggle('hidden', name !== tab);
+    });
+  }));
+
+  function updateKV({status, b64Bytes, gunzipBytes, parsedAs}){
+    els.kvStatus.textContent = status || '—';
+    els.kvB64.textContent = b64Bytes != null ? (b64Bytes + ' bytes') : '—';
+    els.kvGunzip.textContent = gunzipBytes != null ? (gunzipBytes + ' bytes') : '—';
+    els.kvParsed.textContent = parsedAs || '—';
+  }
+
+  function cleanBase64(s){
+    return (s||'').trim().replace(/\s+/g,'').replace(/-/g,'+').replace(/_/g,'/');
+  }
+
+  function b64ToBytes(b64){
+    const clean = cleanBase64(b64);
+    const bin = atob(clean);
+    const out = new Uint8Array(bin.length);
+    for (let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  async function gunzip(bytes){
+    if (!('DecompressionStream' in window)){
+      throw new Error("DecompressionStream('gzip') is not supported in this browser. Try Chrome 118+ or Edge 118+.");
+    }
+    const ds = new DecompressionStream('gzip');
+    const stream = new Response(new Blob([bytes]).stream().pipeThrough(ds));
+    const ab = await stream.arrayBuffer();
+    return new Uint8Array(ab);
+  }
+
+  function bytesToText(bytes){
+    return new TextDecoder('utf-8',{fatal:false}).decode(bytes);
+  }
+
+  function stripTags(html){
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html || '';
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  function tryParseJSON(text){
+    try{ return { ok:true, value: JSON.parse(text) }; }
+    catch(err){ return { ok:false, error: err }; }
+  }
+
+  function extractNovelcrafter(obj){
+    // Very loose detection: has name/description/messages
+    const name = obj && (obj.name || obj.title || 'Untitled');
+    const desc = stripTags(obj && obj.description || '');
+
+    let system = '';
+    let countSystem = 0;
+    if (obj && Array.isArray(obj.messages)){
+      const parts = [];
+      for (const m of obj.messages){
+        const type = (m && (m.type || m.role)) || '';
+        if (type.toLowerCase() === 'system'){
+          const t = (m.text || m.content || '').toString();
+          if (t) parts.push(t);
+        }
+      }
+      countSystem = parts.length;
+      system = parts.join('\n\n');
+    }
+
+    // Fallback: some exports may store prompt under obj.system or obj.prompt
+    if (!system){
+      system = (obj && (obj.system || obj.prompt)) || '';
+      if (system) countSystem = 1;
+    }
+
+    const extracted = [
+      `# ${name}`,
+      desc ? `\nDescription:\n${desc}\n` : '',
+      system ? `\nSystem Prompt:\n${system}` : '\n(System prompt not found in messages.)'
+    ].join('');
+
+    return { name, desc, system, countSystem, extracted };
+  }
+
+  async function decode(){
+    els.status.textContent = 'Decoding…';
+    updateKV({ status: 'Decoding…', b64Bytes:null, gunzipBytes:null, parsedAs:'—' });
+
+    const input = els.encoded.value;
+    if (!input || !input.trim()){
+      els.status.textContent = 'Paste an encoded string first.';
+      return;
+    }
+
+    try{
+      // Base64 → bytes
+      const b64Bytes = b64ToBytes(input);
+      updateKV({ status: 'Base64 decoded', b64Bytes: b64Bytes.length, gunzipBytes:null, parsedAs:'—' });
+
+      // Gzip → bytes
+      const gunzipped = await gunzip(b64Bytes);
+      updateKV({ status: 'Gunzipped', b64Bytes: b64Bytes.length, gunzipBytes: gunzipped.length, parsedAs:'—' });
+
+      // Bytes → text
+      const text = bytesToText(gunzipped);
+      els.raw.textContent = text;
+
+      // Try JSON parse
+      const pj = tryParseJSON(text);
+      let parsedAs = 'Plain text';
+      let pretty = text;
+      let extracted = '';
+
+      if (pj.ok){
+        parsedAs = 'JSON';
+        pretty = JSON.stringify(pj.value, null, 2);
+        const ext = extractNovelcrafter(pj.value);
+        extracted = ext.extracted;
+      } else {
+        extracted = '(No Novelcrafter JSON detected. Showing raw text.)';
+      }
+
+      els.pretty.textContent = pretty;
+      els.extracted.textContent = extracted;
+
+      els.results.classList.remove('hidden');
+      els.status.textContent = 'Done ✅';
+      updateKV({ status:'Done', b64Bytes: b64Bytes.length, gunzipBytes: gunzipped.length, parsedAs });
+
+    } catch(err){
+      console.error(err);
+      els.status.textContent = 'Error: ' + (err && err.message || String(err));
+      updateKV({ status: 'Error', parsedAs:'—' });
+      els.results.classList.add('hidden');
+    }
+  }
+
+  // Copy helpers
+  async function copyText(text){
+    try{ await navigator.clipboard.writeText(text); toast('Copied'); }
+    catch{ toast('Copy failed', true); }
+  }
+
+  function toast(msg, isErr){
+    els.status.innerHTML = isErr ? `<span class="err">${msg}</span>` : `<span class="ok">${msg}</span>`;
+    setTimeout(()=>{ els.status.textContent=''; }, 1600);
+  }
+
+  // Downloads
+  function download(filename, content, type='text/plain'){
+    const blob = new Blob([content], {type});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  }
+
+  // Wire up
+  els.decodeBtn.addEventListener('click', decode);
+  els.clearBtn.addEventListener('click', ()=>{
+    els.encoded.value = '';
+    els.results.classList.add('hidden');
+    updateKV({ status:'Cleared', b64Bytes:null, gunzipBytes:null, parsedAs:'—' });
+  });
+
+  els.copyPretty.addEventListener('click', ()=> copyText(els.pretty.textContent));
+  els.copyRaw.addEventListener('click', ()=> copyText(els.raw.textContent));
+  els.copyExtracted.addEventListener('click', ()=> copyText(els.extracted.textContent));
+
+  els.dlJson.addEventListener('click', ()=> download('decoded.json', els.pretty.textContent, 'application/json'));
+  els.dlRaw.addEventListener('click', ()=> download('decoded_raw.txt', els.raw.textContent));
+  els.dlExtracted.addEventListener('click', ()=> download('decoded_extracted.txt', els.extracted.textContent));
+
+  // Paste to auto-decode convenience
+  els.encoded.addEventListener('paste', (e)=>{
+    setTimeout(()=>{ if (els.encoded.value.trim()) decode(); }, 10);
+  });
+})();
+</script>
+</body>
+</html>

@@ -90,7 +90,7 @@ const randomUnique = (range, count) => {
 
 var dealCards = function(revealAll) {
 	if (revealAll) {
-		document.getElementById('spreadCards').value = 'Please use the proper RWS tarot card number and name in your reading, and I have the following cards for a Tarot Horseshoe spread: ';
+		document.getElementById('spreadCards').textContent = 'Please use the proper RWS tarot card number and name in your reading, and I have the following cards for a Tarot Horseshoe spread: ';
 	}
 	// 7 card spread
 	spread = randomUnique(78, 7); // includes 0 to 78 = verified!
@@ -114,16 +114,27 @@ var dealCards = function(revealAll) {
 		cleanTitle = cards[spread[iCard]].replace("_tiff", "");
 		if (revealAll) {
 			cardtitle.innerHTML = cleanTitle.replaceAll("_", " ");
-			if (iCard=== 0) {
-				document.getElementById('spreadCards').value += cleanTitle.replaceAll("_", " ");
-			} else {
-				document.getElementById('spreadCards').value += ', ' + cleanTitle.replaceAll("_", " ");
-			}
 		}
 		// hide/remember card number for cards array
 		cardNumPos = "cardNum" + (iCard+1);
 		var cardnum = document.getElementById(cardNumPos);
 		cardnum.innerHTML = spread[iCard];
+	}
+
+	// If revealing all, add cards in horseshoe order: Past, Present, Future, You, Setting, Obstacles, Outcome
+	if (revealAll) {
+		var horseshoeOrder = [5, 3, 1, 0, 2, 4, 6]; // card6, card4, card2, card1, card3, card5, card7
+		for (var i = 0; i < horseshoeOrder.length; i++) {
+			var cardIndex = spread[horseshoeOrder[i]];
+			var cleanTitle = cards[cardIndex].replace("_tiff", "").replaceAll("_", " ");
+			if (i === 0) {
+				document.getElementById('spreadCards').textContent += cleanTitle;
+			} else {
+				document.getElementById('spreadCards').textContent += ', ' + cleanTitle;
+			}
+		}
+		// Show the copy panel
+		document.getElementById('copyPanel').style.display = 'block';
 	}
 };
 
@@ -135,22 +146,40 @@ function pull7Cards() {
 	// Check if cards have already been dealt
 	if (typeof cardsDealt !== 'undefined' && cardsDealt) {
 		// Just reveal all cards without re-dealing
-		for (var iCard = 0; iCard <= 6; iCard++) {
-			var cardId = "card" + (iCard + 1);
+		document.getElementById('spreadCards').textContent = 'Please use the proper RWS tarot card number and name in your reading, and I have the following cards for a Tarot Horseshoe spread: ';
+
+		// Horseshoe order: Past, Present, Future, You, Setting, Obstacles, Outcome
+		var horseshoeOrder = [6, 4, 2, 1, 3, 5, 7]; // card6, card4, card2, card1, card3, card5, card7
+
+		for (var i = 0; i < horseshoeOrder.length; i++) {
+			var cardNum = horseshoeOrder[i];
+			var cardId = "card" + cardNum;
 			var img = document.getElementById(cardId);
+			var cardNumId = "cardNum" + cardNum;
+			var cardIndex = parseInt(document.getElementById(cardNumId).innerHTML);
+
+			// Get the card name
+			var cleanTitle = cards[cardIndex].replace("_tiff", "").replaceAll("_", " ");
+
+			// Add to div in horseshoe order
+			if (i === 0) {
+				document.getElementById('spreadCards').textContent += cleanTitle;
+			} else {
+				document.getElementById('spreadCards').textContent += ', ' + cleanTitle;
+			}
 
 			// Only reveal if still showing card back
 			if (img.src.includes('0_Backs')) {
-				var cardNumId = "cardNum" + (iCard + 1);
-				var cardIndex = parseInt(document.getElementById(cardNumId).innerHTML);
 				img.src = "images/taropian_songs/" + cards[cardIndex] + ".jpg#" + cardIndex;
 
 				// Update the title
-				var titleId = "title" + (iCard + 1);
-				var cleanTitle = cards[cardIndex].replace("_tiff", "");
-				document.getElementById(titleId).innerHTML = cleanTitle.replaceAll("_", " ");
+				var titleId = "title" + cardNum;
+				document.getElementById(titleId).innerHTML = cleanTitle;
 			}
 		}
+
+		// Show the copy panel
+		document.getElementById('copyPanel').style.display = 'block';
 	} else {
 		// Deal and reveal all cards
 		dealCards(true);

@@ -134,6 +134,7 @@ var dealCards = function(revealAll) {
 			}
 		}
 		// Show the copy panel
+		document.getElementById('spreadCards').textContent += '. Also include an Overall Messge for the reading.';
 		document.getElementById('copyPanel').style.display = 'block';
 	}
 };
@@ -179,6 +180,7 @@ function pull7Cards() {
 		}
 
 		// Show the copy panel
+		document.getElementById('spreadCards').textContent += '. Also include an Overall Messge for the reading.';
 		document.getElementById('copyPanel').style.display = 'block';
 	} else {
 		// Deal and reveal all cards

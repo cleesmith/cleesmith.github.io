@@ -3,54 +3,61 @@
 <url>
   <loc>https://slipthetrap.com/writing/index.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/books.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/shop.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/about.html</loc>
-  <lastmod>025-03-17</lastmod>
+  <priority>1.0</priority>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/art.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/literature.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/technology.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/tarot_taropian_songs.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
+</url>
+<url>
+  <loc>https://slipthetrap.com/taropian-songs-tarot-images.html</loc>
+  <priority>1.0</priority>
+  <lastmod>2025-10-18</lastmod>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://slipthetrap.com/TaropianSongsTarotBook.html</loc>
   <priority>1.0</priority>
-  <lastmod>2025-03-17</lastmod>
+  <lastmod>2025-10-18</lastmod>
   <changefreq>daily</changefreq>
 </url>
 </urlset>

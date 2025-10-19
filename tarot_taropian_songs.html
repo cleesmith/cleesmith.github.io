@@ -237,7 +237,7 @@
       color: #ccc;
     }
 
-    #copyPanel #copyFooter {
+    #copyPanel #copyHeader {
       cursor: pointer;
       padding: 10px 15px;
     }
@@ -574,16 +574,17 @@
       </div>
 
       <!-- Control Panel - sibling to horseshoe-container, inside wrapper -->
-      <div id="copyPanel" style="display: none; margin-top:-50px;">
+      <div id="copyPanel" style="display: none; margin-top:-50px; position: relative; z-index: 100;">
         <div class="w3-card-4">
+          <header id="copyHeader" class="w3-container w3-blue" onclick="copyToClipboard()" style="padding: 6px 16px; cursor: pointer;">
+            <span id="copyText" style="display: block; font-size: 12px; line-height: 1.3;">click to copy spread into clipboard - get a general AI reading</span>
+          </header>
           <div class="w3-container">
             <p id="spreadCards"></p>
           </div>
-          <footer id="copyFooter" class="w3-container w3-blue" onclick="copyToClipboard()">
-            <h5 id="copyText">copy to clipboard - get a general AI reading</h5>
-          </footer>
         </div>
       </div>
+
       <br /><br /><br /><br />
 
     </div>

@@ -68,7 +68,7 @@ function revealSingleCard(cardId) {
     }
 
     // Show the copy panel
-    document.getElementById('spreadCards').textContent += 'Also include an Overall Message for the reading.';
+    document.getElementById('spreadCards').textContent += "Also include an Overall Message for this 'Taropian Songs' tarot deck reading.";
     document.getElementById('copyPanel').style.display = 'block';
   }
 }
@@ -131,23 +131,19 @@ function onClick(element) {
 function copyToClipboard() {
   var spreadText = document.getElementById('spreadCards').textContent;
   navigator.clipboard.writeText(spreadText);
-
   // Open Google search in new tab with the spread text
   window.open('https://www.google.com/search?q=' + encodeURIComponent(spreadText), '_blank');
-
   // Visual feedback
   var copyText = document.getElementById('copyText');
-  var copyFooter = document.getElementById('copyFooter');
+  var copyHeader = document.getElementById('copyHeader');
   var originalText = copyText.innerHTML;
-
   copyText.innerHTML = 'Copied!';
-  copyFooter.classList.remove('w3-blue');
-  copyFooter.classList.add('w3-green');
-
+  copyHeader.classList.remove('w3-blue');
+  copyHeader.classList.add('w3-green');
   setTimeout(function() {
     copyText.innerHTML = originalText;
-    copyFooter.classList.remove('w3-green');
-    copyFooter.classList.add('w3-blue');
+    copyHeader.classList.remove('w3-green');
+    copyHeader.classList.add('w3-blue');
   }, 2000);
 }
 

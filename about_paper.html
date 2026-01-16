@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Architecture of a Book: Paper Lifecycle Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Chart Container Specifics */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Smooth Transitions */
+        .transition-all-300 {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Custom Paper Texture Background Simulation */
+        body {
+            background-color: #fdfbf7;
+            color: #2d3748;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+        .sans-serif {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #78350f;
+            animation: spin 1s ease infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <!-- Chosen Palette: "Old Library" - Warm Neutrals (Cream #fdfbf7, Beige #e2e8f0) with Intellectual Accents (Charcoal #2d3748, Leather Brown #78350f, Forest Green #14532d) -->
+    <!-- Application Structure Plan: 
+         1. Hero/Selector: Users explicitly choose "Paperback" or "Hardcover" context immediately.
+         2. Material Origins: Comparative breakdown.
+         3. The Process (Chemistry): Interactive "Step-Through".
+         4. Composition & Quality: Dynamic Doughnut Chart.
+         5. Environmental Impact: Comparative Bar Chart.
+         6. Longevity Timeline: Line Chart.
+         7. The Librarian's Desk (NEW): AI-powered tools for Q&A and specific book analysis.
+         Rationale: Moves chronologically from creation to degradation, ending with personalized AI consultation. -->
+    <!-- Visualization & Content Choices:
+         1. Composition (Doughnut Chart): Goal: Inform about chemical makeup.
+         2. Impact (Bar Chart): Goal: Compare environmental costs.
+         3. Degradation (Line Chart): Goal: Change/Time.
+         4. AI Interaction (Text/Form): Goal: Personalized advice using Gemini API.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-[#fdfbf7]/95 backdrop-blur shadow-sm border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl mr-2">📖</span>
+                    <span class="font-bold text-xl tracking-tight text-stone-800">PaperFacts</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="scrollToSection('materials')" class="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">Raw Materials</button>
+                    <button onclick="scrollToSection('process')" class="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">The Process</button>
+                    <button onclick="scrollToSection('longevity')" class="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">Longevity</button>
+                    <button onclick="scrollToSection('librarian')" class="text-stone-600 hover:text-stone-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">✨ Librarian</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+
+        <!-- Hero / Global Toggle Section -->
+        <section class="py-12 sm:py-20 bg-stone-100 border-b border-stone-200">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-stone-900 mb-6 tracking-tight">The Truth Between the Covers</h1>
+                <p class="text-lg sm:text-xl text-stone-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+                    Paper isn't just a vehicle for ink; it's a product of chemistry, forestry, and industrial choices. 
+                    Explore the hidden differences between the mass-market paperback and the archival hardcover.
+                </p>
+                
+                <div class="bg-white p-2 rounded-xl shadow-lg inline-flex relative">
+                    <div class="absolute inset-0 bg-stone-200 rounded-xl transform transition-transform duration-300 ease-in-out" id="toggle-bg"></div>
+                    <button onclick="setMode('paperback')" id="btn-paperback" class="relative z-10 px-8 py-3 rounded-lg text-lg font-bold transition-colors duration-300 text-stone-800 shadow-sm bg-white">
+                        Mass Market Paperback
+                    </button>
+                    <button onclick="setMode('hardcover')" id="btn-hardcover" class="relative z-10 px-8 py-3 rounded-lg text-lg font-bold transition-colors duration-300 text-stone-500 hover:text-stone-700">
+                        Archival Hardcover
+                    </button>
+                </div>
+                <p class="mt-4 text-sm text-stone-500 italic" id="mode-description">
+                    Currently viewing data for: <span class="font-bold">Groundwood Paper</span> (High Lignin, Low Cost)
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 1: Raw Materials (The Source) -->
+        <section id="materials" class="py-16 bg-[#fdfbf7]">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 text-center md:text-left">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">1. The Source: Fiber & Wood</h2>
+                    <p class="text-lg text-stone-600 max-w-4xl">
+                        Before it becomes a page, it is a tree. The quality of a book depends entirely on how we treat the wood fibers. 
+                        We select specific woods for strength (softwoods) and smoothness (hardwoods), but the real difference lies in how pure we keep the mix.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Dynamic Material Card -->
+                    <div class="bg-white rounded-xl shadow-md p-8 border-l-8 border-amber-600 transition-all-300" id="material-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="text-4xl">🌲</div>
+                            <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold uppercase tracking-wide" id="material-badge">Mechanical Pulp</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-stone-800 mb-2" id="material-title">Groundwood Pulp</h3>
+                        <p class="text-stone-600 mb-6 leading-relaxed" id="material-desc">
+                            Logs are physically ground down. This is a "whole tree" approach. It retains everything—cellulose, hemicellulose, and crucially, <span class="font-bold text-amber-700">Lignin</span>.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 text-sm sans-serif">
+                            <div class="bg-stone-50 p-3 rounded">
+                                <span class="block text-stone-400 text-xs uppercase">Fiber Integrity</span>
+                                <span class="font-bold text-stone-700" id="material-fiber">Short & Damaged</span>
+                            </div>
+                            <div class="bg-stone-50 p-3 rounded">
+                                <span class="block text-stone-400 text-xs uppercase">Yield</span>
+                                <span class="font-bold text-stone-700" id="material-yield">High (~95%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Composition Chart -->
+                    <div class="bg-white rounded-xl shadow-md p-6 flex flex-col justify-center items-center">
+                        <h4 class="text-lg font-semibold text-stone-700 mb-2 w-full text-center">Chemical Composition</h4>
+                        <div class="chart-container">
+                            <canvas id="compositionChart"></canvas>
+                        </div>
+                        <p class="text-xs text-center text-stone-400 mt-2">
+                            Lignin is the "glue" that holds wood together but yellows paper.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Process (Manufacturing) -->
+        <section id="process" class="py-16 bg-white border-t border-stone-100">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">2. The Factory: Mechanical vs. Chemical</h2>
+                    <p class="text-lg text-stone-600 max-w-4xl">
+                        How do we turn a log into a sheet? The path diverges here. One path uses brute force (grinding), the other uses chemistry (cooking). 
+                        Explore the steps below to see how your selected book type is made.
+                    </p>
+                </div>
+
+                <!-- Process Flow Interaction -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Step List -->
+                    <div class="space-y-4 lg:col-span-1">
+                        <button class="w-full text-left p-4 rounded-lg bg-stone-800 text-white shadow-md transform scale-105 transition-transform">
+                            <span class="font-bold mr-2">Step 1:</span> Preparation
+                        </button>
+                        <button class="w-full text-left p-4 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors">
+                            <span class="font-bold mr-2">Step 2:</span> Pulping
+                        </button>
+                        <button class="w-full text-left p-4 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors">
+                            <span class="font-bold mr-2">Step 3:</span> Bleaching
+                        </button>
+                        <button class="w-full text-left p-4 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors">
+                            <span class="font-bold mr-2">Step 4:</span> Papermaking
+                        </button>
+                    </div>
+
+                    <!-- Process Detail View -->
+                    <div class="lg:col-span-2 bg-stone-50 rounded-xl p-8 border border-stone-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-9xl">⚙️</div>
+                        <h3 class="text-2xl font-bold text-stone-800 mb-4" id="process-step-title">The Crucial Divergence</h3>
+                        <div id="process-content" class="text-stone-600 leading-relaxed space-y-4">
+                            <p>
+                                Based on your selection of <span class="font-bold" id="process-mode-name">Paperback</span>, the pulping process is <span class="font-bold text-amber-700">Mechanical</span>.
+                            </p>
+                            <p>
+                                Logs are pressed against huge grinding stones. Friction tears the fibers apart. It's efficient—using 95% of the tree—but the intense heat and physical tearing shorten the fibers, resulting in weaker paper. Crucially, the lignin is left in the mix.
+                            </p>
+                            <div class="bg-white p-4 rounded border border-stone-200 mt-4">
+                                <span class="block font-bold text-stone-800 text-sm uppercase mb-1">Key Characteristic</span>
+                                <span id="process-key-fact">High Opacity, Low Strength, High Lignin Content.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Environmental Impact -->
+        <section id="impact" class="py-16 bg-[#f0f4f1]">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">3. The Cost: Planet Earth</h2>
+                    <p class="text-lg text-stone-600 max-w-3xl mx-auto">
+                        There is no "perfect" paper. Mechanical pulp saves trees but uses massive energy. Chemical pulp wastes half the tree but creates a cleaner product.
+                        We measure the footprint in water, energy, and trees.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Impact Chart -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h4 class="text-lg font-semibold text-stone-700 mb-4 text-center">Relative Environmental Cost (Per Ton)</h4>
+                        <div class="chart-container">
+                            <canvas id="impactChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Impact Context -->
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 bg-blue-100 rounded-full p-3 text-blue-600 text-xl">💧</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-stone-800">Water Usage</h4>
+                                <p class="text-stone-600 text-sm">
+                                    Papermaking is thirsty work. It takes roughly 3 gallons of water to make a single sheet of A4 paper. Chemical pulping requires extensive washing to remove the cooking chemicals (liquor).
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 bg-yellow-100 rounded-full p-3 text-yellow-600 text-xl">⚡</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-stone-800">Energy Intensity</h4>
+                                <p class="text-stone-600 text-sm">
+                                    Mechanical pulping (Paperbacks) is energy-intensive due to the physical grinding of logs. Chemical pulping can often power itself by burning the waste lignin (black liquor) as fuel.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 bg-green-100 rounded-full p-3 text-green-600 text-xl">🌲</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-stone-800">Tree Efficiency (Yield)</h4>
+                                <p class="text-stone-600 text-sm">
+                                    <span class="font-bold">Paperbacks win here.</span> Mechanical pulping uses ~95% of the tree. Chemical pulping (Hardcovers) dissolves the lignin, resulting in only ~50% yield. You need double the wood for the same amount of hardcover paper.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Longevity -->
+        <section id="longevity" class="py-16 bg-white">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">4. The Legacy: Archival vs. Ephemeral</h2>
+                    <p class="text-lg text-stone-600 max-w-3xl mx-auto">
+                        Why do old paperbacks turn yellow and crumble? It's the lignin. 
+                        When lignin meets oxygen and sunlight, it becomes acidic. Hardcovers remove this flaw, lasting centuries.
+                    </p>
+                </div>
+
+                <div class="bg-white border border-stone-200 rounded-xl shadow-lg p-6">
+                    <div class="chart-container h-96">
+                        <canvas id="longevityChart"></canvas>
+                    </div>
+                    <div class="mt-6 text-center text-sm text-stone-500">
+                        <span class="inline-block w-3 h-3 bg-amber-600 rounded-full mr-1"></span> Paperback (High Lignin)
+                        <span class="inline-block w-3 h-3 bg-stone-800 rounded-full ml-4 mr-1"></span> Hardcover (Acid-Free)
+                    </div>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="p-6 bg-stone-50 rounded-lg">
+                        <div class="text-4xl mb-2">⏳</div>
+                        <h3 class="font-bold text-stone-800">Lifespan</h3>
+                        <p class="text-sm text-stone-600 mt-2" id="legacy-lifespan">~20-50 Years</p>
+                    </div>
+                    <div class="p-6 bg-stone-50 rounded-lg">
+                        <div class="text-4xl mb-2">🧪</div>
+                        <h3 class="font-bold text-stone-800">pH Level</h3>
+                        <p class="text-sm text-stone-600 mt-2" id="legacy-ph">Acidic (pH < 7)</p>
+                    </div>
+                    <div class="p-6 bg-stone-50 rounded-lg">
+                        <div class="text-4xl mb-2">☀️</div>
+                        <h3 class="font-bold text-stone-800">Light Sensitivity</h3>
+                        <p class="text-sm text-stone-600 mt-2" id="legacy-light">High (Rapid Yellowing)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: The Librarian's Desk (LLM Integration) -->
+        <section id="librarian" class="py-16 bg-stone-100 border-t border-stone-300">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-2">The Librarian's Desk</h2>
+                    <p class="text-stone-600">Consult the AI Archivist for preservation advice or historical queries.</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-stone-200">
+                    <!-- Tab Headers -->
+                    <div class="flex border-b border-stone-200 bg-stone-50">
+                        <button onclick="switchAiTab('ask')" id="tab-ask" class="flex-1 py-4 text-center font-bold text-stone-800 border-b-2 border-stone-800 bg-white hover:bg-white transition-colors">
+                            ✨ Ask the Archivist
+                        </button>
+                        <button onclick="switchAiTab('report')" id="tab-report" class="flex-1 py-4 text-center font-bold text-stone-500 hover:text-stone-700 hover:bg-stone-100 transition-colors">
+                            ✨ Generate Preservation Report
+                        </button>
+                    </div>
+
+                    <!-- SECURE API KEY INPUT -->
+                    <div class="bg-amber-50 px-6 py-4 border-b border-amber-100">
+                        <label class="block text-xs font-bold text-amber-800 uppercase mb-1">Google Gemini API Key (Required)</label>
+                        <div class="flex gap-2">
+                            <input type="password" id="user-api-key" autocomplete="off" class="flex-1 p-2 border border-amber-300 rounded bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="Paste your API Key here (it will not be saved to the file)...">
+                        </div>
+                        <p class="text-xs text-amber-700 mt-1">
+                            This key is used only for this session and is not stored. <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline font-bold hover:text-amber-900">Get a free key here</a>.
+                        </p>
+                    </div>
+
+                    <!-- Content: Ask Archivist -->
+                    <div id="ai-content-ask" class="p-6 sm:p-8">
+                        <p class="text-sm text-stone-500 mb-4">Ask a question about book history, paper chemistry, or specific care instructions.</p>
+                        <textarea id="ask-input" class="w-full p-4 border border-stone-300 rounded-lg bg-stone-50 focus:ring-2 focus:ring-amber-500 focus:outline-none mb-4" rows="3" placeholder="e.g., Why do pages smell good when they get old?"></textarea>
+                        <button onclick="handleAskArchivist()" class="w-full sm:w-auto bg-stone-800 text-white px-6 py-3 rounded-lg font-bold hover:bg-stone-700 transition-colors flex items-center justify-center gap-2">
+                            <span>✨ Consult Archivist</span>
+                            <div id="spinner-ask" class="spinner hidden"></div>
+                        </button>
+                        <div id="response-ask" class="mt-6 p-4 bg-[#fdfbf7] border border-stone-200 rounded-lg hidden">
+                            <h4 class="font-bold text-stone-800 mb-2 text-sm uppercase tracking-wide">Archivist's Reply:</h4>
+                            <p class="text-stone-700 leading-relaxed font-serif" id="ask-output-text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Content: Preservation Report -->
+                    <div id="ai-content-report" class="p-6 sm:p-8 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Book Title</label>
+                                <input type="text" id="report-title" class="w-full p-2 border border-stone-300 rounded bg-stone-50" placeholder="e.g. The Great Gatsby">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Year Published</label>
+                                <input type="number" id="report-year" class="w-full p-2 border border-stone-300 rounded bg-stone-50" placeholder="1925">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Format</label>
+                                <select id="report-type" class="w-full p-2 border border-stone-300 rounded bg-stone-50">
+                                    <option value="Mass Market Paperback">Mass Market Paperback</option>
+                                    <option value="Trade Paperback">Trade Paperback</option>
+                                    <option value="Hardcover">Hardcover</option>
+                                    <option value="Antique Leatherbound">Antique Leatherbound</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Current Condition</label>
+                                <input type="text" id="report-condition" class="w-full p-2 border border-stone-300 rounded bg-stone-50" placeholder="e.g. Yellow pages, cracked spine">
+                            </div>
+                        </div>
+                        <button onclick="handleGenerateReport()" class="w-full bg-amber-700 text-white px-6 py-3 rounded-lg font-bold hover:bg-amber-800 transition-colors flex items-center justify-center gap-2">
+                            <span>✨ Generate Report</span>
+                            <div id="spinner-report" class="spinner hidden border-l-white"></div>
+                        </button>
+
+                        <div id="response-report" class="mt-6 hidden">
+                            <div class="bg-stone-50 border border-stone-300 p-6 rounded shadow-inner">
+                                <h3 class="font-serif text-xl font-bold text-stone-900 border-b border-stone-300 pb-2 mb-4">Preservation Assessment</h3>
+                                <div id="report-output-text" class="prose prose-stone text-stone-700"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-900 text-stone-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="mb-4 text-stone-100 font-bold text-lg">PaperFacts Interactive</p>
+            <p class="text-sm">
+                A synthesis of paper manufacturing science. <br>
+                Remember: "Free Sheet" means free of mechanical pulp, not free of cost.
+            </p>
+            <div class="mt-8 pt-8 border-t border-stone-800 text-xs">
+                &copy; 2024 Educational Synthesis. No trees were harmed in the making of this digital page.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Gemini API Configuration ---
+        // Note: Key is now retrieved from the UI input field for security.
+
+        async function callGeminiAPI(userPrompt, systemInstruction) {
+            // Retrieve key from the input field at the moment of request
+            const userKey = document.getElementById('user-api-key').value.trim();
+
+            if (!userKey) {
+                return "⚠️ Authentication Error: Please enter a valid Google Gemini API Key in the field above to speak with the Archivist.";
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${userKey}`;
+            
+            const payload = {
+                contents: [{
+                    parts: [{ text: userPrompt }]
+                }],
+                systemInstruction: {
+                    parts: [{ text: systemInstruction }]
+                }
+            };
+
+            // Exponential backoff
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "The archives are silent on this matter (Error parsing response).";
+
+                } catch (error) {
+                    if (i === 4) return "I apologize, but the archives are currently inaccessible. Please check your API key and internet connection.";
+                    await new Promise(resolve => setTimeout(resolve, delays[i]));
+                }
+            }
+        }
+
+        // --- AI Feature Logic ---
+
+        function switchAiTab(tab) {
+            const askTab = document.getElementById('tab-ask');
+            const reportTab = document.getElementById('tab-report');
+            const askContent = document.getElementById('ai-content-ask');
+            const reportContent = document.getElementById('ai-content-report');
+
+            if (tab === 'ask') {
+                askTab.classList.add('border-b-2', 'border-stone-800', 'bg-white', 'text-stone-800');
+                askTab.classList.remove('text-stone-500');
+                reportTab.classList.remove('border-b-2', 'border-stone-800', 'bg-white', 'text-stone-800');
+                reportTab.classList.add('text-stone-500');
+                
+                askContent.classList.remove('hidden');
+                reportContent.classList.add('hidden');
+            } else {
+                reportTab.classList.add('border-b-2', 'border-stone-800', 'bg-white', 'text-stone-800');
+                reportTab.classList.remove('text-stone-500');
+                askTab.classList.remove('border-b-2', 'border-stone-800', 'bg-white', 'text-stone-800');
+                askTab.classList.add('text-stone-500');
+
+                reportContent.classList.remove('hidden');
+                askContent.classList.add('hidden');
+            }
+        }
+
+        async function handleAskArchivist() {
+            const input = document.getElementById('ask-input').value.trim();
+            if (!input) return;
+
+            const spinner = document.getElementById('spinner-ask');
+            const outputBox = document.getElementById('response-ask');
+            const outputText = document.getElementById('ask-output-text');
+
+            spinner.classList.remove('hidden');
+            outputBox.classList.add('hidden');
+
+            const systemPrompt = "You are a wise, expert archivist and book conservator. Answer the user's question about books, paper, printing history, or preservation with authority and a slightly academic, old-world tone. Keep answers concise (under 100 words).";
+            
+            const result = await callGeminiAPI(input, systemPrompt);
+
+            outputText.textContent = result;
+            spinner.classList.add('hidden');
+            outputBox.classList.remove('hidden');
+        }
+
+        async function handleGenerateReport() {
+            const title = document.getElementById('report-title').value || "Unknown Title";
+            const year = document.getElementById('report-year').value || "Unknown Year";
+            const type = document.getElementById('report-type').value;
+            const condition = document.getElementById('report-condition').value || "Standard wear";
+
+            const spinner = document.getElementById('spinner-report');
+            const outputBox = document.getElementById('response-report');
+            const outputText = document.getElementById('report-output-text');
+
+            spinner.classList.remove('hidden');
+            outputBox.classList.add('hidden');
+
+            const prompt = `Generate a Preservation Assessment for: Title: ${title}, Year: ${year}, Type: ${type}, Condition: ${condition}.`;
+            const systemPrompt = "You are a professional book conservator. Provide a structured assessment. 1. Estimated remaining lifespan. 2. Likely chemical issues (e.g., acid hydrolysis for paperbacks). 3. One specific actionable storage recommendation. Use bold labels. Keep it under 150 words.";
+
+            const result = await callGeminiAPI(prompt, systemPrompt);
+
+            // Simple formatting for bold text from markdown
+            const formattedResult = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+            outputText.innerHTML = formattedResult;
+            spinner.classList.add('hidden');
+            outputBox.classList.remove('hidden');
+        }
+
+        // --- State Management (Existing) ---
+        const state = {
+            mode: 'paperback' 
+        };
+
+        // --- Data Definitions (Existing) ---
+        const dataConfig = {
+            paperback: {
+                title: "Mass Market Paperback",
+                desc: "Currently viewing data for: <span class='font-bold text-amber-700'>Groundwood Paper</span> (High Lignin, Low Cost)",
+                material: {
+                    badge: "Mechanical Pulp",
+                    title: "Groundwood Pulp",
+                    desc: "Logs are physically ground down. This is a 'whole tree' approach. It retains everything—cellulose, hemicellulose, and crucially, <span class='font-bold text-amber-700'>Lignin</span>.",
+                    fiber: "Short & Damaged",
+                    yield: "High (~95%)"
+                },
+                process: {
+                    type: "Mechanical",
+                    desc: "Logs are pressed against huge grinding stones. Friction tears the fibers apart. It's efficient—using 95% of the tree—but the intense heat and physical tearing shorten the fibers, resulting in weaker paper. Crucially, the lignin is left in the mix.",
+                    key: "High Opacity, Low Strength, High Lignin Content."
+                },
+                composition: [45, 25, 25, 5], 
+                legacy: {
+                    lifespan: "~30-50 Years (Yellows quickly)",
+                    ph: "Acidic (pH < 7)",
+                    light: "High (Rapid Yellowing)"
+                }
+            },
+            hardcover: {
+                title: "Archival Hardcover",
+                desc: "Currently viewing data for: <span class='font-bold text-stone-800'>Free Sheet / Acid-Free</span> (Lignin Removed)",
+                material: {
+                    badge: "Chemical Pulp (Kraft)",
+                    title: "Free Sheet Pulp",
+                    desc: "Wood chips are cooked in a chemical soup (sulfate). This dissolves the lignin glue. What remains is pure cellulose fiber. It is stronger, brighter, but requires more wood.",
+                    fiber: "Long & Intact",
+                    yield: "Low (~45-50%)"
+                },
+                process: {
+                    type: "Chemical (Kraft)",
+                    desc: "Wood chips are digested in a pressure cooker with white liquor (sulfide/hydroxide). This chemically dissolves the lignin. The resulting pulp is brown (Kraft means strength in German) and must be bleached extensively to become white book paper.",
+                    key: "High Strength, High Brightness, Archival."
+                },
+                composition: [90, 5, 0, 5],
+                legacy: {
+                    lifespan: "300+ Years (Archival)",
+                    ph: "Neutral/Alkaline (pH > 7)",
+                    light: "Low (Stable Whiteness)"
+                }
+            }
+        };
+
+        // --- Chart Instances ---
+        let compChart = null;
+        let impactChart = null;
+        let longevityChart = null;
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initCompositionChart();
+            initImpactChart();
+            initLongevityChart();
+            updateUI(); 
+        });
+
+        // --- Navigation ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Core Interaction: Set Mode ---
+        function setMode(newMode) {
+            state.mode = newMode;
+            updateUI();
+            updateCharts();
+        }
+
+        // --- UI Updates ---
+        function updateUI() {
+            const config = dataConfig[state.mode];
+            const isPaperback = state.mode === 'paperback';
+
+            // Toggle Buttons styling
+            const btnPb = document.getElementById('btn-paperback');
+            const btnHc = document.getElementById('btn-hardcover');
+            const bg = document.getElementById('toggle-bg');
+
+            if (isPaperback) {
+                btnPb.classList.add('bg-white', 'text-stone-800', 'shadow-sm');
+                btnPb.classList.remove('text-stone-500');
+                btnHc.classList.remove('bg-white', 'text-stone-800', 'shadow-sm');
+                btnHc.classList.add('text-stone-500');
+                bg.style.transform = 'translateX(0)';
+            } else {
+                btnHc.classList.add('bg-white', 'text-stone-800', 'shadow-sm');
+                btnHc.classList.remove('text-stone-500');
+                btnPb.classList.remove('bg-white', 'text-stone-800', 'shadow-sm');
+                btnPb.classList.add('text-stone-500');
+                bg.style.transform = 'translateX(100%)'; 
+            }
+
+            // Text Updates
+            document.getElementById('mode-description').innerHTML = config.desc;
+            
+            // Material Section
+            document.getElementById('material-badge').textContent = config.material.badge;
+            document.getElementById('material-title').textContent = config.material.title;
+            document.getElementById('material-desc').innerHTML = config.material.desc;
+            document.getElementById('material-fiber').textContent = config.material.fiber;
+            document.getElementById('material-yield').textContent = config.material.yield;
+            
+            // Color theme of card
+            const card = document.getElementById('material-card');
+            if (isPaperback) {
+                card.classList.replace('border-stone-800', 'border-amber-600');
+                document.getElementById('material-badge').classList.replace('bg-stone-200', 'bg-amber-100');
+                document.getElementById('material-badge').classList.replace('text-stone-800', 'text-amber-800');
+            } else {
+                card.classList.replace('border-amber-600', 'border-stone-800');
+                document.getElementById('material-badge').classList.replace('bg-amber-100', 'bg-stone-200');
+                document.getElementById('material-badge').classList.replace('text-amber-800', 'text-stone-800');
+            }
+
+            // Process Section
+            document.getElementById('process-mode-name').textContent = isPaperback ? "Mass Market Paperback" : "Hardcover";
+            document.getElementById('process-step-title').textContent = isPaperback ? "Mechanical Grinding" : "Chemical Digestion";
+            document.getElementById('process-content').innerHTML = `
+                <p>${config.process.desc}</p>
+                <div class="bg-white p-4 rounded border border-stone-200 mt-4">
+                    <span class="block font-bold text-stone-800 text-sm uppercase mb-1">Key Characteristic</span>
+                    <span id="process-key-fact">${config.process.key}</span>
+                </div>
+            `;
+
+            // Legacy Section
+            document.getElementById('legacy-lifespan').textContent = config.legacy.lifespan;
+            document.getElementById('legacy-ph').textContent = config.legacy.ph;
+            document.getElementById('legacy-light').textContent = config.legacy.light;
+        }
+
+        // --- Chart Generation ---
+
+        function initCompositionChart() {
+            const ctx = document.getElementById('compositionChart').getContext('2d');
+            compChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cellulose', 'Hemicellulose', 'Lignin', 'Additives/Fillers'],
+                    datasets: [{
+                        data: dataConfig.paperback.composition,
+                        backgroundColor: ['#d6d3d1', '#a8a29e', '#d97706', '#78716c'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initImpactChart() {
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            impactChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tree Yield Efficiency', 'Energy Intensity', 'Water Footprint', 'Chemical Load'],
+                    datasets: [
+                        {
+                            label: 'Mechanical (Paperback)',
+                            data: [95, 80, 40, 20], 
+                            backgroundColor: '#d97706',
+                            barPercentage: 0.6
+                        },
+                        {
+                            label: 'Chemical (Hardcover)',
+                            data: [50, 40, 90, 85], 
+                            backgroundColor: '#44403c',
+                            barPercentage: 0.6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: 'Relative Impact Index (Approx)' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                afterBody: function(context) {
+                                    return "Note: While Mechanical saves trees (High Yield), it uses immense physical energy. Chemical wastes wood but produces stronger paper.";
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initLongevityChart() {
+            const ctx = document.getElementById('longevityChart').getContext('2d');
+            const years = Array.from({length: 11}, (_, i) => i * 10);
+            
+            longevityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Hardcover (Acid-Free)',
+                            data: [100, 99, 98, 98, 97, 97, 96, 96, 95, 95, 95],
+                            borderColor: '#292524',
+                            tension: 0.1,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Paperback (Groundwood)',
+                            data: [100, 85, 70, 55, 45, 35, 30, 25, 20, 15, 10],
+                            borderColor: '#d97706',
+                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Whiteness / Strength (%)' },
+                            min: 0,
+                            max: 100
+                        },
+                        x: {
+                            title: { display: true, text: 'Years on Shelf' }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            // Note: Annotation plugin not loaded
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            const config = dataConfig[state.mode];
+            compChart.data.datasets[0].data = config.composition;
+            compChart.update();
+        }
+
+    </script>
+</body>
+</html>

@@ -68,7 +68,7 @@ function revealSingleCard(cardId) {
     }
 
     // Show the copy panel
-    document.getElementById('spreadCards').textContent += "Also include an Overall Message for this 'Taropian Songs' tarot deck reading.";
+    document.getElementById('spreadCards').textContent += "Also include an Overall Message for this 'Taropian Songs' tarot deck reading. Show the Overall Message before explaining each card. Do not make musical references.";
     document.getElementById('copyPanel').style.display = 'block';
   }
 }

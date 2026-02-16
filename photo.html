@@ -70,7 +70,7 @@ async function startCamera() {
         });
         video.srcObject = stream;
         video.onloadedmetadata = () => {
-            status.textContent = 'Space = capture, D = download, R = retake';
+            status.textContent = 'Space = capture, D = download, R = retake — or say "take photo"';
         };
     } catch (err) {
         status.textContent = 'Camera error: ' + err.message;
@@ -204,6 +204,25 @@ document.onkeydown = e => {
 };
 
 startCamera();
+
+// Voice command: say "take photo"
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = 'en-US';
+    let micAllowed = false;
+    recognition.onstart = () => { micAllowed = true; };
+    recognition.onresult = (event) => {
+        const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+        if (transcript.includes('take photo')) {
+            document.getElementById('snap').click();
+        }
+    };
+    recognition.onend = () => { if (micAllowed) recognition.start(); };
+    recognition.onerror = (e) => { if (e.error === 'not-allowed') micAllowed = false; };
+    recognition.start();
+}
 </script>
 </body>
 </html>

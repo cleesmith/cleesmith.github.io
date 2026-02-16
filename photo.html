@@ -25,13 +25,13 @@
 </head>
 <body>
     <div class="camera-container" id="cameraContainer">
-        <video id="video" autoplay playsinline class="mirror"></video>
+        <video id="video" autoplay playsinline></video>
         <canvas id="canvas"></canvas>
     </div>
     
     <div class="controls">
         <button id="snap">Take Photo</button>
-        <button id="toggleMirror">Mirror: On</button>
+        <button id="toggleMirror">Mirror: Off</button>
         <button id="toggleOrientation">Landscape</button>
     </div>
     
@@ -55,7 +55,7 @@ const photo = document.getElementById('photo');
 const cameraContainer = document.getElementById('cameraContainer');
 
 let stream = null;
-let mirrored = true;
+let mirrored = false;
 let isPortrait = false;
 
 async function startCamera() {

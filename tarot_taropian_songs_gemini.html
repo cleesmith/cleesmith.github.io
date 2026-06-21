@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Taropian Songs Tarot</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="images/me-hermit-1-121x119.png" type="image/x-icon">
+  <meta name="description" content="personal website for slip the trap">
+
+  <link rel="stylesheet" href="css/w3.css">
+  <link href="fontawesome/css/all.min.css" rel="stylesheet">
+  
+  <style>
+    /* Wrapper to keep horseshoe and copy panel together */
+    .tarot-wrapper {
+      max-width: min(96vw, 900px);
+      margin: 0 auto;
+    }
+
+    /* Horseshoe Spread Layout */
+    .horseshoe-container {
+      position: relative;
+      padding: clamp(12px, 2vh, 28px);
+      padding-bottom: 0; /* removes bottom padding */
+      min-height: clamp(500px, 68vh, 650px);
+    }
+    
+    .card-position {
+      position: absolute;
+      width: clamp(85px, 10vw, 130px);
+      transition: transform 0.3s ease;
+      padding: 5px;
+    }
+    
+    .card-position img {
+      width: 100%;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .card-position h6 {
+      display: none;
+    }
+    
+    #position-you:hover {
+      transform: translateX(-50%) scale(1.05);
+    }
+
+    #position-future:hover {
+      transform: rotate(-90deg) scale(1.05);
+    }
+
+    #position-setting:hover {
+      transform: rotate(90deg) scale(1.05);
+    }
+
+    #position-present:hover {
+      transform: rotate(-90deg) scale(1.05);
+    }
+
+    #position-obstacles:hover {
+      transform: rotate(90deg) scale(1.05);
+    }
+
+    #position-past:hover {
+      transform: rotate(-90deg) scale(1.05);
+    }
+
+    #position-outcome:hover {
+      transform: rotate(90deg) scale(1.05);
+    }
+    
+    .card-label {
+      position: absolute;
+      font-style: italic;
+      color: white;
+      font-size: 11px;
+      font-weight: normal;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 3px 6px;
+      border-radius: 3px;
+    }
+
+    .card-position:hover + .card-label {
+      opacity: 1;
+    }
+    
+    /* Card positions for horseshoe spread */
+    #position-you {
+      top: 3%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #position-future {
+      top: 12%;
+      left: 15%;
+      transform: rotate(-90deg);
+    }
+
+    #position-setting {
+      top: 12%;
+      right: 15%;
+      transform: rotate(90deg);
+    }
+
+    #position-present {
+      top: 35%;
+      left: 15%;
+      transform: rotate(-90deg);
+    }
+
+    #position-obstacles {
+      top: 35%;
+      right: 15%;
+      transform: rotate(90deg);
+    }
+
+    #position-past {
+      top: 58%;
+      left: 15%;
+      transform: rotate(-90deg);
+    }
+
+    #position-outcome {
+      top: 58%;
+      right: 15%;
+      transform: rotate(90deg);
+    }
+    
+    /* Labels */
+    #label-you {
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #label-future {
+      top: 22%;
+      left: 15%;
+      transform: translateX(-50%);
+    }
+
+    #label-setting {
+      top: 22%;
+      right: 15%;
+      transform: translateX(50%);
+    }
+
+    #label-present {
+      top: 45%;
+      left: 15%;
+      transform: translateX(-50%);
+    }
+
+    #label-obstacles {
+      top: 45%;
+      right: 15%;
+      transform: translateX(50%);
+    }
+
+    #label-past {
+      top: 68%;
+      left: 15%;
+      transform: translateX(-50%);
+    }
+
+    #label-outcome {
+      top: 68%;
+      right: 15%;
+      transform: translateX(50%);
+    }
+    
+    /* Center text */
+    .center-text {
+      position: absolute;
+      top: 37%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: white;
+      z-index: 10;
+    }
+
+    .center-text img {
+      border-radius: 8px;
+      width: clamp(75px, 9vw, 110px);
+      min-width: 0;
+      max-width: none;
+    }
+
+    .center-text .w3-button {
+      padding: 4px 10px;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    .center-text .w3-button:hover {
+      background-color: #333333;
+    }
+
+    /* Copy panel below horseshoe-container */
+    #copyPanel {
+      padding: 0 clamp(12px, 2vh, 28px);
+      margin-top: 0;
+    }
+
+    #copyPanel .w3-card-4 {
+      max-width: 550px;
+      margin: 0 auto;
+      border: 1px solid #555;
+      background-color: #1a1a1a;
+    }
+
+    #copyPanel .w3-container {
+      padding: 10px 15px;
+    }
+
+    #copyPanel #spreadCards {
+      font-size: 12px;
+      line-height: 1.4;
+      margin: 0;
+      color: #ccc;
+    }
+
+    #copyPanel #copyHeader {
+      cursor: pointer;
+      padding: 10px 15px;
+    }
+
+    #copyPanel #copyText {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* Modal overlay */
+    #modal01 {
+      z-index: 10000 !important;
+    }
+    
+    .center-text h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .center-text p {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .horseshoe-container {
+        min-height: clamp(550px, 70vh, 700px);
+      }
+
+      .card-position {
+        width: clamp(65px, 18vw, 95px);
+      }
+
+      .center-text img {
+        width: clamp(60px, 15vw, 90px);
+      }
+      
+      .card-label {
+        font-size: 9px;
+      }
+      
+      #position-you {
+        top: 3%;
+      }
+
+      #position-future {
+        top: 12%;
+        left: 10%;
+        transform: rotate(-90deg);
+      }
+
+      #position-setting {
+        top: 12%;
+        right: 10%;
+        transform: rotate(90deg);
+      }
+
+      #position-present {
+        top: 35%;
+        left: 10%;
+        transform: rotate(-90deg);
+      }
+
+      #position-obstacles {
+        top: 35%;
+        right: 10%;
+        transform: rotate(90deg);
+      }
+
+      #position-past {
+        top: 58%;
+        left: 10%;
+        transform: rotate(-90deg);
+      }
+
+      #position-outcome {
+        top: 58%;
+        right: 10%;
+        transform: rotate(90deg);
+      }
+
+      #position-you:hover {
+        transform: translateX(-50%) scale(1.05);
+      }
+
+      #position-future:hover {
+        transform: rotate(-90deg) scale(1.05);
+      }
+
+      #position-setting:hover {
+        transform: rotate(90deg) scale(1.05);
+      }
+
+      #position-present:hover {
+        transform: rotate(-90deg) scale(1.05);
+      }
+
+      #position-obstacles:hover {
+        transform: rotate(90deg) scale(1.05);
+      }
+
+      #position-past:hover {
+        transform: rotate(-90deg) scale(1.05);
+      }
+
+      #position-outcome:hover {
+        transform: rotate(90deg) scale(1.05);
+      }
+
+      #label-you {
+        top: 20%;
+      }
+
+      #label-future {
+        top: 22%;
+        left: 10%;
+        transform: translateX(-50%);
+      }
+
+      #label-setting {
+        top: 22%;
+        right: 10%;
+        transform: translateX(50%);
+      }
+
+      #label-present {
+        top: 45%;
+        left: 10%;
+        transform: translateX(-50%);
+      }
+
+      #label-obstacles {
+        top: 45%;
+        right: 10%;
+        transform: translateX(50%);
+      }
+
+      #label-past {
+        top: 68%;
+        left: 10%;
+        transform: translateX(-50%);
+      }
+
+      #label-outcome {
+        top: 68%;
+        right: 10%;
+        transform: translateX(50%);
+      }
+
+      .center-text {
+        top: 37%;
+      }
+
+      .center-text h2 {
+        font-size: 18px;
+      }
+
+      .center-text p {
+        font-size: 14px;
+      }
+
+      #copyPanel #spreadCards {
+        font-size: 11px;
+      }
+
+      #copyPanel #copyText {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .horseshoe-container {
+        min-height: clamp(480px, 65vh, 600px);
+      }
+
+      .card-position {
+        width: clamp(55px, 16vw, 75px);
+      }
+
+      .center-text img {
+        width: clamp(50px, 14vw, 75px);
+      }
+
+      .center-text .w3-button {
+        font-size: 12px;
+        padding: 3px 8px;
+        margin: 0 2px;
+      }
+
+      #position-future,
+      #position-present,
+      #position-past {
+        left: 8%;
+      }
+
+      #position-setting,
+      #position-obstacles,
+      #position-outcome {
+        right: 8%;
+      }
+
+      #label-future,
+      #label-present,
+      #label-past {
+        left: 8%;
+      }
+
+      #label-setting,
+      #label-obstacles,
+      #label-outcome {
+        right: 8%;
+      }
+    }
+  </style>
+</head>
+
+<body class="w3-black">
+
+<!-- navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-left-align w3-small">
+    <a href="index.html" class="w3-bar-item w3-button w3-white w3-hover-purple w3-padding"><i class="fa fa-home"></i></a>
+    <a href="tarot_taropian_songs.html" class="w3-bar-item w3-button w3-hover-purple w3-padding">
+      <i class="fa-solid fa-users-rectangle w3-text-yellow"></i>
+      tarot
+    </a>
+    <a href="taropian-songs-tarot-images.html" class="w3-bar-item w3-button w3-hover-purple w3-padding">
+      <i class="fa-solid fa-image w3-text-green"></i>
+      Taropian Songs Tarot
+    </a>
+  </div>
+  <!-- navbar on small screens -->
+  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-small w3-small">
+    <a href="index.html" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home"></i></a>
+    <a href="tarot_taropian_songs.html" class="w3-bar-item w3-button w3-hover-purple w3-padding">
+      <i class="fa-solid fa-users-rectangle w3-text-yellow"></i>
+      tarot
+    </a>
+    <a href="taropian-songs-tarot-images.html" class="w3-bar-item w3-button w3-hover-purple w3-padding">
+      <i class="fa-solid fa-image w3-text-green"></i>
+      Taropian Songs Tarot
+    </a>
+  </div>
+</div>
+
+<div class="w3-row-padding w3-padding w3-container w3-margin-bottom w3-black">
+  <div class="w3-content">
+    <br><br><br>
+
+    <!-- Wrapper containing horseshoe spread and copy panel -->
+    <div class="tarot-wrapper">
+      
+      <!-- Horseshoe Spread -->
+      <div class="horseshoe-container" style="padding-bottom:0px; margin-bottom:0px;">
+        <!-- Center image and buttons -->
+        <div class="center-text w3-card w3-padding-32">
+          <div class="w3-padding-small"><button class="w3-button" onclick="shuffleDeck()" id="shuffle" title="shuffle cards">shuffle</button></div>
+          <a href="TaropianSongsTarotBook.html" target="_blank" title="Buy deck and books">
+            <img src="images/TTSwebapp.jpeg" alt="Taropian Songs Tarot" style="width:100%; max-width:110px; cursor: pointer;">
+          </a>
+          <div class="w3-padding-small"><button class="w3-button" onclick="pull7Cards()" id="deal" title="click or tap to pull 7 cards">reveal</button></div>
+        </div>
+
+        <!-- Card 1: You (top center) -->
+        <div id="position-you" class="card-position">
+          <img id="card1" src="images/0_Backs_tiff.jpg" onclick="onClick(this)">
+          <div class="w3-container">
+            <h6 id="title1" class="w3-center"></h6>
+            <p id="cardNum1" hidden></p>
+          </div>
+        </div>
+        <div id="label-you" class="card-label">Position 4: The Core Problem or Center of the Matter</div>
+
+        <!-- Card 2: Future (top left) -->
+        <div id="position-future" class="card-position">
+          <img id="card2" src="images/0_Backs_tiff.jpg" onclick="onClick(this)">
+          <div class="w3-container">
+            <h6 id="title2" class="w3-center"></h6>
+            <p id="cardNum2" hidden></p>
+          </div>
+        </div>
+        <div id="label-future" class="card-label">Position 3: The Future (Near)</div>
+
+        <!-- Card 3: Setting (top right) -->
+        <div id="position-setting" class="card-position">
+          <img id="card3" src="images/0_Backs_tiff.jpg" onclick="onClick(this)">
+          <div class="w3-container">
+            <h6 id="title3" class="w3-center"></h6>
+            <p id="cardNum3" hidden></p>
+          </div>
+        </div>
+        <div id="label-setting" class="card-label">Position 5: The Influence of Others</div>
+
+        <!-- Card 4: Present (middle left) -->
+        <div id="position-present" class="card-position">
+          <img id="card4" src="images/0_Backs_tiff.jpg" onclick="onClick(this)">
+          <div class="w3-container">
+            <h6 id="title4" class="w3-center"></h6>
+            <p id="cardNum4" hidden></p>
+          </div>
+        </div>
+        <div id="label-present" class="card-label">Position 2: The Present</div>
+
+        <!-- Card 5: Obstacles (middle right) -->
+        <div id="position-obstacles" class="card-position">
+          <img id="card5" src="images/0_Backs_tiff.jpg" onclick="onClick(this)">
+          <div class="w3-container">
+            <h6 id="title5" class="w3-center"></h6>
+            <p id="cardNum5" hidden></p>
+          </div>
+        </div>
+        <div id="label-obstacles" class="card-label">Position 6: Hopes and Fears</div>
+
+        <!-- Card 6: Past (bottom left) -->
+        <div id="position-past" class="card-position">
+          <img id="card6" src="images/0_Backs_tiff.jpg" onclick="onClick(this)">
+          <div class="w3-container">
+            <h6 id="title6" class="w3-center"></h6>
+            <p id="cardNum6" hidden></p>
+          </div>
+        </div>
+        <div id="label-past" class="card-label">Position 1: The Past</div>
+
+        <!-- Card 7: Outcome (bottom right) -->
+        <div id="position-outcome" class="card-position">
+          <img id="card7" src="images/0_Backs_tiff.jpg" onclick="onClick(this)">
+          <div class="w3-container">
+            <h6 id="title7" class="w3-center"></h6>
+            <p id="cardNum7" hidden></p>
+          </div>
+        </div>
+        <div id="label-outcome" class="card-label">Position 7: The Final Outcome</div>
+      </div>
+
+      <!-- Control Panel - sibling to horseshoe-container, inside wrapper -->
+      <div id="copyPanel" style="display: none; margin-top:-50px; position: relative; z-index: 1;">
+        <div class="w3-card-4">
+          <header id="copyHeader" class="w3-container w3-blue" onclick="copyToClipboard()" style="padding: 6px 16px; cursor: pointer;">
+            <span id="copyText" style="display: block; font-size: 12px; line-height: 1.3;">click to copy spread into clipboard - get a general AI reading</span>
+          </header>
+          <div class="w3-container">
+            <p id="spreadCards"></p>
+          </div>
+        </div>
+      </div>
+
+      <br /><br /><br /><br />
+
+    </div>
+    <!-- End tarot-wrapper -->
+
+  </div>
+</div>
+
+<div class="w3-black w3-bottom" style="z-index: 50;">
+  <div class="w3-center">
+    <footer class="w3-container w3-center">  
+      <div class="w3-large w3-bar">
+        <div class="w3-bar-item">
+          <a href="index.html" style="text-decoration: none;" title=". . . . . Home">
+            <i class="fa fa-home w3-text-purple"></i>
+          </a>
+          &nbsp;&nbsp;&nbsp;
+          <a href="tarot_taropian_songs.html" style="text-decoration: none;" title=". . . . . Taropian Songs Tarot - horseshoe spread">
+            <i class="fa-solid fa-users-rectangle w3-text-yellow w3-hover-greyscale"></i>
+          </a>
+          &nbsp;&nbsp;&nbsp;
+          <a href="taropian-songs-tarot-images.html" style="text-decoration: none;" title=". . . . . Taropian Songs Tarot cards">
+            <i class="fa-solid fa-image w3-text-green w3-hover-greyscale"></i>
+          </a>
+          &nbsp;&nbsp;&nbsp;
+          <a href="http://www.youtube.com/@slipthetrap" target="_blank" style="text-decoration: none;" title=". . . . . YouTube">
+            <i class="fa-brands fa-youtube w3-text-red w3-hover-greyscale"></i>
+          </a>
+          &nbsp;&nbsp;&nbsp;
+          <a href="shop.html" style="text-decoration: none;" title=". . . . . Shop: Art, Books, Decks, Shirts, Etsy...">
+            <i class="fa-solid fa-shop w3-text-orange w3-hover-greyscale"></i>
+          </a>
+        </div>
+      </div>
+      <div class="w3-bar w3-medium">
+        <div class="w3-bar-item w3-text-gray">
+          <i class="fa-regular fa-copyright"></i> 2017-2026
+        </div>
+        <a href="about.html" class="w3-bar-item w3-button w3-circle" style="text-decoration: none;" title=". . . . . About">
+          <i class="fa-solid fa-person-hiking w3-text-green"></i>
+          &nbsp;<i class="w3-text-light-gray">Slip the Trap</i>&nbsp;
+          <i class="fa-solid fa-peace w3-text-purple" title=". . . . . Peace!"></i>
+        </a>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- modal popup = card detail -->
+<div class="w3-container">
+  <div id="modal01" class="w3-modal w3-animate-zoom w3-black">
+    <div class="w3-modal-content">
+      <div class="w3-black" style="display:flex; justify-content:center; align-items:flex-start; gap:20px; padding:8px; position:relative;">
+        <div style="text-align:center;">
+          <img id="imgTts" src="images/0_Backs_tiff.jpg" class="w3-round-medium" alt="Taropian Songs" style="width:280px; max-width:100%; cursor:pointer;" title="Click to search for more info">
+          <p class="w3-small" style="margin:8px 0 0 0; color:#ccc;">Taropian Songs Tarot</p>
+        </div>
+        <div style="text-align:center;">
+          <img id="imgRws" src="images/0_Backs_tiff.jpg" class="w3-round-medium" alt="RWS" style="width:220px; max-width:100%; cursor:pointer;" title="Click to search for more info">
+          <div class="w3-left-align w3-small" style="padding:8px 0 0 0; color:#ccc;">
+            <p id="txtRws" style="margin:0;"></p>
+          </div>
+        </div>
+        <span onclick="document.getElementById('modal01').style.display='none'" class="w3-button w3-tiny w3-grey w3-round-medium" style="position:absolute; top:8px; right:8px;">close</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/deal.js"></script>
+<script src="js/deck.js"></script>
+<script src="js/tarot-images.js"></script>
+<script src="js/card-interactions.js"></script>
+
+</body>
+</html>

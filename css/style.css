@@ -249,7 +249,14 @@ html.js .reveal.in { opacity: 1; translate: 0 0; }
 .hero-home { position: relative; padding-top: 84px; padding-bottom: 110px; }
 .floats { position: absolute; inset: 0; pointer-events: none; }
 .float { position: absolute; }
-.float-1 { top: 40px; left: 2%; width: 54px; height: 54px; border-radius: 50%; background: var(--amber); --r: 0deg; animation: floaty 7s ease-in-out infinite; }
+/* .float-1 is a full moon (images/moon.png), gently drifting */
+.float-1 {
+  top: 40px; left: 2%; width: 60px; height: 60px; border-radius: 50%;
+  background: url("../images/moon.png") center / cover no-repeat;
+  box-shadow: 0 0 22px 6px rgba(240, 233, 214, 0.55);
+  --r: 0deg; animation: floaty 7s ease-in-out infinite;
+}
+[data-theme="dark"] .float-1 { box-shadow: 0 0 26px 8px rgba(240, 233, 214, 0.25); }
 .float-2 { top: 190px; right: 4%; width: 44px; height: 44px; background: var(--teal); border-radius: 12px; --r: 18deg; transform: rotate(18deg); animation: floaty 9s ease-in-out infinite 1s; }
 .float-3 { bottom: 90px; left: 8%; width: 34px; height: 34px; background: var(--violet); --r: 45deg; transform: rotate(45deg); animation: floaty 8s ease-in-out infinite 0.5s; }
 .hero-home .hero-title { font-size: clamp(52px, 7.5vw, 96px); line-height: 0.98; margin: 22px 0 20px; text-wrap: balance; }

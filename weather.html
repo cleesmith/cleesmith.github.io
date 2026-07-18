@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Weather · Westfield, NY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Lexend+Deca:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:dark;
+    --bg:#1B1A17; --wash:#201F1B; --ink:#EDEAE3; --ink-soft:#A8A69C;
+    --ink-grey:#6E6C63; --hairline:#35342E; --edge:#3A3833; --clay:#C6613F;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"Lexend Deca",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:15px;line-height:1.55;}
+  .band-top{background:var(--wash);border-bottom:1px solid var(--edge);}
+  .inner{max-width:860px;margin:0 auto;padding:52px 32px 40px;}
+  .band-bottom .inner{padding:36px 32px 60px;}
+  .daydate{color:var(--ink-soft);font-size:13px;letter-spacing:.04em;margin-bottom:14px;}
+  h1{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:40px;line-height:1.2;margin-bottom:30px;}
+  .terrain{width:100%;height:auto;display:block;}
+  .axis{display:flex;justify-content:space-between;color:var(--ink-grey);font-size:11.5px;
+    letter-spacing:.05em;margin:2px 2px 26px;}
+  .acts{display:flex;}
+  .act{flex:1;padding:0 22px;}
+  .act:first-child{padding-left:0;} .act:last-child{padding-right:0;}
+  .act + .act{border-left:1px solid var(--hairline);}
+  .act .range{font-weight:600;font-size:14px;letter-spacing:.02em;margin-bottom:6px;}
+  .act p{color:var(--ink-soft);font-size:14px;}
+  .weather{margin-top:32px;padding-top:20px;border-top:1px solid var(--hairline);}
+  .wx1{font-size:15px;color:var(--ink);margin-bottom:5px;}
+  .wx2{font-size:14px;color:var(--ink-soft);}
+  .src{color:var(--ink-grey);font-size:12px;}
+  .err{color:var(--ink-soft);font-size:15px;}
+  @media (max-width:640px){
+    h1{font-size:30px;}
+    .inner{padding:36px 20px 32px;}
+    .acts{flex-direction:column;}
+    .act{padding:12px 0;}
+    .act + .act{border-left:none;border-top:1px solid var(--hairline);}
+  }
+</style>
+</head>
+<body>
+
+<div class="band-top">
+  <div class="inner">
+    <div class="daydate" id="daydate"></div>
+    <h1 id="headline">&nbsp;</h1>
+    <svg class="terrain" id="terrain" viewBox="0 0 840 170" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="axis"><span>12 AM</span><span>6 AM</span><span>NOON</span><span>6 PM</span><span>11 PM</span></div>
+    <div class="acts" id="acts"></div>
+    <div class="weather">
+      <div class="wx1" id="wx1"></div>
+      <div class="wx2" id="wx2"></div>
+    </div>
+  </div>
+</div>
+
+<div class="band-bottom">
+  <div class="inner">
+    <p class="src" id="src">Loading the forecast&hellip;</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var LAT=42.3223, LON=-79.5781, TZ='America/New_York';
+  var $=function(id){return document.getElementById(id);};
+
+  function fmtHour(h){
+    var m=h<12?'AM':'PM', d=h%12; if(d===0)d=12;
+    return d+' '+m;
+  }
+  function fmtRange(a,b){ // clock hours, inclusive
+    var am=a<12, bm=b<12, da=a%12||12, db=b%12||12;
+    if(a===b) return 'around '+fmtHour(a);
+    if(am===bm) return da+'–'+db+' '+(am?'AM':'PM');
+    return da+' AM – '+db+' PM';
+  }
+  function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+  function getJSON(url){
+    return fetch(url,{headers:{'Accept':'application/geo+json'}})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); });
+  }
+
+  function todayInTZ(){
+    return new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date()); // YYYY-MM-DD
+  }
+
+  function render(hourly, daily){
+    var today=todayInTZ();
+    var now=new Date();
+    var dd=new Intl.DateTimeFormat('en-US',{timeZone:TZ,weekday:'long',month:'long',day:'numeric',year:'numeric'}).formatToParts(now);
+    var g=function(t){for(var i=0;i<dd.length;i++)if(dd[i].type===t)return dd[i].value;return '';};
+    $('daydate').textContent=g('weekday')+' · '+g('month')+' '+g('day')+' '+g('year');
+
+    // ---- today's hourly periods (NWS returns local-offset ISO times)
+    var hrs=[];
+    (hourly.properties.periods||[]).forEach(function(p){
+      if(p.startTime.slice(0,10)!==today) return;
+      hrs.push({
+        h:parseInt(p.startTime.slice(11,13),10),
+        pop:(p.probabilityOfPrecipitation&&p.probabilityOfPrecipitation.value)||0,
+        t:p.temperature,
+        wind:parseInt((p.windSpeed||'0').replace(/\D+/g,' ').trim().split(' ').pop()||'0',10),
+        sf:p.shortForecast||''
+      });
+    });
+    if(!hrs.length) throw new Error('no hours');
+
+    // ---- rain windows (>=40%), slight chances (20-39%)
+    var windows=[], cur=null;
+    hrs.forEach(function(x){
+      if(x.pop>=40){ if(!cur){cur={a:x.h,b:x.h,peak:x.pop,peakH:x.h};windows.push(cur);}
+        else {cur.b=x.h; if(x.pop>cur.peak){cur.peak=x.pop;cur.peakH=x.h;}} }
+      else cur=null;
+    });
+    var slight=null;
+    hrs.forEach(function(x){ if(x.pop>=20&&x.pop<40&&(!slight||x.pop>slight.pop)) slight=x; });
+
+    // ---- daily summary for condition, high/low, gusts
+    var high=null, low=null, cond='', det='';
+    (daily.properties.periods||[]).forEach(function(p){
+      if(p.startTime.slice(0,10)===today){
+        if(p.isDaytime&&high===null){high=p.temperature;cond=p.shortForecast;det=p.detailedForecast;}
+        if(!p.isDaytime&&low===null){low=p.temperature;if(!cond){cond=p.shortForecast;det=p.detailedForecast;}}
+      }
+    });
+    if(high===null){ // page opened late: fall back to first period
+      var p0=daily.properties.periods[0]; cond=p0.shortForecast; det=p0.detailedForecast;
+      if(p0.isDaytime)high=p0.temperature; else low=p0.temperature;
+    }
+    var gm=det.match(/gusts? as high as (\d+)/i);
+    var gust=gm?parseInt(gm[1],10):0;
+    var maxWind=Math.max.apply(null,hrs.map(function(x){return x.wind;}));
+    var windDirM=det.match(/\b(north|south|east|west|northeast|northwest|southeast|southwest)\b[a-z]*\s+wind/i);
+    var windDir=windDirM?windDirM[1]:'';
+
+    // ---- headline
+    var head=cond.replace(/\s+/g,' ');
+    if(windows.length){
+      head=head.replace(/\.$/,'')+', mainly '+fmtRange(windows[0].a,windows[0].b)+'.';
+    } else if(!/\./.test(head)) head+='.';
+    $('headline').textContent=head;
+
+    // ---- weather lines
+    var w1=cond;
+    if(high!==null)w1+=' · high '+high;
+    if(low!==null)w1+=(high!==null?', low '+low:' · low '+low);
+    if(gust>=25)w1+=' · '+(windDir?windDir+' ':'')+'wind gusting past '+gust;
+    else if(maxWind>=15)w1+=' · '+(windDir?windDir+' ':'')+'wind near '+maxWind;
+    $('wx1').textContent=w1;
+
+    var parts=[];
+    windows.forEach(function(w){
+      parts.push('Rain likely '+fmtRange(w.a,w.b)+', peaking around '+fmtHour(w.peakH).toLowerCase().replace(' ',' ')+' ('+w.peak+'%)');
+    });
+    if(!windows.length&&slight) parts.push('A slight chance around '+fmtHour(slight.h)+' ('+slight.pop+'%)');
+    else if(windows.length&&slight&&(slight.h<windows[0].a-1||slight.h>windows[windows.length-1].b+1))
+      parts.push('a slight chance around '+fmtHour(slight.h));
+    if(!parts.length) parts.push('No rain expected today');
+    $('wx2').textContent=parts.join(' · ');
+
+    // ---- terrain: rain chance drawn as water, 24h axis
+    var X=function(h){return (h/23)*840;}, Y=function(p){return 140-p*0.85;};
+    var pts=hrs.map(function(x){return [X(x.h),Y(x.pop)];});
+    // extend flat to edges for hours already passed / not reported
+    if(hrs[0].h>0) pts.unshift([0,Y(0)]);
+    if(hrs[hrs.length-1].h<23) pts.push([840,Y(0)]);
+    var dPath='M'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L');
+    var svg='<path d="'+dPath+'" fill="none" stroke="#EDEAE3" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    // clay accent: hatch under the wettest window
+    if(windows.length){
+      var w=windows.reduce(function(a,b){return b.peak>a.peak?b:a;});
+      for(var hx=w.a;hx<=w.b;hx++){
+        var x0=X(hx);
+        svg+='<line x1="'+(x0+3)+'" y1="'+(Y(0)-2)+'" x2="'+(x0-3)+'" y2="'+(Y(0)+8)+'" stroke="#C6613F" stroke-width="1.8" stroke-linecap="round"/>';
+      }
+      svg+='<circle cx="'+X(w.peakH)+'" cy="'+Y(w.peak)+'" r="4" fill="#C6613F"/>';
+      svg+='<text x="'+X(w.peakH)+'" y="'+(Y(w.peak)-10)+'" text-anchor="middle" fill="#A8A69C" font-size="11" font-family="Lexend Deca,sans-serif">'+w.peak+'%</text>';
+    } else {
+      svg+='<circle cx="700" cy="46" r="16" fill="none" stroke="#C6613F" stroke-width="1.8"/>';
+    }
+    $('terrain').innerHTML=svg;
+
+    // ---- acts: morning / afternoon / evening
+    var spans=[{n:'6 – 11 AM',a:6,b:11},{n:'NOON – 5 PM',a:12,b:17},{n:'6 – 11 PM',a:18,b:23}];
+    var actsHtml='';
+    spans.forEach(function(s){
+      var inSpan=hrs.filter(function(x){return x.h>=s.a&&x.h<=s.b;});
+      var sent;
+      if(!inSpan.length){ sent='Already behind you.'; }
+      else{
+        var mx=Math.max.apply(null,inSpan.map(function(x){return x.pop;}));
+        var tMax=Math.max.apply(null,inSpan.map(function(x){return x.t;}));
+        if(mx>=60)sent='Rain likely, up to '+mx+'% · near '+tMax+'°';
+        else if(mx>=40)sent='Rain possible ('+mx+'%) · near '+tMax+'°';
+        else if(mx>=20)sent='A slight chance ('+mx+'%) · near '+tMax+'°';
+        else sent='Dry · near '+tMax+'°';
+      }
+      actsHtml+='<div class="act"><div class="range">'+s.n+'</div><p>'+esc(sent)+'</p></div>';
+    });
+    $('acts').innerHTML=actsHtml;
+
+    var upd=new Intl.DateTimeFormat('en-US',{timeZone:TZ,hour:'numeric',minute:'2-digit'}).format(now);
+    $('src').textContent='Westfield, NY · National Weather Service · updated '+upd;
+  }
+
+  function load(){
+    getJSON('https://api.weather.gov/points/'+LAT+','+LON)
+      .then(function(p){
+        return Promise.all([
+          getJSON(p.properties.forecastHourly),
+          getJSON(p.properties.forecast)
+        ]);
+      })
+      .then(function(r){ render(r[0],r[1]); })
+      .catch(function(e){
+        $('src').innerHTML='<span class="err">The forecast didn’t load — the National Weather Service may be briefly unavailable. It will retry shortly.</span>';
+      });
+  }
+  load();
+  setInterval(load, 30*60*1000);
+})();
+</script>
+</body>
+</html>

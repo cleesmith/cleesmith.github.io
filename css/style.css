@@ -16,10 +16,18 @@
   --teal: oklch(0.70 0.13 195);
   --violet: oklch(0.70 0.14 300);
   --amber: oklch(0.78 0.14 85);
+  --green: oklch(0.70 0.14 140);
+  --blue: oklch(0.70 0.13 250);
+  --rose: oklch(0.70 0.14 350);
+  --slate: oklch(0.70 0.03 250);
   --coral-soft: oklch(0.94 0.04 35);
   --teal-soft: oklch(0.94 0.04 195);
   --violet-soft: oklch(0.94 0.04 300);
   --amber-soft: oklch(0.95 0.05 85);
+  --green-soft: oklch(0.94 0.04 140);
+  --blue-soft: oklch(0.94 0.04 250);
+  --rose-soft: oklch(0.94 0.04 350);
+  --slate-soft: oklch(0.94 0.01 250);
   --shadow: 0 2px 0 var(--ink);
   --font-display: "Bricolage Grotesque", "Avenir Next", "Trebuchet MS", sans-serif;
   --font-body: "DM Sans", -apple-system, "Segoe UI", Helvetica, sans-serif;
@@ -36,10 +44,18 @@
   --teal: oklch(0.74 0.12 195);
   --violet: oklch(0.74 0.13 300);
   --amber: oklch(0.80 0.13 85);
+  --green: oklch(0.74 0.13 140);
+  --blue: oklch(0.74 0.12 250);
+  --rose: oklch(0.74 0.13 350);
+  --slate: oklch(0.74 0.03 250);
   --coral-soft: oklch(0.30 0.05 35);
   --teal-soft: oklch(0.30 0.04 195);
   --violet-soft: oklch(0.30 0.05 300);
   --amber-soft: oklch(0.32 0.05 85);
+  --green-soft: oklch(0.30 0.05 140);
+  --blue-soft: oklch(0.30 0.04 250);
+  --rose-soft: oklch(0.30 0.05 350);
+  --slate-soft: oklch(0.30 0.01 250);
   --shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
 }
 
@@ -98,6 +114,10 @@ html.js .reveal.in { opacity: 1; translate: 0 0; }
 .nav-link.h-coral:hover { background: var(--coral-soft); }
 .nav-link.h-violet:hover { background: var(--violet-soft); }
 .nav-link.h-teal:hover { background: var(--teal-soft); }
+.nav-link.h-green:hover { background: var(--green-soft); }
+.nav-link.h-blue:hover { background: var(--blue-soft); }
+.nav-link.h-rose:hover { background: var(--rose-soft); }
+.nav-link.h-slate:hover { background: var(--slate-soft); }
 .theme-toggle {
   cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--ink);
   width: 36px; height: 36px; border-radius: 50%; font-size: 15px;

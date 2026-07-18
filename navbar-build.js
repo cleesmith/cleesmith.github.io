@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Stamps the contents of navbar.html into every *.html page in this folder
-// between <!-- NAVBAR:START --> and <!-- NAVBAR:END --> markers.
+// Stamps shared blocks (navbar, footer) into every *.html page in this folder.
+// navbar.html -> between <!-- NAVBAR:START --> and <!-- NAVBAR:END -->
+// footer.html -> between <!-- FOOTER:START --> and <!-- FOOTER:END -->
 // Pages without markers are skipped and never touched.
 
 // Usage: node navbar-build.js
@@ -11,31 +12,42 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE_DIR = __dirname;
-const NAVBAR_FILE = path.join(SITE_DIR, "navbar.html");
-const START = "<!-- NAVBAR:START -->";
-const END = "<!-- NAVBAR:END -->";
 
-const navbar = fs.readFileSync(NAVBAR_FILE, "utf8").trim();
-const block = `${START}\n${navbar}\n${END}`;
+const PARTS = [
+  { src: "navbar.html", start: "<!-- NAVBAR:START -->", end: "<!-- NAVBAR:END -->" },
+  { src: "footer.html", start: "<!-- FOOTER:START -->", end: "<!-- FOOTER:END -->" },
+];
 
+// load block sources
+for (const p of PARTS) {
+  p.block = `${p.start}\n${fs.readFileSync(path.join(SITE_DIR, p.src), "utf8").trim()}\n${p.end}`;
+}
+
+const sources = PARTS.map((p) => p.src);
 const pages = fs.readdirSync(SITE_DIR).filter(
-  (f) => f.endsWith(".html") && f !== "navbar.html"
+  (f) => f.endsWith(".html") && !sources.includes(f)
 );
 
 let updated = 0;
 for (const file of pages) {
   const full = path.join(SITE_DIR, file);
   const html = fs.readFileSync(full, "utf8");
+  let newHtml = html;
+  const stamped = [];
 
-  const start = html.indexOf(START);
-  const end = html.indexOf(END);
+  for (const p of PARTS) {
+    const start = newHtml.indexOf(p.start);
+    const end = newHtml.indexOf(p.end);
+    if (start === -1 || end === -1) continue; // no markers, leave alone
+    newHtml = newHtml.slice(0, start) + p.block + newHtml.slice(end + p.end.length);
+    stamped.push(p.src.replace(".html", ""));
+  }
 
-  if (start === -1 || end === -1) continue; // no markers, leave alone
+  if (stamped.length === 0) continue;
 
-  const newHtml = html.slice(0, start) + block + html.slice(end + END.length);
   if (newHtml !== html) {
     fs.writeFileSync(full, newHtml);
-    console.log(`update ${file}`);
+    console.log(`update ${file} (${stamped.join(", ")})`);
     updated++;
   } else {
     console.log(`ok     ${file} (already current)`);

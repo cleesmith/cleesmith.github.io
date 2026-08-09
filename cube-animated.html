@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cube net fold</title>
+<style>
+  :root{
+    --face: clamp(52px, 11.5vw, 118px);
+    --bg:#16191C;
+    --ink:#E4E7E6;
+    --muted:#8A9491;
+    --band:#3E9C8C;
+    --band-line:#6FD2C0;
+    --end:#C48C34;
+    --end-line:#EFBC6A;
+    --rule:#2E3438;
+    --back:#3A3F42;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font:400 15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  #probe{position:absolute;width:var(--face);height:0;visibility:hidden;pointer-events:none}
+
+  .stage{flex:1;position:relative;perspective:1000px;perspective-origin:50% 46%}
+  .pivot{position:absolute;left:50%;top:46%;width:0;height:0;transform-style:preserve-3d}
+  .net{position:absolute;transform-style:preserve-3d}
+
+  /* ---------- paper ---------- */
+  .face{
+    position:absolute;
+    width:var(--face);height:var(--face);
+    transform-style:preserve-3d;
+    display:flex;align-items:center;justify-content:center;
+    font:600 clamp(11px,2.6vw,17px)/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+    letter-spacing:.04em;border:1px solid;backface-visibility:hidden;
+  }
+  .face::after{
+    content:'';position:absolute;inset:-1px;
+    background:var(--back);border:1px solid #4C5255;
+    transform:translateZ(-0.4px) rotateY(180deg);
+    backface-visibility:hidden;
+  }
+  .band{background:var(--band);border-color:var(--band-line);color:#08221E}
+  .end{background:var(--end);border-color:var(--end-line);color:#3A2603}
+
+  #f1{left:0;top:0}
+  #f2,#f3,#f4{left:var(--face);top:0;transform-origin:0 50%}
+  #ftop{left:0;top:calc(-1 * var(--face));transform-origin:50% 100%}
+  #fbot{left:0;top:var(--face);transform-origin:50% 0}
+
+  /* ---------- wooden block ---------- */
+  .cube{
+    position:absolute;left:0;top:0;
+    width:var(--face);height:var(--face);
+    transform-style:preserve-3d;
+  }
+  .w{
+    position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(40,24,8,.30) 0 1px,
+        rgba(40,24,8,0) 1px 4px,
+        rgba(168,128,74,.14) 4px 5px,
+        rgba(40,24,8,0) 5px 11px),
+      linear-gradient(178deg,#A8814F,#946F3F 55%,#9E7846);
+    border:1px solid #6B4E28;
+  }
+  .w.top,.w.bot{
+    background:
+      repeating-linear-gradient(0deg,
+        rgba(40,24,8,.26) 0 1px,
+        rgba(40,24,8,0) 1px 6px),
+      radial-gradient(120% 120% at 30% 25%,#B08A57,#8A6538);
+  }
+  /* shading via inset shadow — `filter` would flatten the face out of 3D */
+  .w.rt {box-shadow:inset 0 0 0 999px rgba(52,28,4,.12)}
+  .w.lf {box-shadow:inset 0 0 0 999px rgba(52,28,4,.17)}
+  .w.bk {box-shadow:inset 0 0 0 999px rgba(52,28,4,.24)}
+  .w.top{box-shadow:inset 0 0 0 999px rgba(255,238,208,.13)}
+  .w.bot{box-shadow:inset 0 0 0 999px rgba(52,28,4,.30)}
+
+  /* ---------- controls ---------- */
+  .panel{
+    border-top:1px solid var(--rule);background:var(--bg);
+    padding:14px clamp(14px,4vw,28px) 18px;
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px clamp(14px,3vw,26px);
+  }
+  .panel.hidden{display:none}
+  .grp{display:flex;align-items:center;gap:9px}
+  label{
+    font:500 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;
+  }
+  input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:22px;width:clamp(110px,26vw,230px)}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule)}
+  input[type=range]::-moz-range-track{height:2px;background:var(--rule)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:15px;height:15px;border-radius:50%;background:var(--ink);margin-top:-6.5px;cursor:grab}
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:var(--ink);cursor:grab}
+  button{
+    font:500 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em;
+    padding:8px 15px;border:1px solid var(--ink);border-radius:2px;
+    background:transparent;color:var(--ink);cursor:pointer;
+  }
+  button:hover{background:var(--ink);color:var(--bg)}
+  button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+  :focus-visible{outline:2px solid var(--band-line);outline-offset:2px}
+  .hint{font:400 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);margin-left:auto}
+  @media (max-width:560px){.hint{display:none}}
+</style>
+</head>
+<body>
+
+<div id="probe"></div>
+
+<div class="stage">
+  <div class="pivot" id="pivot">
+    <div class="net" id="net">
+
+      <div class="cube" id="cube">
+        <div class="w fr"></div><div class="w bk"></div>
+        <div class="w rt"></div><div class="w lf"></div>
+        <div class="w top"></div><div class="w bot"></div>
+      </div>
+
+      <div class="face band" id="f1">1
+        <div class="face band" id="f2">2
+          <div class="face band" id="f3">3
+            <div class="face band" id="f4">4
+              <div class="face end" id="fbot">bot</div>
+            </div>
+          </div>
+        </div>
+        <div class="face end" id="ftop">top</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel">
+  <div class="grp">
+    <button id="play">Play</button>
+    <button id="loop" aria-pressed="false">Loop</button>
+  </div>
+  <div class="grp">
+    <label for="scrub">Fold</label>
+    <input id="scrub" type="range" min="0" max="1000" value="0">
+  </div>
+  <div class="grp"><button id="hide">Hide panel</button></div>
+  <span class="hint">space = play &nbsp;·&nbsp; H = show panel</span>
+</div>
+
+<script>
+(function(){
+  const el = id => document.getElementById(id);
+  const pivot=el('pivot'), net=el('net'), cube=el('cube'), probe=el('probe');
+  const f2=el('f2'), f3=el('f3'), f4=el('f4'), ftop=el('ftop'), fbot=el('fbot');
+  const scrub=el('scrub'), playBtn=el('play'), loopBtn=el('loop');
+  const panel=el('panel'), hideBtn=el('hide');
+
+  // measure the real rendered size rather than parsing the clamp() string
+  const face = () => probe.getBoundingClientRect().width;
+
+  const wf = document.querySelectorAll('.w');
+  function placeCube(){
+    const S = face(), h = S/2 - 0.8;   // 0.8px inset keeps paper clear of wood
+    cube.style.transform = `translateZ(${-S/2}px)`;
+    const t = [
+      `translateZ(${h}px)`,
+      `rotateY(180deg) translateZ(${h}px)`,
+      `rotateY(90deg) translateZ(${h}px)`,
+      `rotateY(-90deg) translateZ(${h}px)`,
+      `rotateX(90deg) translateZ(${h}px)`,
+      `rotateX(-90deg) translateZ(${h}px)`
+    ];
+    wf.forEach((n,i)=> n.style.transform = t[i]);
+  }
+
+  const seg = {
+    view:[0.06,0.46], recenter:[0.10,0.68],
+    f2:[0.10,0.34], f3:[0.26,0.50], f4:[0.42,0.66],
+    top:[0.60,0.82], bot:[0.66,0.88]
+  };
+  const ease = x => x<0.5 ? 4*x*x*x : 1-Math.pow(-2*x+2,3)/2;
+  const span = ([a,b],t) => ease(Math.min(1,Math.max(0,(t-a)/(b-a))));
+  const mix = (a,b,k) => a+(b-a)*k;
+
+  function render(t){
+    const S = face();
+    const k = span(seg.recenter,t);
+    net.style.transform =
+      `translate3d(${mix(-2*S,-0.5*S,k)}px, ${-0.5*S}px, ${mix(0,0.5*S,k)}px)`;
+
+    const v = span(seg.view,t);
+    const turn = 90*(span(seg.f2,t)+span(seg.f3,t)+span(seg.f4,t)+span(seg.bot,t));
+    pivot.style.transform =
+      `rotateX(${mix(0,-22,v)}deg) rotateY(${mix(0,28,v)-turn}deg)`;
+
+    f2.style.transform   = `rotateY(${90*span(seg.f2,t)}deg)`;
+    f3.style.transform   = `rotateY(${90*span(seg.f3,t)}deg)`;
+    f4.style.transform   = `rotateY(${90*span(seg.f4,t)}deg)`;
+    ftop.style.transform = `rotateX(${90*span(seg.top,t)}deg)`;
+    fbot.style.transform = `rotateX(${-90*span(seg.bot,t)}deg)`;
+  }
+
+  let t=0, playing=false, looping=false, last=0;
+  const DURATION = 14000;
+
+  function frame(now){
+    if(!playing) return;
+    const dt = now-last; last=now;
+    t += dt/DURATION;
+    if(t>=1){ if(looping){ t=0; } else { t=1; stop(); } }
+    scrub.value = t*1000;
+    render(t);
+    if(playing) requestAnimationFrame(frame);
+  }
+  function start(){
+    if(t>=1) t=0;
+    playing=true; playBtn.textContent='Pause';
+    last=performance.now(); requestAnimationFrame(frame);
+  }
+  function stop(){ playing=false; playBtn.textContent='Play'; }
+
+  playBtn.onclick = () => playing ? stop() : start();
+  loopBtn.onclick = () => { looping=!looping; loopBtn.setAttribute('aria-pressed',String(looping)); };
+  scrub.oninput = () => { stop(); t=scrub.value/1000; render(t); };
+  hideBtn.onclick = () => panel.classList.add('hidden');
+
+  addEventListener('keydown', e => {
+    if(e.key===' '){ e.preventDefault(); playing?stop():start(); }
+    if(e.key==='h'||e.key==='H'||e.key==='Escape') panel.classList.remove('hidden');
+  });
+  addEventListener('resize', () => { placeCube(); render(t); });
+
+  placeCube(); render(0);
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(start, 600);
+})();
+</script>
+</body>
+</html>

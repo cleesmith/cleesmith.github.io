@@ -114,6 +114,11 @@ body{
   line-height:1;
 }
 .logo em{font-style:normal;color:var(--red)}
+.logo .ver{
+  font-size:10px;font-weight:700;letter-spacing:.1em;vertical-align:super;
+  margin-left:5px;color:var(--ink-soft);
+  font-family:var(--font-mono);
+}
 .grille{
   width:150px;height:150px;flex:0 0 auto;border-radius:50%;
   background-image:radial-gradient(circle,#4b4038 1.6px,transparent 1.7px);
@@ -385,7 +390,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo"><em>i</em>Chord</div>
+      <div class="logo"><em>i</em>Chord<span class="ver">01</span></div>
       <div class="grille" aria-hidden="true"></div>
     </div>
 

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>VoDiaTone — pocket chord synth</title>
+<title>iChord — internet chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="VoDiaTone">
+<meta name="apple-mobile-web-app-title" content="iChord">
 <meta name="theme-color" content="#241a14">
 <style>
 :root{
@@ -110,7 +110,7 @@ body{
 /* brand block */
 .brand{grid-area:brand;min-width:0;display:flex;flex-direction:column;gap:14px}
 .logo{
-  font-size:23px;font-weight:800;letter-spacing:-.025em;color:#4A4038;
+  font-size:26px;font-weight:800;letter-spacing:-.025em;color:#4A4038;
   line-height:1;
 }
 .logo em{font-style:normal;color:var(--red)}
@@ -370,7 +370,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 <body>
 
 <div id="power">
-  <h1>VoDiaTone</h1>
+  <h1>iChord</h1>
   <button id="powerBtn" aria-label="Power on">
     <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <path d="M12 3v9"/><path d="M6.5 6.5a8 8 0 1 0 11 0"/>
@@ -383,7 +383,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">VoDia<em>tone</em></div>
+      <div class="logo"><em>i</em>Chord</div>
       <div class="grille" aria-hidden="true"></div>
     </div>
 
@@ -849,7 +849,7 @@ function setLoopPoints(buf){
 /* ---- sample storage: too big for localStorage, so IndexedDB ---- */
 function idbOpen(){
   return new Promise((res,rej)=>{
-    const r = indexedDB.open("vodiatone", 1);
+    const r = indexedDB.open("iChord", 1);
     r.onupgradeneeded = ()=>r.result.createObjectStore("kv");
     r.onsuccess = ()=>res(r.result);
     r.onerror = ()=>rej(r.error);
@@ -1530,7 +1530,7 @@ function toggleCapture(){
     ui.cap.classList.remove("on"); ui.cap.textContent = "Save WAV";
     if(cap.n === 0){ flash("NOTHING CAPTURED"); return; }
     const len = capClock();
-    download(encodeWav(cap.L, cap.R, ctx.sampleRate), "vodiatone-"+stamp()+".wav");
+    download(encodeWav(cap.L, cap.R, ctx.sampleRate), "iChord-"+stamp()+".wav");
     flash("WAV SAVED  "+len);
     cap.L = []; cap.R = []; cap.n = 0;
   } else {
@@ -1609,7 +1609,7 @@ function exportMidi(){
   const tag  = [0x4D,0x54,0x72,0x6B,
                 (trk.length>>24)&255,(trk.length>>16)&255,(trk.length>>8)&255,trk.length&255];
   download(new Blob([new Uint8Array(head.concat(tag, trk))], {type:"audio/midi"}),
-           "vodiatone-"+stamp()+".mid");
+           "iChord-"+stamp()+".mid");
   flash("MIDI SAVED");
 }
 
@@ -1617,7 +1617,7 @@ function resetAll(){
   Object.keys(FACTORY).forEach(k=>{
     S[k] = (k === "pattern") ? FACTORY.pattern.map(r=>r.slice()) : FACTORY[k];
   });
-  try{ localStorage.removeItem("vodiatone.v1"); }catch(e){}
+  try{ localStorage.removeItem("iChord.v1"); }catch(e){}
 
   stopAllChords();
   rt.held.forEach((h,d)=>{ const el = padEl(d); if(el) el.classList.remove("hit"); });
@@ -1654,12 +1654,12 @@ let saveT = null;
 function save(){
   clearTimeout(saveT);
   saveT = setTimeout(()=>{
-    try{ localStorage.setItem("vodiatone.v1", JSON.stringify(S)); }catch(e){}
+    try{ localStorage.setItem("iChord.v1", JSON.stringify(S)); }catch(e){}
   }, 400);
 }
 function load(){
   try{
-    const raw = localStorage.getItem("vodiatone.v1");
+    const raw = localStorage.getItem("iChord.v1");
     if(!raw) return;
     const o = JSON.parse(raw);
     Object.keys(S).forEach(k=>{ if(k in o) S[k]=o[k]; });

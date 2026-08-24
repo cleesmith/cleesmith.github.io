@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>iChord — internet chord synth</title>
+<title>Chords — internet chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="iChord">
+<meta name="apple-mobile-web-app-title" content="Chords">
 <meta name="theme-color" content="#241a14">
 <style>
 :root{
@@ -86,46 +86,34 @@ body{
 /* ---------- device ---------- */
 .device{
   width:min(940px,100%);max-width:100%;min-width:0;
-  padding:8px;
-  border-radius:calc(var(--radius-shell) + 6px);
-  background:linear-gradient(180deg,#fbf8f2,#cfc2b0);
-  box-shadow:
-    0 42px 70px -24px rgba(0,0,0,.72),
-    0 2px 0 rgba(255,255,255,.35);
 }
 .face{
   min-width:0;
-  border-radius:var(--radius-shell);
-  background:linear-gradient(168deg,var(--shell-hi) 0%,var(--shell) 42%,var(--shell-lo) 100%);
-  border:1px solid var(--shell-edge);
-  padding:22px;
+  padding:0;
   display:grid;
   grid-template-columns:196px 1fr;
   grid-template-areas:
-    "brand top"
+    "top   top"
     "stick pads";
-  gap:20px 24px;
+  gap:14px 24px;
+  position:relative;
+  margin-top:18px;
 }
 
 /* brand block */
-.brand{grid-area:brand;min-width:0;display:flex;flex-direction:column;gap:14px}
+.brand{
+  position:absolute;top:-16px;left:2px;z-index:2;pointer-events:none;
+  display:flex;align-items:baseline;gap:5px;
+}
 .logo{
-  font-size:26px;font-weight:800;letter-spacing:-.025em;color:#4A4038;
-  line-height:1;
+  font-size:8px;font-weight:600;letter-spacing:.04em;
+  color:#4B3A8F;line-height:1;
 }
 .logo em{font-style:normal;color:var(--red)}
 .logo .ver{
-  font-size:10px;font-weight:700;letter-spacing:.1em;vertical-align:super;
-  margin-left:5px;color:var(--ink-soft);
+  font-size:8px;font-weight:600;letter-spacing:.06em;
+  margin-left:7px;color:inherit;
   font-family:var(--font-mono);
-}
-.grille{
-  width:150px;height:150px;flex:0 0 auto;border-radius:50%;
-  background-image:radial-gradient(circle,#4b4038 1.6px,transparent 1.7px);
-  background-size:11px 11px;
-  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 62%,transparent 100%);
-  mask-image:radial-gradient(circle at 50% 50%,#000 62%,transparent 100%);
-  opacity:.82;
 }
 
 /* joystick */
@@ -156,12 +144,16 @@ body{
 .batch{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
 
 /* top row: screen + mode keys */
-.top{grid-area:top;min-width:0;display:flex;gap:12px;align-items:stretch}
+.top{
+  grid-area:top;min-width:0;display:flex;gap:12px;align-items:stretch;
+  /* capped at its previous width so it moves left rather than stretching */
+  max-width:calc(100% - 220px);
+}
 .screen{
-  position:relative;flex:1;min-width:0;
+  position:relative;flex:1;min-width:0;min-height:168px;
   border-radius:9px;background:var(--screen-bg);
   border:1px solid #05202b;
-  box-shadow:inset 0 0 26px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.5);
+  box-shadow:inset 0 0 26px rgba(0,0,0,.9);
   padding:11px 14px;overflow:hidden;
   display:flex;flex-direction:column;justify-content:center;gap:5px;
 }
@@ -185,18 +177,24 @@ body{
 .mode{
   width:64px;flex:0 0 auto;border:none;border-radius:12px;cursor:pointer;
   display:grid;place-items:center;color:#fff;
-  box-shadow:0 4px 0 rgba(0,0,0,.22), inset 0 2px 0 rgba(255,255,255,.34);
+  box-shadow:0 3px 0 rgba(0,0,0,.28);
   transition:transform .06s, box-shadow .06s;
 }
-.mode svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* Rotated rather than stacked: letters stay upright-legible and the word
+   reads bottom-to-top, which suits a tall narrow button. */
+.mode span{
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  white-space:nowrap;line-height:1;
+}
 .mode[data-panel="key"]{background:linear-gradient(180deg,#b7a9be,#9b8ca3)}
 .mode[data-panel="sound"]{background:linear-gradient(180deg,#f5ae3f,#e08e15)}
 .mode[data-panel="time"]{background:linear-gradient(180deg,#e2543c,#c53a26)}
-.mode:active,.mode.on{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.22), inset 0 2px 0 rgba(255,255,255,.2)}
+.mode:active,.mode.on{transform:translateY(3px);box-shadow:0 0 0 rgba(0,0,0,.28)}
 .mode.on{outline:2px solid rgba(255,255,255,.55);outline-offset:-2px}
 
 /* pads */
-.pads{grid-area:pads;min-width:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:.78fr 1fr;gap:9px;min-height:236px}
+.pads{grid-area:pads;min-width:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:.46fr 1fr;gap:9px;min-height:310px}
 .pad{
   position:relative;border:none;cursor:pointer;min-width:0;overflow:hidden;
   border-radius:var(--radius-pad);
@@ -216,7 +214,7 @@ body{
   box-shadow:0 0 0 var(--pad-edge), 0 0 22px rgba(240,140,100,.45), inset 0 2px 0 rgba(255,255,255,.5);
 }
 .pad.arp{background:linear-gradient(180deg,#fbe3d6,#f3cdb9)}
-.pads .pad:nth-child(-n+3){grid-column:span 4;grid-row:1}
+.pads .pad:nth-child(-n+3){grid-column:span 4;grid-row:1;justify-content:flex-start;gap:5px}
 .pads .pad:nth-child(n+4){grid-column:span 3;grid-row:2}
 
 /* ---------- dock ---------- */
@@ -306,7 +304,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 /* iPad and similar: keep the two-handed layout but make everything thumb-sized */
 @media (min-width:761px) and (pointer:coarse){
   .device{width:100%}
-  .pads{min-height:340px;gap:12px}
+  .pads{min-height:420px;gap:12px}
   .pad{padding:14px 16px;border-radius:14px}
   .pad .num{font-size:20px}
   .pad .nm{font-size:13px}
@@ -316,30 +314,32 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   .well .dir{font-size:11px}
   .face{grid-template-columns:214px 1fr}
   .mode{width:74px}
-  .mode svg{width:30px;height:30px}
+  .mode span{font-size:14px}
   .tbtn{padding:15px 18px;font-size:12px}
   .cell{min-height:30px}
 }
 
 @media (max-width:760px){
   body{padding:12px 10px 36px;gap:14px}
-  .device{padding:6px}
   .face{
-    grid-template-columns:minmax(0,1fr);
-    grid-template-areas:"brand" "top" "pads" "stick";
-    padding:13px;gap:12px;
+    grid-template-columns:128px minmax(0,1fr);
+    grid-template-areas:
+      "top   top"
+      "stick pads";
+    padding:0;gap:10px 10px;
   }
-  .brand{flex-direction:row;align-items:center;justify-content:space-between}
-  .grille{width:46px;height:46px;background-size:6px 6px}
-  .logo{font-size:20px}
-  .stick-area{align-items:center;width:100%;gap:8px}
-  .well{width:118px;height:118px;margin:0 auto}
+  .brand{top:-14px;left:1px}
+    .logo{font-size:7px}
+  .screen{min-height:104px}
+  .top{max-width:none}
+  .stick-area{align-items:center;justify-content:center;width:100%;gap:6px}
+  .well{width:118px;height:118px;margin:0 auto;flex:0 0 auto}
   .batch{margin:0 auto}
-  .pads{min-height:200px;gap:6px}
+  .pads{min-height:290px;gap:6px}
   .pad{padding:7px 8px}
   .pad .kb{top:6px;right:7px}
   .mode{width:50px}
-  .mode svg{width:22px;height:22px}
+  .mode span{font-size:11px;letter-spacing:.16em}
   .scr-main{font-size:21px}
   .screen{padding:9px 11px}
   .grid{grid-template-columns:34px repeat(16,minmax(0,1fr));gap:2px}
@@ -353,21 +353,25 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   .well .dir.e{right:5px}
 }
 @media (max-width:400px){
+  .face{grid-template-columns:104px minmax(0,1fr);gap:8px}
+  .well{width:98px;height:98px}
+  .cap{width:42px;height:42px;margin:-21px 0 0 -21px}
+  .batch{display:none}
   .mode{min-height:52px}
   .chip{padding:11px 13px;min-height:42px}
-  .pads{min-height:176px;gap:5px}
+  .pads{min-height:250px;gap:5px}
   .pad{padding:6px 7px;border-radius:9px}
   .pad .num{font-size:13px}
   .pad .nm{font-size:9px}
   .pad .kb{font-size:8px}
   .mode{width:44px;border-radius:10px}
-  .mode svg{width:19px;height:19px}
+  .mode span{font-size:10px;letter-spacing:.12em}
   .scr-main{font-size:18px}
   .scr-sub{font-size:9px;letter-spacing:.08em;gap:8px}
   .top{gap:7px}
   .tbtn{padding:10px 11px;letter-spacing:.1em;flex:1 1 auto}
   .well{width:112px;height:112px}
-  .face{padding:11px;gap:10px}
+  .face{padding:0;gap:10px}
 }
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important}
@@ -377,7 +381,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 <body>
 
 <div id="power">
-  <h1>iChord</h1>
+  <h1>Chords</h1>
   <button id="powerBtn" aria-label="Power on">
     <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <path d="M12 3v9"/><path d="M6.5 6.5a8 8 0 1 0 11 0"/>
@@ -390,8 +394,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo"><em>i</em>Chord<span class="ver">01</span></div>
-      <div class="grille" aria-hidden="true"></div>
+      <div class="logo">Chords<span class="ver">01.1</span></div>
     </div>
 
     <div class="top">
@@ -405,15 +408,9 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
           <span id="scrPlay" class="off">PLAY</span>
         </div>
       </div>
-      <button class="mode" data-panel="key" aria-label="Key settings">
-        <svg viewBox="0 0 24 24"><circle cx="8.5" cy="8.5" r="4.5"/><path d="M11.8 11.8 19 19"/><path d="M16.5 16.5 19 14"/></svg>
-      </button>
-      <button class="mode" data-panel="sound" aria-label="Sound settings">
-        <svg viewBox="0 0 24 24"><path d="M3 12c2.5 0 2.5-6 5-6s2.5 12 5 12 2.5-6 5-6h2"/></svg>
-      </button>
-      <button class="mode" data-panel="time" aria-label="Rhythm settings">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
-      </button>
+      <button class="mode" data-panel="key" aria-label="Key settings"><span>Key</span></button>
+      <button class="mode" data-panel="sound" aria-label="Sound settings"><span>Sound</span></button>
+      <button class="mode" data-panel="time" aria-label="Rhythm settings"><span>Mode</span></button>
     </div>
 
     <div class="pads" id="pads"></div>
@@ -455,6 +452,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 <section class="panel" id="panel-sound">
   <h2>Sound</h2>
   <div class="row"><span class="lbl">Instrument</span><div class="row" id="sndRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Bass note</span><div class="row" id="bassRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Waveform</span><div class="row" id="waveRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Sampler — record through the mic, then play it as chords</span>
     <div class="row" style="margin:0">
@@ -473,6 +471,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
     <div class="knob"><label for="kRel">Release <span id="vRel"></span></label><input type="range" id="kRel" min="30" max="2500" step="10"></div>
     <div class="knob"><label for="kDly">Delay <span id="vDly"></span></label><input type="range" id="kDly" min="0" max="70" step="1"></div>
     <div class="knob"><label for="kRev">Reverb <span id="vRev"></span></label><input type="range" id="kRev" min="0" max="70" step="1"></div>
+    <div class="knob"><label for="kCho">Chorus <span id="vCho"></span></label><input type="range" id="kCho" min="0" max="100" step="1"></div>
     <div class="knob"><label for="kTrem">Tremolo <span id="vTrem"></span></label><input type="range" id="kTrem" min="0" max="90" step="1"></div>
     <div class="knob"><label for="kStrum">Strum <span id="vStrum"></span></label><input type="range" id="kStrum" min="0" max="120" step="2"></div>
     <div class="knob"><label for="kVol">Volume <span id="vVol"></span></label><input type="range" id="kVol" min="0" max="100" step="1"></div>
@@ -494,7 +493,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 </section>
 
 <div class="card">
-  <b>Pads</b> <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd> = 1–4, <kbd>W</kbd><kbd>E</kbd><kbd>R</kbd> = 5–7 (or number keys <kbd>1</kbd>–<kbd>7</kbd>).<br>
+  <b>Pads</b> <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd> = 1, 3, 5, 7 &nbsp; <kbd>W</kbd><kbd>E</kbd><kbd>R</kbd> = 2, 4, 6 (or number keys <kbd>1</kbd>–<kbd>7</kbd>).<br>
   <b>Chord quality</b> hold <kbd>↑</kbd> 7th, <kbd>Shift</kbd>+<kbd>↑</kbd> 9th, <kbd>↓</kbd> 6th, <kbd>←</kbd> sus2, <kbd>→</kbd> sus4 — or drag the stick.<br>
   <b>Transport</b> <kbd>Space</kbd> play/stop, <kbd>Z</kbd> record, <kbd>X</kbd> clear loop, <kbd>V</kbd> arp, <kbd>C</kbd> drums, <kbd>L</kbd> latch, <kbd>[</kbd> <kbd>]</kbd> change key.
 </div>
@@ -513,13 +512,22 @@ const SCALES = {
   dorian:{ label:"Dorian", steps:[0,2,3,5,7,9,10], numerals:["i","ii","III","IV","v","vi","VII"] },
   mixo:{ label:"Mixolydian", steps:[0,2,4,5,7,9,10], numerals:["I","ii","iii","IV","v","vi","VII"] }
 };
+// fm:{ratio, i0, i1, dec} turns the voice into 2-operator FM — a sine carrier
+// whose frequency is modulated by another sine. The modulation index falls from
+// i0 to i1 over dec seconds, which is what produces the struck-tine attack of a
+// Rhodes. Patches without an fm block use the original subtractive path.
+// pan is the stereo spread of the detuned pair, in fractions of full width.
 const SOUNDS = [
-  {n:"E.PIANO", wave:"triangle", det:5,  a:6,   d:900, s:.16, r:520,  cut:2600, q:2,  env:1600, fd:.55},
-  {n:"ORGAN",   wave:"square",   det:3,  a:10,  d:120, s:.92, r:150,  cut:1700, q:1,  env:300,  fd:.25},
-  {n:"STRINGS", wave:"sawtooth", det:10, a:330, d:600, s:.82, r:1100, cut:1900, q:1,  env:800,  fd:1.2},
-  {n:"PLUCK",   wave:"sawtooth", det:7,  a:3,   d:340, s:.02, r:260,  cut:650,  q:6,  env:3400, fd:.3},
-  {n:"BELL",    wave:"sine",     det:13, a:3,   d:1500,s:.02, r:900,  cut:6000, q:1,  env:0,    fd:.3},
-  {n:"BRASS",   wave:"sawtooth", det:4,  a:60,  d:420, s:.7,  r:300,  cut:900,  q:3,  env:2400, fd:.4}
+  {n:"FM E.PIANO", wave:"sine", det:4, a:4, d:1400, s:.22, r:640, cut:7000, q:.7, env:0, fd:.4,
+   pan:.35, fm:{ratio:1,    i0:5.0, i1:0.45, dec:.42}},
+  {n:"FM BELL",    wave:"sine", det:6, a:3, d:2200, s:.05, r:1400, cut:9000, q:.7, env:0, fd:.4,
+   pan:.45, fm:{ratio:3.51, i0:7.5, i1:0.30, dec:1.5}},
+  {n:"WURLI",      wave:"sine", det:5, a:5, d:900,  s:.18, r:480, cut:5200, q:.8, env:0, fd:.4,
+   pan:.3,  fm:{ratio:2,    i0:3.4, i1:0.55, dec:.3}},
+  {n:"ORGAN",   wave:"square",   det:3,  a:10,  d:120, s:.92, r:150,  cut:1700, q:1,  env:300,  fd:.25, pan:.28},
+  {n:"STRINGS", wave:"sawtooth", det:11, a:330, d:600, s:.82, r:1100, cut:1900, q:1,  env:800,  fd:1.2, pan:.5},
+  {n:"PLUCK",   wave:"sawtooth", det:7,  a:3,   d:340, s:.02, r:260,  cut:650,  q:6,  env:3400, fd:.3,  pan:.3},
+  {n:"BRASS",   wave:"sawtooth", det:4,  a:60,  d:420, s:.7,  r:300,  cut:900,  q:3,  env:2400, fd:.4,  pan:.3}
 ];
 const WAVES = ["sine","triangle","sawtooth","square"];
 const ARPS = ["up","down","up-down","random","chord"];
@@ -564,11 +572,12 @@ const KITS = {
 const S = {
   root:0, scale:"major", sound:0, wave:null,
   cut:2600, res:2, atk:6, rel:520,
-  delay:22, reverb:26, trem:0, strum:14, vol:70,
+  delay:0, reverb:0, chorus:0, trem:0, strum:14, vol:70,
   bpm:96, swing:14, drumVol:70,
   arpOn:false, arp:"up", rate:1, bars:2, latch:false,
   drumsOn:false, kit:"Four",
   useSample:false, sampRoot:0, sampOct:4, sampLoop:true,
+  bass:"off",
   pattern: KITS["Four"].map(r=>r.slice())
 };
 
@@ -589,7 +598,7 @@ const rt = {
 /* ============================================================
    3. AUDIO GRAPH
    ============================================================ */
-let ctx=null, master, limiter, tremGain, lfo, lfoAmt,
+let ctx=null, master, limiter, tremGain, lfo, lfoAmt, chorusIn, chorusWet,
     chordBus, drumBus, dryGain, delayNode, delayFb, delayTone, delaySend,
     convolver, revSend, noiseBuf, worker;
 
@@ -632,6 +641,21 @@ function buildAudio(){
   chordBus.connect(revSend); drumBus.connect(revSend);
   revSend.connect(convolver); convolver.connect(tremGain);
 
+  // Chorus: two short modulated delays panned hard left and right. The pitch
+  // wobble between them is what makes a synth sound wide rather than flat.
+  chorusIn  = ctx.createGain();
+  chorusWet = ctx.createGain(); chorusWet.gain.value = S.chorus/100;
+  chordBus.connect(chorusIn);
+  [[0.0118, 0.53, 0.0028, -1], [0.0193, 0.71, 0.0034, 1]].forEach(cfg=>{
+    const dl  = ctx.createDelay(0.08); dl.delayTime.value = cfg[0];
+    const osc = ctx.createOscillator(); osc.type = "sine"; osc.frequency.value = cfg[1];
+    const amt = ctx.createGain(); amt.gain.value = cfg[2];
+    const pan = ctx.createStereoPanner(); pan.pan.value = cfg[3];
+    osc.connect(amt); amt.connect(dl.delayTime); osc.start();
+    chorusIn.connect(dl); dl.connect(pan); pan.connect(chorusWet);
+  });
+  chorusWet.connect(tremGain);
+
   noiseBuf = makeNoise(1);
   syncDelayTime();
   applySoundParams();
@@ -672,6 +696,7 @@ function applySoundParams(){
   master.gain.value = S.vol/100;
   delaySend.gain.value = S.delay/100;
   revSend.gain.value = S.reverb/100;
+  if(chorusWet) chorusWet.gain.value = S.chorus/100;
   drumBus.gain.value = S.drumVol/100;
   const dep = S.trem/100;
   lfoAmt.gain.value = dep/2;
@@ -704,8 +729,10 @@ function playNote(midi, time, dur, vel, bus){
   filt.type = "lowpass";
   filt.Q.value = S.res;
   const base = S.cut;
-  filt.frequency.setValueAtTime(Math.min(16000, base + p.env), t);
-  filt.frequency.exponentialRampToValueAtTime(Math.max(120, base), t + p.fd);
+  const openCut = (p.fm && !S.wave) ? Math.min(16000, base) : Math.min(16000, base + p.env);
+  filt.frequency.setValueAtTime(openCut, t);
+  if(!(p.fm && !S.wave))
+    filt.frequency.exponentialRampToValueAtTime(Math.max(120, base), t + p.fd);
   filt.connect(out);
   out.connect(bus || chordBus);
 
@@ -724,13 +751,36 @@ function playNote(midi, time, dur, vel, bus){
     }
     src.connect(filt);
     oscs.push(src);
+  } else if(p.fm && !S.wave){
+    // Two detuned carriers panned apart, sharing one modulator.
+    const f = mtof(midi);
+    const mod  = ctx.createOscillator(); mod.type = "sine";
+    mod.frequency.value = f * p.fm.ratio;
+    const modAmt = ctx.createGain();
+    modAmt.gain.setValueAtTime(f * p.fm.i0, t);
+    modAmt.gain.exponentialRampToValueAtTime(Math.max(1, f * p.fm.i1), t + p.fm.dec);
+    mod.connect(modAmt);
+    oscs.push(mod);
+    for(let i=0;i<2;i++){
+      const o = ctx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = f;
+      o.detune.value = (i===0 ? -p.det : p.det);
+      const pan = ctx.createStereoPanner();
+      pan.pan.value = (i===0 ? -1 : 1) * (p.pan || 0);
+      modAmt.connect(o.frequency);
+      o.connect(pan); pan.connect(filt);
+      oscs.push(o);
+    }
   } else {
     for(let i=0;i<2;i++){
       const o = ctx.createOscillator();
       o.type = wave;
       o.frequency.value = mtof(midi);
       o.detune.value = (i===0 ? -p.det : p.det);
-      o.connect(filt);
+      const pan = ctx.createStereoPanner();
+      pan.pan.value = (i===0 ? -1 : 1) * (p.pan || 0);
+      o.connect(pan); pan.connect(filt);
       oscs.push(o);
     }
   }
@@ -856,7 +906,7 @@ function setLoopPoints(buf){
 /* ---- sample storage: too big for localStorage, so IndexedDB ---- */
 function idbOpen(){
   return new Promise((res,rej)=>{
-    const r = indexedDB.open("iChord", 1);
+    const r = indexedDB.open("Chords", 1);
     r.onupgradeneeded = ()=>r.result.createObjectStore("kv");
     r.onsuccess = ()=>res(r.result);
     r.onerror = ()=>rej(r.error);
@@ -1037,7 +1087,7 @@ const lastLow = {live:60, loop:60, arp:60};
 
 // track: "live" | "loop" | "arp".  hold: read the reference without moving it,
 // used when re-voicing a chord that is already sounding.
-function voiceChord(degree, m, track, hold){
+function voiceChord(degree, m, track, hold, skipBass){
   track = track || "live";
   const iv = chordIntervals(degree, m);
   const rootMidi = 60 + S.root + iv[0];
@@ -1058,7 +1108,10 @@ function voiceChord(degree, m, track, hold){
     }
     if(!hold) lastLow[track] = ch[0];
   }
-  const bass = rootMidi + shift - 12;
+  // The arp wants chord tones only; adding then discarding a bass note would
+  // shift which note the pattern starts on.
+  if(skipBass || S.bass === "off") return ch;
+  const bass = rootMidi + shift - 24;   // two octaves below the root
   return [bass].concat(ch);
 }
 function chordLabel(degree, m){
@@ -1192,7 +1245,7 @@ function schedule(step, time){
     if(sig !== rt.lastPool){ rt.lastPool = sig; rt.arpIdx = 0; rt.arpDir = 1; }
     if(pool.length && step % S.rate === 0){
       const notes = [];
-      pool.forEach(p => voiceChord(p.degree, p.mods, "arp").slice(1).forEach(n=>notes.push(n)));
+      pool.forEach(p => voiceChord(p.degree, p.mods, "arp", false, true).forEach(n=>notes.push(n)));
       notes.sort((a,b)=>a-b);
       const uniq = notes.filter((n,i)=> i===0 || n!==notes[i-1]);
       if(S.arp === "chord"){
@@ -1263,7 +1316,7 @@ function onPress(el, fn){
 }
 function padEl(d){ return document.querySelector('.pad[data-deg="'+d+'"]'); }
 
-const PAD_ORDER = [4,5,6, 0,1,2,3];             // top row 5-7, bottom row 1-4
+const PAD_ORDER = [1,3,5, 0,2,4,6];             // top row 2,4,6 — bottom row 1,3,5,7
 const PAD_KEYS  = ["W","E","R", "A","S","D","F"];
 
 function buildPads(){
@@ -1279,10 +1332,9 @@ function buildPads(){
   labelPads();
 }
 function labelPads(){
-  const num = SCALES[S.scale].numerals;
   document.querySelectorAll(".pad").forEach(p=>{
     const d = +p.dataset.deg;
-    p.querySelector(".num").textContent = num[d];
+    p.querySelector(".num").textContent = String(d + 1);
     p.querySelector(".nm").textContent = chordLabel(d, mods());
   });
 }
@@ -1323,7 +1375,9 @@ function buildPanels(){
   chips($("modeRow"), Object.keys(SCALES).map(k=>({label:SCALES[k].label, value:k})), ()=>S.scale,
     v=>{ S.scale=v; labelPads(); refreshScreen(); save(); });
   chips($("sndRow"), SOUNDS.map((s,i)=>({label:s.n, value:i})), ()=>S.sound,
-    v=>{ S.sound=v; S.wave=null; buildPanels(); refreshScreen(); save(); });
+    v=>{ S.sound=v; S.wave=null; loadPatch(); buildPanels(); refreshScreen(); save(); });
+  chips($("bassRow"), [{label:"OFF",value:"off"},{label:"ROOT",value:"root"}], ()=>S.bass,
+    v=>{ S.bass=v; stopAllChords(); save(); });
   chips($("waveRow"), [{label:"AUTO",value:null}].concat(WAVES.map(w=>({label:w.slice(0,3).toUpperCase(), value:w}))),
     ()=>S.wave, v=>{ S.wave=v; save(); });
   chips($("arpRow"), ARPS.map(a=>({label:a.toUpperCase(), value:a})), ()=>S.arp, v=>{ S.arp=v; save(); });
@@ -1359,6 +1413,18 @@ function buildGrid(){
 
 /* --- sliders --- */
 const SLIDER_KEY = {};
+// Pull the selected instrument's own filter and envelope into the live
+// settings, then push them out to the sliders so the UI agrees.
+function loadPatch(){
+  const p = SOUNDS[S.sound];
+  S.cut = p.cut; S.res = p.q; S.atk = p.a; S.rel = p.r;
+  ["kCut","kRes","kAtk","kRel"].forEach(id=>{
+    const el = $(id);
+    if(el){ el.value = S[SLIDER_KEY[id]]; el.dispatchEvent(new Event("input")); }
+  });
+  applySoundParams();
+}
+
 function slider(id, key, fmt, after){
   SLIDER_KEY[id] = key;
   const el = $(id), out = $("v"+id.slice(1));
@@ -1442,7 +1508,7 @@ function initPads(){
 }
 
 /* --- keyboard --- */
-const KEYMAP = {a:0,s:1,d:2,f:3,w:4,e:5,r:6,"1":0,"2":1,"3":2,"4":3,"5":4,"6":5,"7":6};
+const KEYMAP = {a:0,s:2,d:4,f:6,w:1,e:3,r:5,"1":0,"2":1,"3":2,"4":3,"5":4,"6":5,"7":6};
 function initKeys(){
   const down = new Set();
   window.addEventListener("keydown", e=>{
@@ -1556,7 +1622,7 @@ function toggleCapture(){
     ui.cap.classList.remove("on"); ui.cap.textContent = "Save WAV";
     if(cap.n === 0){ flash("NOTHING CAPTURED"); return; }
     const len = capClock();
-    download(encodeWav(cap.L, cap.R, ctx.sampleRate), "iChord-"+stamp()+".wav");
+    download(encodeWav(cap.L, cap.R, ctx.sampleRate), "Chords-"+stamp()+".wav");
     flash("WAV SAVED  "+len);
     cap.L = []; cap.R = []; cap.n = 0;
   } else {
@@ -1635,7 +1701,7 @@ function exportMidi(){
   const tag  = [0x4D,0x54,0x72,0x6B,
                 (trk.length>>24)&255,(trk.length>>16)&255,(trk.length>>8)&255,trk.length&255];
   download(new Blob([new Uint8Array(head.concat(tag, trk))], {type:"audio/midi"}),
-           "iChord-"+stamp()+".mid");
+           "Chords-"+stamp()+".mid");
   flash("MIDI SAVED");
 }
 
@@ -1643,7 +1709,7 @@ function resetAll(){
   Object.keys(FACTORY).forEach(k=>{
     S[k] = (k === "pattern") ? FACTORY.pattern.map(r=>r.slice()) : FACTORY[k];
   });
-  try{ localStorage.removeItem("iChord.v1"); }catch(e){}
+  try{ localStorage.removeItem("Chords.v1"); }catch(e){}
 
   stopAllChords();
   rt.held.forEach((h,d)=>{ const el = padEl(d); if(el) el.classList.remove("hit"); });
@@ -1655,7 +1721,7 @@ function resetAll(){
   setStick(0,0);
 
   // rebuild every control from the restored values
-  ["kCut","kRes","kAtk","kRel","kDly","kRev","kTrem","kStrum","kVol","kBpm","kSwing","kDrumVol"]
+  ["kCut","kRes","kAtk","kRel","kDly","kRev","kCho","kTrem","kStrum","kVol","kBpm","kSwing","kDrumVol"]
     .forEach(id=>{
       const el = $(id);
       if(el){ el.value = S[SLIDER_KEY[id]]; el.dispatchEvent(new Event("input")); }
@@ -1680,12 +1746,12 @@ let saveT = null;
 function save(){
   clearTimeout(saveT);
   saveT = setTimeout(()=>{
-    try{ localStorage.setItem("iChord.v1", JSON.stringify(S)); }catch(e){}
+    try{ localStorage.setItem("Chords.v1", JSON.stringify(S)); }catch(e){}
   }, 400);
 }
 function load(){
   try{
-    const raw = localStorage.getItem("iChord.v1");
+    const raw = localStorage.getItem("Chords.v1");
     if(!raw) return;
     const o = JSON.parse(raw);
     Object.keys(S).forEach(k=>{ if(k in o) S[k]=o[k]; });
@@ -1739,6 +1805,7 @@ function boot(){
   slider("kRel","rel",v=>Math.round(v)+"ms");
   slider("kDly","delay",v=>Math.round(v)+"%");
   slider("kRev","reverb",v=>Math.round(v)+"%");
+  slider("kCho","chorus",v=>Math.round(v)+"%");
   slider("kTrem","trem",v=>Math.round(v)+"%");
   slider("kStrum","strum",v=>Math.round(v)+"ms");
   slider("kVol","vol",v=>Math.round(v)+"%");

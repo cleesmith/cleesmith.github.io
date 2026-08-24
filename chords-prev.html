@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords App — internet chord synth</title>
+<title>Chords — internet chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -133,10 +133,6 @@ body{
 .well .dir.s{bottom:6px;left:50%;transform:translateX(-50%)}
 .well .dir.w{left:6px;top:50%;transform:translateY(-50%)}
 .well .dir.e{right:6px;top:50%;transform:translateY(-50%)}
-.well .dir.nw{top:20%;left:11%}
-.well .dir.ne{top:20%;right:11%}
-.well .dir.sw{bottom:20%;left:9%}
-.well .dir.se{bottom:20%;right:13%}
 .cap{
   position:absolute;left:50%;top:50%;width:74px;height:74px;margin:-37px 0 0 -37px;
   border-radius:50%;
@@ -398,7 +394,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">02.2</span></div>
+      <div class="logo">Chords<span class="ver">01.1</span></div>
     </div>
 
     <div class="top">
@@ -421,14 +417,10 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 
     <div class="stick-area">
       <div class="well" id="well" tabindex="0" role="slider" aria-label="Chord quality joystick" aria-valuetext="triad">
-        <span class="dir n">M/m</span>
-        <span class="dir s">sus4</span>
-        <span class="dir w">dim</span>
-        <span class="dir e">M7/m7</span>
-        <span class="dir nw">aug</span>
-        <span class="dir ne">dom7</span>
-        <span class="dir sw">6/sus2</span>
-        <span class="dir se">9</span>
+        <span class="dir n">7th &middot; 9th</span>
+        <span class="dir s">6th</span>
+        <span class="dir w">sus2</span>
+        <span class="dir e">sus4</span>
         <div class="cap" id="cap"></div>
       </div>
       <div class="batch">Web Ed. — No. 01</div>
@@ -460,7 +452,6 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 <section class="panel" id="panel-sound">
   <h2>Sound</h2>
   <div class="row"><span class="lbl">Instrument</span><div class="row" id="sndRow" style="margin:0"></div></div>
-  <div class="row"><span class="lbl">Voice leading</span><div class="row" id="vleadRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Bass note</span><div class="row" id="bassRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Waveform</span><div class="row" id="waveRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Sampler — record through the mic, then play it as chords</span>
@@ -503,7 +494,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 
 <div class="card">
   <b>Pads</b> <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd> = 1, 3, 5, 7 &nbsp; <kbd>W</kbd><kbd>E</kbd><kbd>R</kbd> = 2, 4, 6 (or number keys <kbd>1</kbd>–<kbd>7</kbd>).<br>
-  <b>Chord quality</b> drag the stick to one of eight positions: <b>M/m</b>, <b>dom7</b>, <b>M7/m7</b>, <b>9</b>, <b>sus4</b>, <b>6/sus2</b>, <b>dim</b>, <b>aug</b>. Arrow keys reach the four cardinals.<br>
+  <b>Chord quality</b> hold <kbd>↑</kbd> 7th, <kbd>Shift</kbd>+<kbd>↑</kbd> 9th, <kbd>↓</kbd> 6th, <kbd>←</kbd> sus2, <kbd>→</kbd> sus4 — or drag the stick.<br>
   <b>Transport</b> <kbd>Space</kbd> play/stop, <kbd>Z</kbd> record, <kbd>X</kbd> clear loop, <kbd>V</kbd> arp, <kbd>C</kbd> drums, <kbd>L</kbd> latch, <kbd>[</kbd> <kbd>]</kbd> change key.
 </div>
 
@@ -527,18 +518,16 @@ const SCALES = {
 // Rhodes. Patches without an fm block use the original subtractive path.
 // pan is the stereo spread of the detuned pair, in fractions of full width.
 const SOUNDS = [
-  {n:"FM E.PIANO", wave:"sine", det:4, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4,
+  {n:"FM E.PIANO", wave:"sine", det:4, a:4, d:1400, s:.22, r:640, cut:7000, q:.7, env:0, fd:.4,
    pan:.35, fm:{ratio:1,    i0:5.0, i1:0.45, dec:.42}},
-  {n:"FM BELL",    wave:"sine", det:6, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4,
+  {n:"FM BELL",    wave:"sine", det:6, a:3, d:2200, s:.05, r:1400, cut:9000, q:.7, env:0, fd:.4,
    pan:.45, fm:{ratio:3.51, i0:7.5, i1:0.30, dec:1.5}},
-  {n:"WURLI",      wave:"sine", det:5, a:5, d:30, s:.8, r:300, cut:16000, q:.8, env:0, fd:.4,
+  {n:"WURLI",      wave:"sine", det:5, a:5, d:900,  s:.18, r:480, cut:5200, q:.8, env:0, fd:.4,
    pan:.3,  fm:{ratio:2,    i0:3.4, i1:0.55, dec:.3}},
-  {n:"SAW",     wave:"sawtooth", det:8, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4, pan:.4},
-  {n:"SQUARE",  wave:"square",   det:5, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4, pan:.3},
-  {n:"TRIANGLE",wave:"triangle", det:5, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4, pan:.3},
-  {n:"SINE",    wave:"sine",     det:4, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4, pan:.25},
-  {n:"STRINGS", wave:"sawtooth", det:11, a:330, d:600, s:.82, r:1100, cut:1900, q:1, env:800,  fd:1.2, pan:.5},
-  {n:"PLUCK",   wave:"sawtooth", det:7,  a:3,   d:340, s:.02, r:260,  cut:650,  q:6, env:3400, fd:.3,  pan:.3}
+  {n:"ORGAN",   wave:"square",   det:3,  a:10,  d:120, s:.92, r:150,  cut:1700, q:1,  env:300,  fd:.25, pan:.28},
+  {n:"STRINGS", wave:"sawtooth", det:11, a:330, d:600, s:.82, r:1100, cut:1900, q:1,  env:800,  fd:1.2, pan:.5},
+  {n:"PLUCK",   wave:"sawtooth", det:7,  a:3,   d:340, s:.02, r:260,  cut:650,  q:6,  env:3400, fd:.3,  pan:.3},
+  {n:"BRASS",   wave:"sawtooth", det:4,  a:60,  d:420, s:.7,  r:300,  cut:900,  q:3,  env:2400, fd:.4,  pan:.3}
 ];
 const WAVES = ["sine","triangle","sawtooth","square"];
 const ARPS = ["up","down","up-down","random","chord"];
@@ -581,14 +570,14 @@ const KITS = {
    2. STATE
    ============================================================ */
 const S = {
-  root:0, scale:"major", sound:3, wave:null,   // 3 = SAW, their loaded preset
-  cut:16000, res:.7, atk:5, rel:300,
+  root:0, scale:"major", sound:0, wave:null,
+  cut:2600, res:2, atk:6, rel:520,
   delay:0, reverb:0, chorus:0, trem:0, strum:14, vol:70,
-  bpm:120, swing:0, drumVol:70,
+  bpm:96, swing:14, drumVol:70,
   arpOn:false, arp:"up", rate:1, bars:2, latch:false,
   drumsOn:false, kit:"Four",
   useSample:false, sampRoot:0, sampOct:4, sampLoop:true,
-  bass:"off", vlead:false,
+  bass:"off",
   pattern: KITS["Four"].map(r=>r.slice())
 };
 
@@ -740,9 +729,9 @@ function playNote(midi, time, dur, vel, bus){
   filt.type = "lowpass";
   filt.Q.value = S.res;
   const base = S.cut;
-  const sweep = !(p.fm && !S.wave) && p.env > 0;
-  filt.frequency.setValueAtTime(Math.min(16000, base + (sweep ? p.env : 0)), t);
-  if(sweep)
+  const openCut = (p.fm && !S.wave) ? Math.min(16000, base) : Math.min(16000, base + p.env);
+  filt.frequency.setValueAtTime(openCut, t);
+  if(!(p.fm && !S.wave))
     filt.frequency.exponentialRampToValueAtTime(Math.max(120, base), t + p.fd);
   filt.connect(out);
   out.connect(bus || chordBus);
@@ -1072,56 +1061,24 @@ function scaleDeg(n){
   const st = SCALES[S.scale].steps;
   return st[((n%7)+7)%7] + 12*Math.floor(n/7);
 }
-// Eight positions plus centre, matching the companion app's DEFAULT joystick
-// mode: NW aug, N M/m, NE dom7, W dim, E M7/m7, SW 6/sus2, S sus4, SE 9.
-const STICK_MAP = [
-  {name:"M/m",    ax:0,  ay:1},
-  {name:"dom7",   ax:1,  ay:1},
-  {name:"M7/m7",  ax:1,  ay:0},
-  {name:"9",      ax:1,  ay:-1},
-  {name:"sus4",   ax:0,  ay:-1},
-  {name:"6/sus2", ax:-1, ay:-1},
-  {name:"dim",    ax:-1, ay:0},
-  {name:"aug",    ax:-1, ay:1}
-];
-
 function mods(){
   const x = rt.stick.x, y = rt.stick.y;
-  if(Math.hypot(x, y) < .42) return {mod:null};
-  // Snap to the nearest of the eight compass points.
-  let best = null, bestD = Infinity;
-  STICK_MAP.forEach(e=>{
-    const len = Math.hypot(e.ax, e.ay);
-    const d = Math.hypot(x - e.ax/len, y - e.ay/len);
-    if(d < bestD){ bestD = d; best = e; }
-  });
-  return {mod: best.name};
+  return {
+    sus2: x < -.42,
+    sus4: x >  .42,
+    sev:  y >  .42,
+    nine: y >  .82,
+    six:  y < -.42
+  };
 }
 function chordIntervals(degree, m){
-  const i = degree;
-  const r = scaleDeg(i);
-  let notes = [r, scaleDeg(i+2), scaleDeg(i+4)];
-  const third = notes[1] - r;       // 3 = minor, 4 = major
-  const isMinor = third <= 3;
-
-  switch(m && m.mod){
-    case "M/m":                     // flip the third the other way
-      notes[1] = r + (isMinor ? 4 : 3); break;
-    case "aug":
-      notes = [r, r+4, r+8]; break;
-    case "dim":
-      notes = [r, r+3, r+6]; break;
-    case "dom7":                    // triad plus a flat seventh
-      notes.push(r+10); break;
-    case "M7/m7":                   // the seventh the scale gives you
-      notes.push(scaleDeg(i+6)); break;
-    case "9":
-      notes.push(scaleDeg(i+6)); notes.push(scaleDeg(i+8)); break;
-    case "sus4":
-      notes[1] = scaleDeg(i+3); break;
-    case "6/sus2":                  // sus2 with the sixth on top
-      notes[1] = scaleDeg(i+1); notes.push(scaleDeg(i+5)); break;
-  }
+  const i = degree;                 // 0..6
+  let notes = [scaleDeg(i), scaleDeg(i+2), scaleDeg(i+4)];
+  if(m.sus2) notes[1] = scaleDeg(i+1);
+  if(m.sus4) notes[1] = scaleDeg(i+3);
+  if(m.sev || m.nine) notes.push(scaleDeg(i+6));
+  if(m.nine) notes.push(scaleDeg(i+8));
+  if(m.six)  notes.push(scaleDeg(i+5));
   return notes;
 }
 // Voice leading is tracked per source. Live playing, loop playback and the arp
@@ -1143,7 +1100,7 @@ function voiceChord(degree, m, track, hold, skipBass){
   ch = ch.map(n => n + shift);
   // The arp only needs the pitch set, and it rebuilds the chord every step —
   // running voice leading there would rewrite the reference constantly.
-  if(track !== "arp" && S.vlead){
+  if(track !== "arp"){
     const ref = lastLow[track];
     if(Math.abs(ch[0] - ref) > 5 && ch.length > 2){
       const alt = ch.slice(1).concat([ch[0]+12]);
@@ -1154,7 +1111,7 @@ function voiceChord(degree, m, track, hold, skipBass){
   // The arp wants chord tones only; adding then discarding a bass note would
   // shift which note the pattern starts on.
   if(skipBass || S.bass === "off") return ch;
-  const bass = rootMidi + shift - 12;   // Root -1 Octave, per the editor
+  const bass = rootMidi + shift - 24;   // two octaves below the root
   return [bass].concat(ch);
 }
 function chordLabel(degree, m){
@@ -1419,8 +1376,6 @@ function buildPanels(){
     v=>{ S.scale=v; labelPads(); refreshScreen(); save(); });
   chips($("sndRow"), SOUNDS.map((s,i)=>({label:s.n, value:i})), ()=>S.sound,
     v=>{ S.sound=v; S.wave=null; loadPatch(); buildPanels(); refreshScreen(); save(); });
-  chips($("vleadRow"), [{label:"OFF",value:false},{label:"ON",value:true}], ()=>S.vlead,
-    v=>{ S.vlead=v; save(); });
   chips($("bassRow"), [{label:"OFF",value:"off"},{label:"ROOT",value:"root"}], ()=>S.bass,
     v=>{ S.bass=v; stopAllChords(); save(); });
   chips($("waveRow"), [{label:"AUTO",value:null}].concat(WAVES.map(w=>({label:w.slice(0,3).toUpperCase(), value:w}))),
@@ -1488,7 +1443,11 @@ function setStick(x,y){
   rt.stick.y = Math.max(-1,Math.min(1,y));
   $("cap").style.transform = "translate("+(rt.stick.x*30)+"px,"+(-rt.stick.y*30)+"px)";
   const m = mods();
-  $("well").setAttribute("aria-valuetext", m.mod || "triad");
+  const names = [];
+  if(m.sus2) names.push("sus2"); if(m.sus4) names.push("sus4");
+  if(m.nine) names.push("9th"); else if(m.sev) names.push("7th");
+  if(m.six) names.push("6th");
+  $("well").setAttribute("aria-valuetext", names.length?names.join(" "):"triad");
   labelPads();
   // live re-voice any held pads
   if(ctx && !S.arpOn){

@@ -145,7 +145,6 @@ body{
   transition:transform .09s ease-out;
 }
 .well.live .cap{transition:none}
-.batch{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
 
 /* top row: screen + mode keys */
 .top{
@@ -338,7 +337,6 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   .top{max-width:none}
   .stick-area{align-items:center;justify-content:center;width:100%;gap:6px}
   .well{width:118px;height:118px;margin:0 auto;flex:0 0 auto}
-  .batch{margin:0 auto}
   .pads{min-height:290px;gap:6px}
   .pad{padding:7px 8px}
   .pad .kb{top:6px;right:7px}
@@ -360,7 +358,6 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   .face{grid-template-columns:104px minmax(0,1fr);gap:8px}
   .well{width:98px;height:98px}
   .cap{width:42px;height:42px;margin:-21px 0 0 -21px}
-  .batch{display:none}
   .mode{min-height:52px}
   .chip{padding:11px 13px;min-height:42px}
   .pads{min-height:250px;gap:5px}
@@ -398,7 +395,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">02.2</span></div>
+      <div class="logo">Chords<span class="ver">02.3</span></div>
     </div>
 
     <div class="top">
@@ -431,7 +428,6 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
         <span class="dir se">9</span>
         <div class="cap" id="cap"></div>
       </div>
-      <div class="batch">Web Ed. — No. 01</div>
     </div>
 
   </div>
@@ -461,6 +457,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <h2>Sound</h2>
   <div class="row"><span class="lbl">Instrument</span><div class="row" id="sndRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Voice leading</span><div class="row" id="vleadRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Voicing — 6-voice octave-doubles the chord, like the device</span><div class="row" id="regRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Bass note</span><div class="row" id="bassRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Waveform</span><div class="row" id="waveRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Sampler — record through the mic, then play it as chords</span>
@@ -583,12 +580,14 @@ const KITS = {
 const S = {
   root:0, scale:"major", sound:3, wave:null,   // 3 = SAW, their loaded preset
   cut:16000, res:.7, atk:5, rel:300,
-  delay:0, reverb:0, chorus:0, trem:0, strum:14, vol:70,
+  // strum 0 — the device's default play mode is oneshot, all notes together.
+  // Strumming there is a separate mode (slow/med/fast = 120/80/40ms), not a default.
+  delay:0, reverb:0, chorus:0, trem:0, strum:0, vol:70,
   bpm:120, swing:0, drumVol:70,
-  arpOn:false, arp:"up", rate:1, bars:2, latch:false,
+  arpOn:false, arp:"up", rate:2, bars:2, latch:false,   // rate 2 = 1/8, the device's default
   drumsOn:false, kit:"Four",
   useSample:false, sampRoot:0, sampOct:4, sampLoop:true,
-  bass:"off", vlead:false,
+  bass:"off", vlead:false, sixVoice:true,
   pattern: KITS["Four"].map(r=>r.slice())
 };
 
@@ -1151,6 +1150,15 @@ function voiceChord(degree, m, track, hold, skipBass){
     }
     if(!hold) lastLow[track] = ch[0];
   }
+  // The device fills six voice slots on every chord — BASS, ROOT, 3RD, 5TH,
+  // EXT1, EXT2 — and with the bass voice off "all 6 voices play the chord".
+  // A plain triad therefore comes out octave-doubled, which is what gives the
+  // hardware its organ-like registration rather than a bare three-note pad.
+  // Runs after voice leading so that still reasons about the base chord.
+  if(S.sixVoice && track !== "arp"){
+    const base = ch.slice();
+    for(let i = 0; ch.length < 6; i++) ch.push(base[i % base.length] + 12);
+  }
   // The arp wants chord tones only; adding then discarding a bass note would
   // shift which note the pattern starts on.
   if(skipBass || S.bass === "off") return ch;
@@ -1421,6 +1429,8 @@ function buildPanels(){
     v=>{ S.sound=v; S.wave=null; loadPatch(); buildPanels(); refreshScreen(); save(); });
   chips($("vleadRow"), [{label:"OFF",value:false},{label:"ON",value:true}], ()=>S.vlead,
     v=>{ S.vlead=v; save(); });
+  chips($("regRow"), [{label:"3-NOTE",value:false},{label:"6-VOICE",value:true}], ()=>S.sixVoice,
+    v=>{ S.sixVoice=v; stopAllChords(); save(); });
   chips($("bassRow"), [{label:"OFF",value:"off"},{label:"ROOT",value:"root"}], ()=>S.bass,
     v=>{ S.bass=v; stopAllChords(); save(); });
   chips($("waveRow"), [{label:"AUTO",value:null}].concat(WAVES.map(w=>({label:w.slice(0,3).toUpperCase(), value:w}))),

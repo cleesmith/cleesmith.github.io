@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.10 — HTML chord synth</title>
+<title>Chords 003.15 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -409,7 +409,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.10</span></div>
+      <div class="logo">Chords<span class="ver">003.15</span></div>
     </div>
 
     <div class="top">
@@ -491,8 +491,8 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="knobs">
     <div class="knob"><label for="kCut">Brightness <span id="vCut"></span></label><input type="range" id="kCut" min="200" max="9000" step="50"></div>
     <div class="knob"><label for="kRes">Resonance <span id="vRes"></span></label><input type="range" id="kRes" min="0.5" max="14" step="0.1"></div>
-    <div class="knob"><label for="kAtk">Attack <span id="vAtk"></span></label><input type="range" id="kAtk" min="1" max="900" step="1"></div>
-    <div class="knob"><label for="kRel">Release <span id="vRel"></span></label><input type="range" id="kRel" min="30" max="2500" step="10"></div>
+    <div class="knob"><label for="kAtk">Attack <span id="vAtk"></span></label><input type="range" id="kAtk" min="0.1" max="5000" step="0.1"></div>
+    <div class="knob"><label for="kRel">Release <span id="vRel"></span></label><input type="range" id="kRel" min="0.1" max="5000" step="0.1"></div>
     <div class="knob"><label for="kDly">Delay <span id="vDly"></span></label><input type="range" id="kDly" min="0" max="70" step="1"></div>
     <div class="knob"><label for="kRev">Reverb <span id="vRev"></span></label><input type="range" id="kRev" min="0" max="70" step="1"></div>
     <div class="knob"><label for="kCho">Chorus <span id="vCho"></span></label><input type="range" id="kCho" min="0" max="100" step="1"></div>
@@ -505,7 +505,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 <section class="panel" id="panel-time">
   <h2>Rhythm</h2>
   <div class="knobs" style="margin-bottom:16px">
-    <div class="knob"><label for="kBpm">Tempo <span id="vBpm"></span></label><input type="range" id="kBpm" min="50" max="190" step="1"></div>
+    <div class="knob"><label for="kBpm">Tempo <span id="vBpm"></span></label><input type="range" id="kBpm" min="40" max="300" step="1"></div>
     <div class="knob"><label for="kSwing">Swing <span id="vSwing"></span></label><input type="range" id="kSwing" min="0" max="60" step="1"></div>
     <div class="knob"><label for="kDrumVol">Drum level <span id="vDrumVol"></span></label><input type="range" id="kDrumVol" min="0" max="100" step="1"></div>
   </div>
@@ -899,10 +899,26 @@ function playNote(midi, time, dur, vel, bus){
   return grp;
 }
 
+// ROOT/SLASH bass has its own stronger voice. The very low fundamental is
+// reinforced by a quieter octave harmonic so the bass choice remains audible
+// on small laptop/tablet speakers without moving the actual bass note upward.
+function playBassVoice(midi, time, vel){
+  return [
+    playNote(midi,    time, null, vel * 1.25),
+    playNote(midi+12, time, null, vel * 0.60)
+  ];
+}
+
 function startChord(id, midis, time, vel){
   stopChord(id, time);
   const strum = S.strum/1000;
-  const grp = midis.map((m,i)=> playNote(m, time + i*strum, null, vel));
+  const grp = [];
+  const hasBass = S.bass !== "off" && midis.length > 0;
+  midis.forEach((m,i)=>{
+    const t = time + i*strum;
+    if(hasBass && i === 0) grp.push(...playBassVoice(m, t, vel));
+    else grp.push(playNote(m, t, null, vel));
+  });
   rt.liveVoices.set(id, grp);
 }
 function stopChord(id, time){
@@ -1204,7 +1220,7 @@ const lastLow = {live:48, loop:48, arp:48};
 
 // track: "live" | "loop" | "arp".  hold: read the reference without moving it,
 // used when re-voicing a chord that is already sounding.
-function voiceChord(degree, m, track, hold, skipBass){
+function voiceChord(degree, m, track, hold, skipBass, slashBassDegree){
   track = track || "live";
   const iv = chordIntervals(degree, m);
   // Base C3 (48), not C4. Measured from a recording of an out-of-the-box device:
@@ -1264,10 +1280,19 @@ function voiceChord(degree, m, track, hold, skipBass){
 
   if(S.bass === "off") return fillVoices(ch, 6);
 
-  // Manual: ROOT bass is two octaves below the chord root. With FULL 6 enabled,
-  // the bass occupies one of the six main slots, so keep five chord voices above
-  // it rather than creating a seventh main voice (14 oscillators in stereo).
-  const bass = rootMidi + shift + octaveShift - 24;
+  // ROOT is the chord root two octaves down. In SLASH mode, a second held pad
+  // supplies the bass scale degree; with only one pad held, SLASH falls back to
+  // that chord's own root so it still behaves naturally by itself.
+  let bass = rootMidi + shift + octaveShift - 24;
+  if(S.bass === "slash" && Number.isInteger(slashBassDegree)){
+    const br = scaleDeg(slashBassDegree);
+    let b = 48 + S.root + br;
+    let bs = 0;
+    while(b + bs < 48) bs += 12;
+    while(b + bs > 59) bs -= 12;
+    const bPadOct = Array.isArray(S.padOct) ? (S.padOct[slashBassDegree] || 0) : 0;
+    bass = b + bs + 12*(S.octave + bPadOct) - 24;
+  }
   if(S.sixVoice && track !== "arp"){
     fillVoices(ch, 5);
     if(ch.length > 5) ch = ch.slice(0,5);
@@ -1297,21 +1322,43 @@ function chordLabel(degree, m){
 /* ============================================================
    6. TRIGGERING
    ============================================================ */
+function slashBassName(degree){
+  const pc = ((S.root + scaleDeg(degree)) % 12 + 12) % 12;
+  return NOTES[pc];
+}
 function padDown(degree){
   if(!ctx) return;
   if(S.latch && rt.held.has(degree)){ releasePad(degree); return; }
   const m = mods();
   rt.held.set(degree, {startStep: rt.step, mods: m});
-  setScreenChord(chordLabel(degree, m));
   padEl(degree).classList.add("hit");
+
+  const heldDegrees = Array.from(rt.held.keys());
+  const slashBass = (S.bass === "slash" && heldDegrees.length > 1) ? heldDegrees[0] : null;
+  if(slashBass !== null && slashBass !== degree){
+    // The first held pad becomes the bass selector rather than a second chord.
+    stopChord("p"+slashBass);
+    // If we're recording, end the anchor's audible chord here; the new chord
+    // event below carries the slash-bass degree for faithful loop playback.
+    const ah = rt.held.get(slashBass);
+    if(rt.recording && ah && ah.ev && ah.ev.open){
+      ah.ev.dur = heldLength(ah.ev);
+      ah.ev.open = false;
+      ah.ev = null;
+    }
+    setScreenChord(chordLabel(degree, m) + "/" + slashBassName(slashBass));
+  } else {
+    setScreenChord(chordLabel(degree, m));
+  }
+
   if(!S.arpOn){
-    startChord("p"+degree, voiceChord(degree, m, "live"), ctx.currentTime, 1);
+    startChord("p"+degree, voiceChord(degree, m, "live", false, false, slashBass), ctx.currentTime, 1);
   } else if(!rt.playing){
     startTransport();
   }
   if(rt.recording){
     if(!rt.playing) startTransport();
-    const ev = {id:++rt.evId, step: rt.step, abs: rt.absStep, dur:1, degree, mods:m, open:true};
+    const ev = {id:++rt.evId, step: rt.step, abs: rt.absStep, dur:1, degree, mods:m, slashBass, open:true};
     rt.events.push(ev);
     rt.held.get(degree).ev = ev;
   }
@@ -1332,7 +1379,32 @@ function releasePad(degree){
     h.ev.dur = heldLength(h.ev);
     h.ev.open = false;
   }
-  if(rt.held.size === 0) setScreenChord(null);
+
+  if(!S.arpOn && S.bass === "slash" && rt.held.size){
+    const heldDegrees = Array.from(rt.held.keys());
+    const anchor = heldDegrees.length > 1 ? heldDegrees[0] : null;
+    if(anchor !== null) stopChord("p"+anchor);
+    if(heldDegrees.length === 1){
+      const deg = heldDegrees[0], hh = rt.held.get(deg), hm = hh.mods;
+      startChord("p"+deg, voiceChord(deg, hm, "live", true), ctx.currentTime, 1);
+      if(rt.recording && (!hh.ev || !hh.ev.open)){
+        const ev = {id:++rt.evId, step:rt.step, abs:rt.absStep, dur:1, degree:deg, mods:hm, slashBass:null, open:true};
+        rt.events.push(ev);
+        hh.ev = ev;
+      }
+      setScreenChord(chordLabel(deg, hm));
+    } else {
+      heldDegrees.forEach(deg=>{
+        if(deg === anchor) return;
+        const hm = rt.held.get(deg).mods;
+        startChord("p"+deg, voiceChord(deg, hm, "live", true, false, anchor), ctx.currentTime, 1);
+      });
+      const top = heldDegrees[heldDegrees.length-1], hm = rt.held.get(top).mods;
+      setScreenChord(chordLabel(top, hm) + "/" + slashBassName(anchor));
+    }
+  } else if(rt.held.size === 0){
+    setScreenChord(null);
+  }
 }
 
 function loopSteps(){ return S.bars*16; }
@@ -1430,7 +1502,7 @@ function schedule(step, time){
       if(ev.open) return;
       if(ev.step === step){
         const id = "L"+ev.id;
-        startChord(id, voiceChord(ev.degree, ev.mods, "loop"), time, .9);
+        startChord(id, voiceChord(ev.degree, ev.mods, "loop", false, false, ev.slashBass), time, .9);
         const off = time + ev.dur*stepDur();
         const grp = rt.liveVoices.get(id);
         if(grp) grp.forEach(v=>v.release(off));
@@ -1594,7 +1666,7 @@ function buildPanels(){
     v=>{ S.sixVoice=v; stopAllChords(); save(); });
   chips($("wideRow"), [{label:"STEREO",value:true},{label:"MONO",value:false}], ()=>S.stereo,
     v=>{ S.stereo=v; stopAllChords(); save(); });
-  chips($("bassRow"), [{label:"OFF",value:"off"},{label:"ROOT",value:"root"}], ()=>S.bass,
+  chips($("bassRow"), [{label:"OFF",value:"off"},{label:"ROOT",value:"root"},{label:"SLASH",value:"slash"}], ()=>S.bass,
     v=>{ S.bass=v; stopAllChords(); save(); });
   chips($("waveRow"), [{label:"AUTO",value:null}].concat(WAVES.map(w=>({label:w.slice(0,3).toUpperCase(), value:w}))),
     ()=>S.wave, v=>{ S.wave=v; save(); });
@@ -1710,11 +1782,17 @@ function setStick(x,y){
   labelPads();
   // live re-voice any held pads
   if(ctx && !S.arpOn){
+    const heldDegrees = Array.from(rt.held.keys());
+    const slashBass = (S.bass === "slash" && heldDegrees.length > 1) ? heldDegrees[0] : null;
     rt.held.forEach((h,deg)=>{
       h.mods = m;
-      startChord("p"+deg, voiceChord(deg, m, "live", true), ctx.currentTime, 1);
+      if(deg === slashBass){ stopChord("p"+deg); return; }
+      startChord("p"+deg, voiceChord(deg, m, "live", true, false, slashBass), ctx.currentTime, 1);
     });
-    if(rt.held.size) setScreenChord(chordLabel(Array.from(rt.held.keys())[0], m));
+    if(heldDegrees.length){
+      const top = heldDegrees[heldDegrees.length-1];
+      setScreenChord(chordLabel(top, m) + (slashBass !== null ? "/"+slashBassName(slashBass) : ""));
+    }
   }
 }
 
@@ -1963,7 +2041,7 @@ function exportMidi(){
   const keep = lastLow.loop;             // don't disturb playback voicing
   const evs = [];
   done.forEach(ev=>{
-    voiceChord(ev.degree, ev.mods, "loop", true).forEach(n=>{
+    voiceChord(ev.degree, ev.mods, "loop", true, false, ev.slashBass).forEach(n=>{
       evs.push({t: ev.step*tps, k:0x90, n:n, v:92});
       evs.push({t:(ev.step+ev.dur)*tps, k:0x80, n:n, v:0});
     });

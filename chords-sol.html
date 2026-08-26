@@ -405,7 +405,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.06</span></div>
+      <div class="logo">Chords<span class="ver">003.05</span></div>
     </div>
 
     <div class="top">
@@ -461,7 +461,6 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <h2>Key</h2>
   <div class="row"><span class="lbl">Root</span><div class="row" id="rootRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Scale</span><div class="row" id="modeRow" style="margin:0"></div></div>
-  <div class="row"><span class="lbl">Global octave</span><div class="row" id="octaveRow" style="margin:0"></div></div>
 </section>
 
 <section class="panel" id="panel-sound">
@@ -603,7 +602,7 @@ const S = {
   // 3 = SAW. Chosen to match an out-of-box HiChord heard in several YouTube
   // demos; this is a perceptual reference, not a direct hardware capture.
   // The manual independently confirms SAW as HiChord's bright analog waveform.
-  root:0, scale:"major", octave:0, sound:3, wave:null,
+  root:0, scale:"major", sound:3, wave:null,
   cut:3500, res:.7, atk:25, rel:300,   // brightness and attack estimated from the YouTube factory reference
   // strum 0 — the device's default play mode is oneshot, all notes together.
   // Strumming there is a separate mode (slow/med/fast = 120/80/40ms), not a default.
@@ -1214,10 +1213,6 @@ function voiceChord(degree, m, track, hold, skipBass){
   while(lowest + shift < 48) shift += 12;
   while(lowest + shift > 59) shift -= 12;
   ch = ch.map(n => n + shift);
-  // Global octave is a performance transpose applied after register folding,
-  // so -2..+2 moves the whole instrument without being folded back into C3..B3.
-  const octaveShift = 12 * S.octave;
-  ch = ch.map(n => n + octaveShift);
   // The arp only needs the pitch set, and it rebuilds the chord every step —
   // running voice leading there would rewrite the reference constantly.
   if(track !== "arp" && S.vlead){
@@ -1250,7 +1245,7 @@ function voiceChord(degree, m, track, hold, skipBass){
   // Manual: ROOT bass is two octaves below the chord root. With FULL 6 enabled,
   // the bass occupies one of the six main slots, so keep five chord voices above
   // it rather than creating a seventh main voice (14 oscillators in stereo).
-  const bass = rootMidi + shift + octaveShift - 24;
+  const bass = rootMidi + shift - 24;
   if(S.sixVoice && track !== "arp"){
     fillVoices(ch, 5);
     if(ch.length > 5) ch = ch.slice(0,5);
@@ -1517,8 +1512,6 @@ function buildPanels(){
     v=>{ S.root=v; labelPads(); refreshScreen(); save(); });
   chips($("modeRow"), Object.keys(SCALES).map(k=>({label:SCALES[k].label, value:k})), ()=>S.scale,
     v=>{ S.scale=v; labelPads(); refreshScreen(); save(); });
-  chips($("octaveRow"), [-2,-1,0,1,2].map(o=>({label:o>0?"+"+o:String(o), value:o})), ()=>S.octave,
-    v=>{ S.octave=v; stopAllChords(); save(); });
   chips($("sndRow"), SOUNDS.map((s,i)=>({label:s.n, value:i})), ()=>S.sound,
     v=>{ S.sound=v; S.wave=null; loadPatch(); buildPanels(); refreshScreen(); save(); });
   chips($("vleadRow"), [{label:"OFF",value:false},{label:"ON",value:true}], ()=>S.vlead,

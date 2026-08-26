@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.27 — HTML chord synth</title>
+<title>Chords 003.32 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -415,7 +415,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.27</span></div>
+      <div class="logo">Chords<span class="ver">003.32</span></div>
     </div>
 
     <div class="top">
@@ -487,6 +487,9 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Bass note</span><div class="row" id="bassRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Waveform</span><div class="row" id="waveRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">ADSR preset — Attack / Decay / Sustain / Release</span><div class="row" id="adsrRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Reverb type — Reverb slider sets wet amount</span><div class="row" id="reverbTypeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Delay rate — synced to BPM; Delay slider sets echo amount</span><div class="row" id="delayRateRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Tremolo rate — synced to BPM; Tremolo slider sets depth</span><div class="row" id="tremRateRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Sampler — record through the mic, then play it as chords</span>
     <div class="row" style="margin:0">
       <button class="chip" id="btnSampRec">Record 3s</button>
@@ -522,7 +525,8 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Strum mode</span><div class="row" id="strumModeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Performance mode</span><div class="row" id="perfModeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Arp pattern</span><div class="row" id="arpRow" style="margin:0"></div></div>
-  <div class="row"><span class="lbl">Arp rate</span><div class="row" id="rateRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Arp layering</span><div class="row" id="arpLayerRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Arp / Repeat rate</span><div class="row" id="rateRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Loop length</span><div class="row" id="barsRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Drum pattern</span><div class="row" id="kitRow" style="margin:0"></div></div>
   <div class="grid" id="grid"></div>
@@ -591,6 +595,30 @@ const RATES = [
   ["1/1","1/1"], ["1/2","1/2"], ["1/4","1/4"], ["1/8","1/8"], ["1/16","1/16"],
   ["1/16T","1/16T"], ["1/32","1/32"], ["SWING 8TH","swing8"], ["SWING 16TH","swing16"]
 ];
+const REVERB_TYPES = [
+  {label:"OFF",     value:"off"},
+  {label:"ROOM",    value:"room",    seconds:0.75, decay:4.2, damp:0.48},
+  {label:"HALL",    value:"hall",    seconds:2.8,  decay:2.4, damp:0.30},
+  {label:"PLATE",   value:"plate",   seconds:1.8,  decay:2.0, damp:0.74},
+  {label:"SPRING",  value:"spring",  seconds:1.6,  decay:2.6, damp:0.62, spring:true},
+  {label:"AMBIENT", value:"ambient", seconds:5.2,  decay:1.6, damp:0.22}
+];
+const DELAY_RATES = [
+  {label:"OFF", value:"off"},
+  {label:"1/4", value:"1/4"},
+  {label:"1/8", value:"1/8"},
+  {label:"1/16", value:"1/16"},
+  {label:"1/16T", value:"1/16T"},
+  {label:"1/32", value:"1/32"}
+];
+const TREM_RATES = [
+  {label:"OFF", value:"off"},
+  {label:"1/4", value:"1/4"},
+  {label:"1/8", value:"1/8"},
+  {label:"1/16", value:"1/16"},
+  {label:"1/16T", value:"1/16T"},
+  {label:"1/32", value:"1/32"}
+];
 const LANES = ["KICK","SNARE","HAT","CLAP"];
 const KITS = {
   "Four": [
@@ -636,10 +664,10 @@ const S = {
   cut:3500, res:.7, atk:25, dec:30, sus:.8, rel:300, adsr:null,   // brightness and attack estimated from the YouTube factory reference
   // strum 0 — the device's default play mode is oneshot, all notes together.
   // Strumming there is a separate mode (slow/med/fast = 200/80/40ms), not a default.
-  delay:0, reverb:0, chorus:0, trem:0, strum:0, vol:70,
+  delay:0, delayRate:"off", reverb:0, reverbType:"off", chorus:0, trem:0, tremRate:"off", strum:0, vol:70,
   bpm:120, swing:0, drumVol:70,
   playMode:"play",
-  arpOn:false, arp:"up", rate:"1/8", bars:2, latch:false,   // 1/8 = the device's default
+  arpOn:false, arp:"up", arpLayer:"arp-only", rate:"1/8", bars:2, latch:false,   // 1/8 = the device's default
   drumsOn:false, kit:"Four",
   useSample:false, sampRoot:0, sampOct:4, sampLoop:true,
   bass:"off", vlead:false, joyMode:"default", sixVoice:true,
@@ -669,7 +697,7 @@ const rt = {
    3. AUDIO GRAPH
    ============================================================ */
 let ctx=null, master, limiter, tremGain, lfo, lfoAmt, chorusIn, chorusWet,
-    chordBus, drumBus, dryGain, delayNode, delayFb, delayTone, delaySend,
+    chordBus, arpChordBus, arpNoteBus, drumBus, dryGain, delayNode, delayFb, delayTone, delaySend,
     convolver, revSend, noiseBuf, worker;
 
 function buildAudio(){
@@ -684,11 +712,18 @@ function buildAudio(){
   master = ctx.createGain(); master.gain.value = S.vol/100; master.connect(limiter);
 
   tremGain = ctx.createGain(); tremGain.gain.value=1; tremGain.connect(master);
-  lfo = ctx.createOscillator(); lfo.type="sine"; lfo.frequency.value=5.2;
+  lfo = ctx.createOscillator(); lfo.type="sine"; lfo.frequency.value=tremoloHz();
   lfoAmt = ctx.createGain(); lfoAmt.gain.value=0;
   lfo.connect(lfoAmt); lfoAmt.connect(tremGain.gain); lfo.start();
 
   chordBus = ctx.createGain(); chordBus.gain.value=1;
+
+  // HiChord's CHORD+ARP layer is a stereo split: sustained chord left,
+  // moving arpeggio right. These panners feed the normal chord/effects bus,
+  // so the selected instrument and effects still apply to both layers.
+  arpChordBus = ctx.createStereoPanner(); arpChordBus.pan.value = -1; arpChordBus.connect(chordBus);
+  arpNoteBus  = ctx.createStereoPanner(); arpNoteBus.pan.value  =  1; arpNoteBus.connect(chordBus);
+
   drumBus  = ctx.createGain(); drumBus.gain.value = S.drumVol/100;
   drumBus.connect(tremGain);
 
@@ -696,7 +731,7 @@ function buildAudio(){
   chordBus.connect(dryGain); dryGain.connect(tremGain);
 
   // delay
-  delaySend = ctx.createGain(); delaySend.gain.value=S.delay/100;
+  delaySend = ctx.createGain(); delaySend.gain.value = S.delayRate === "off" ? 0 : S.delay/100;
   delayNode = ctx.createDelay(1.5);
   delayFb   = ctx.createGain(); delayFb.gain.value=.34;
   delayTone = ctx.createBiquadFilter(); delayTone.type="lowpass"; delayTone.frequency.value=2600;
@@ -704,12 +739,14 @@ function buildAudio(){
   delayNode.connect(delayTone); delayTone.connect(delayFb); delayFb.connect(delayNode);
   delayNode.connect(tremGain);
 
-  // reverb (impulse response generated in code — no external file)
+  // reverb (impulse responses generated in code — no external files).
+  // The manual names character presets rather than publishing DSP values, so
+  // these IRs are browser-side approximations of those descriptions.
   convolver = ctx.createConvolver();
-  convolver.buffer = makeIR(2.4, 2.6);
-  revSend = ctx.createGain(); revSend.gain.value=S.reverb/100;
+  revSend = ctx.createGain(); revSend.gain.value = S.reverbType === "off" ? 0 : S.reverb/100;
   chordBus.connect(revSend); drumBus.connect(revSend);
   revSend.connect(convolver); convolver.connect(tremGain);
+  syncReverbType();
 
   // Chorus: two short modulated delays panned hard left and right. The pitch
   // wobble between them is what makes a synth sound wide rather than flat.
@@ -728,10 +765,12 @@ function buildAudio(){
 
   noiseBuf = makeNoise(1);
   syncDelayTime();
+  syncTremoloRate();
   applySoundParams();
 }
 
-function makeIR(seconds, decay){
+const reverbIRCache = new Map();
+function makeIR(seconds, decay, damp=.36, spring=false){
   const sr = ctx.sampleRate, len = Math.floor(sr*seconds);
   const buf = ctx.createBuffer(2, len, sr);
   for(let c=0;c<2;c++){
@@ -740,11 +779,29 @@ function makeIR(seconds, decay){
     for(let i=0;i<len;i++){
       const t = i/len;
       const n = Math.random()*2-1;
-      lp = lp + 0.36*(n-lp);              // cheap lowpass so it isn't fizzy
-      d[i] = lp * Math.pow(1-t, decay);
+      lp += damp*(n-lp);
+      let body = lp;
+      if(spring){
+        // A few dispersive resonances give SPRING its audible "boing" rather
+        // than making it just another differently-sized room.
+        const x = i/sr;
+        body = body*.55 + Math.sin(2*Math.PI*67*x)*.23 + Math.sin(2*Math.PI*113*x)*.14;
+      }
+      d[i] = body * Math.pow(1-t, decay);
     }
   }
   return buf;
+}
+function syncReverbType(){
+  if(!ctx || !convolver) return;
+  const cfg = REVERB_TYPES.find(x=>x.value===S.reverbType);
+  if(!cfg || cfg.value === "off") return;
+  let ir = reverbIRCache.get(cfg.value);
+  if(!ir){
+    ir = makeIR(cfg.seconds, cfg.decay, cfg.damp, !!cfg.spring);
+    reverbIRCache.set(cfg.value, ir);
+  }
+  convolver.buffer = ir;
 }
 function makeNoise(sec){
   const sr = ctx.sampleRate, len = Math.floor(sr*sec);
@@ -755,7 +812,36 @@ function makeNoise(sec){
 }
 
 function stepDur(){ return 60/S.bpm/4; }
-function syncDelayTime(){ if(delayNode) delayNode.delayTime.value = Math.min(1.4, stepDur()*3); }
+function delaySeconds(){
+  const beat = 60 / S.bpm;
+  switch(S.delayRate){
+    case "1/4":  return beat;
+    case "1/8":  return beat/2;
+    case "1/16": return beat/4;
+    case "1/16T":return beat/6;
+    case "1/32": return beat/8;
+    default:      return beat/2;
+  }
+}
+function syncDelayTime(){
+  if(!delayNode) return;
+  delayNode.delayTime.setValueAtTime(Math.min(1.5, delaySeconds()), ctx.currentTime);
+}
+function tremoloHz(){
+  const beatHz = S.bpm / 60;
+  switch(S.tremRate){
+    case "1/4":  return beatHz;
+    case "1/8":  return beatHz*2;
+    case "1/16": return beatHz*4;
+    case "1/16T":return beatHz*6;
+    case "1/32": return beatHz*8;
+    default:      return beatHz*2;
+  }
+}
+function syncTremoloRate(){
+  if(!lfo || !ctx) return;
+  lfo.frequency.setValueAtTime(tremoloHz(), ctx.currentTime);
+}
 
 /* ============================================================
    4. VOICES
@@ -764,11 +850,11 @@ function snd(){ return SOUNDS[S.sound]; }
 function applySoundParams(){
   if(!ctx) return;
   master.gain.value = S.vol/100;
-  delaySend.gain.value = S.delay/100;
-  revSend.gain.value = S.reverb/100;
+  delaySend.gain.value = S.delayRate === "off" ? 0 : S.delay/100;
+  revSend.gain.value = S.reverbType === "off" ? 0 : S.reverb/100;
   if(chorusWet) chorusWet.gain.value = S.chorus/100;
   drumBus.gain.value = S.drumVol/100;
-  const dep = S.trem/100;
+  const dep = S.tremRate === "off" ? 0 : S.trem/100;
   lfoAmt.gain.value = dep/2;
   tremGain.gain.value = 1 - dep/2;
 }
@@ -807,7 +893,7 @@ function reap(){
   }
 }
 
-function playNote(midi, time, dur, vel, bus){
+function playNote(midi, time, dur, vel, bus, relOverride){
   reap();
   const p = snd();
   const wave = S.wave || p.wave;
@@ -922,29 +1008,29 @@ function playNote(midi, time, dur, vel, bus){
 
   rt.voices.push(grp);
   oscs.forEach(o=>o.start(t));
-  if(dur != null) grp.release(t + dur);
+  if(dur != null) grp.release(t + dur, false, relOverride);
   return grp;
 }
 
 // ROOT/SLASH bass has its own stronger voice. The very low fundamental is
 // reinforced by a quieter octave harmonic so the bass choice remains audible
 // on small laptop/tablet speakers without moving the actual bass note upward.
-function playBassVoice(midi, time, vel){
+function playBassVoice(midi, time, vel, bus){
   return [
-    playNote(midi,    time, null, vel * 1.25),
-    playNote(midi+12, time, null, vel * 0.60)
+    playNote(midi,    time, null, vel * 1.25, bus),
+    playNote(midi+12, time, null, vel * 0.60, bus)
   ];
 }
 
-function startChord(id, midis, time, vel){
+function startChord(id, midis, time, vel, bus){
   stopChord(id, time);
   const strum = S.strum/1000;
   const grp = [];
   const hasBass = S.bass !== "off" && midis.length > 1;
   midis.forEach((m,i)=>{
     const t = time + i*strum;
-    if(hasBass && i === 0) grp.push(...playBassVoice(m, t, vel));
-    else grp.push(playNote(m, t, null, vel));
+    if(hasBass && i === 0) grp.push(...playBassVoice(m, t, vel, bus));
+    else grp.push(playNote(m, t, null, vel, bus));
   });
   rt.liveVoices.set(id, grp);
 }
@@ -1650,6 +1736,35 @@ function padDown(degree){
     return;
   }
 
+  if(S.playMode === "repeat"){
+    // Repeat is a BPM-synced trance gate: the pad itself is silent here; the
+    // scheduler retriggers the full chord at the selected Arp / Repeat rate.
+    if(rt.held.has(degree)) return;
+    const m = effectiveMods(degree, mods());
+    const heldDegrees = Array.from(rt.held.keys());
+    const slashBass = (S.bass === "slash" && heldDegrees.length) ? heldDegrees[0] : null;
+
+    // In SLASH mode the first held pad becomes the bass selector once a second
+    // pad is pressed, matching the same interaction used in normal Play mode.
+    if(slashBass !== null && rt.held.has(slashBass)){
+      rt.held.get(slashBass).suppressRepeat = true;
+      setScreenChord(chordLabel(degree, m) + "/" + slashBassName(slashBass));
+    } else {
+      setScreenChord(chordLabel(degree, m));
+    }
+
+    rt.held.set(degree, {startStep:rt.step, mods:m, playMode:"repeat", slashBass});
+    padEl(degree).classList.add("hit");
+    if(!rt.playing) startTransport();
+
+    if(rt.recording){
+      const ev = {id:++rt.evId, step:rt.step, abs:rt.absStep, dur:1, degree, mods:m, slashBass, playMode:"repeat", open:true};
+      rt.events.push(ev);
+      rt.held.get(degree).ev = ev;
+    }
+    return;
+  }
+
   if(S.latch && rt.held.has(degree)){ releasePad(degree); return; }
   const m = effectiveMods(degree, mods());
   rt.held.set(degree, {startStep: rt.step, mods: m, playMode:"play"});
@@ -1675,8 +1790,10 @@ function padDown(degree){
 
   if(!S.arpOn){
     startChord("p"+degree, voiceChord(degree, m, "live", false, false, slashBass), ctx.currentTime, 1);
-  } else if(!rt.playing){
-    startTransport();
+  } else {
+    if(S.arpLayer === "chord-arp")
+      startChord("p"+degree, voiceChord(degree, m, "live", false, false, slashBass), ctx.currentTime, .62, arpChordBus);
+    if(!rt.playing) startTransport();
   }
   if(rt.recording){
     if(!rt.playing) startTransport();
@@ -1697,7 +1814,7 @@ function releasePad(degree){
   const h = rt.held.get(degree);
   rt.held.delete(degree);
   padEl(degree).classList.remove("hit");
-  if(!S.arpOn) stopChord("p"+degree);
+  if(!S.arpOn || S.arpLayer === "chord-arp") stopChord("p"+degree);
   if(h && h.ev){
     h.ev.dur = heldLength(h.ev);
     h.ev.open = false;
@@ -1708,13 +1825,33 @@ function releasePad(degree){
     return;
   }
 
-  if(!S.arpOn && S.bass === "slash" && rt.held.size){
+  if(h && h.playMode === "repeat"){
+    // If a slash-chord top note is released while its bass anchor is still held,
+    // let that anchor resume as an ordinary repeated chord.
+    if(S.bass === "slash" && rt.held.size){
+      const degrees = Array.from(rt.held.keys());
+      degrees.forEach(d=>{
+        const hh = rt.held.get(d);
+        if(hh) hh.suppressRepeat = false;
+      });
+      if(degrees.length === 1){
+        const d = degrees[0], hh = rt.held.get(d);
+        hh.slashBass = null;
+        setScreenChord(chordLabel(d, hh.mods));
+      }
+    } else if(rt.held.size === 0){
+      setScreenChord(null);
+    }
+    return;
+  }
+
+  if((!S.arpOn || S.arpLayer === "chord-arp") && S.bass === "slash" && rt.held.size){
     const heldDegrees = Array.from(rt.held.keys());
     const anchor = heldDegrees.length > 1 ? heldDegrees[0] : null;
     if(anchor !== null) stopChord("p"+anchor);
     if(heldDegrees.length === 1){
       const deg = heldDegrees[0], hh = rt.held.get(deg), hm = hh.mods;
-      startChord("p"+deg, voiceChord(deg, hm, "live", true), ctx.currentTime, 1);
+      startChord("p"+deg, voiceChord(deg, hm, "live", true), ctx.currentTime, S.arpOn ? .62 : 1, S.arpOn ? arpChordBus : undefined);
       if(rt.recording && (!hh.ev || !hh.ev.open)){
         const ev = {id:++rt.evId, step:rt.step, abs:rt.absStep, dur:1, degree:deg, mods:hm, slashBass:null, playMode:"play", open:true};
         rt.events.push(ev);
@@ -1725,7 +1862,7 @@ function releasePad(degree){
       heldDegrees.forEach(deg=>{
         if(deg === anchor) return;
         const hm = rt.held.get(deg).mods;
-        startChord("p"+deg, voiceChord(deg, hm, "live", true, false, anchor), ctx.currentTime, 1);
+        startChord("p"+deg, voiceChord(deg, hm, "live", true, false, anchor), ctx.currentTime, S.arpOn ? .62 : 1, S.arpOn ? arpChordBus : undefined);
       });
       const top = heldDegrees[heldDegrees.length-1], hm = rt.held.get(top).mods;
       setScreenChord(chordLabel(top, hm) + "/" + slashBassName(anchor));
@@ -1747,12 +1884,12 @@ function heldLength(ev){
 
 function activePool(step){
   const out = [];
-  rt.held.forEach((h,deg)=>{ out.push({degree:deg, mods:h.mods, playMode:h.playMode || S.playMode}); });
+  rt.held.forEach((h,deg)=>{ if(!h.suppressRepeat) out.push({degree:deg, mods:h.mods, playMode:h.playMode || S.playMode, slashBass:h.slashBass ?? null}); });
   const L = loopSteps();
   rt.events.forEach(ev=>{
     if(ev.open) return;
     for(let k=0;k<ev.dur;k++){
-      if((ev.step+k)%L === step){ out.push({degree:ev.degree, mods:ev.mods, playMode:ev.playMode || "play"}); break; }
+      if((ev.step+k)%L === step){ out.push({degree:ev.degree, mods:ev.mods, playMode:ev.playMode || "play", slashBass:ev.slashBass ?? null}); break; }
     }
   });
   return out;
@@ -1823,7 +1960,7 @@ function arpRateEvents(step, time){
   }
 }
 
-function playArpStep(uniq, time, dur){
+function playArpStep(uniq, time, dur, bus){
   const n = uniq.length;
   if(!n) return;
   if(S.arp === "fingerpick"){
@@ -1844,7 +1981,7 @@ function playArpStep(uniq, time, dur){
     }
     [...new Set(pair)].forEach(i=>{
       i = Math.max(0,Math.min(n-1,i));
-      playNote(uniq[i], time, dur, .92);
+      playNote(uniq[i], time, dur, .92, bus);
     });
     rt.arpIdx++;
     return;
@@ -1861,8 +1998,43 @@ function playArpStep(uniq, time, dur){
     const upDown = k < n ? k : span-k;
     i = S.arp === "down-up" ? (n-1)-upDown : upDown;
   }
-  playNote(uniq[Math.max(0,Math.min(n-1,i))], time, dur, 1);
+  playNote(uniq[Math.max(0,Math.min(n-1,i))], time, dur, 1, bus);
   rt.arpIdx++;
+}
+
+// RHYTHM+ARP adds a short full-chord pulse at the same musical rate while the
+// arpeggio continues above it. Unlike Repeat mode, this keeps the user's normal
+// Release behavior rather than applying Repeat's 200ms release cap.
+function playArpLayerPulse(midis, time, span, vel){
+  if(!midis || !midis.length) return;
+  const gate = Math.max(.012, span * .46);
+  const hasBass = S.bass !== "off" && midis.length > 1;
+  midis.forEach((m,i)=>{
+    if(hasBass && i === 0){
+      playNote(m,    time, gate, vel*1.10);
+      playNote(m+12, time, gate, vel*.50);
+    } else {
+      playNote(m, time, gate, vel);
+    }
+  });
+}
+
+// Full-chord pulse for Repeat mode. The manual caps Release at 200ms in this
+// mode; S.rel itself is never changed, so the user's saved Release value remains
+// intact and is automatically restored outside Repeat.
+function playRepeatChord(midis, time, span, vel){
+  if(!midis || !midis.length) return;
+  const gate = Math.max(.012, span * .48);
+  const rel = Math.min(.2, Math.max(.0001, S.rel/1000));
+  const hasBass = S.bass !== "off" && midis.length > 1;
+  midis.forEach((m,i)=>{
+    if(hasBass && i === 0){
+      playNote(m, time, gate, vel*1.25, undefined, rel);
+      playNote(m+12, time, gate, vel*.60, undefined, rel);
+    } else {
+      playNote(m, time, gate, vel, undefined, rel);
+    }
+  });
 }
 
 function schedule(step, time){
@@ -1872,21 +2044,41 @@ function schedule(step, time){
     for(let l=0;l<4;l++) if(S.pattern[l][step%16]) drum(l, time, 1);
   }
 
+  const pool = activePool(step);
+  const repeatPool = pool.filter(p=>p.playMode === "repeat");
+  const rateEvents = arpRateEvents(step, time);
+
+  // Repeat works whether it is the current live mode or something previously
+  // recorded into the event loop. Each pulse is the entire chord, not an arp note.
+  if(repeatPool.length && rateEvents.length){
+    repeatPool.forEach(p=>{
+      const notes = eventNotes(p.degree, p.mods, "repeat", "repeat", false, false, p.slashBass);
+      rateEvents.forEach(e=>playRepeatChord(notes, e.time, e.dur, .9));
+    });
+  }
+
   if(S.arpOn){
-    const pool = activePool(step);
-    const sig = pool.map(p=>p.degree).sort().join(",");
+    const arpPool = pool.filter(p=>p.playMode !== "repeat");
+    const sig = arpPool.map(p=>p.degree).sort().join(",");
     if(sig !== rt.lastPool){ rt.lastPool = sig; rt.arpIdx = 0; rt.arpDir = 1; }
-    const rateEvents = arpRateEvents(step, time);
-    if(pool.length && rateEvents.length){
+    if(arpPool.length && rateEvents.length){
       const notes = [];
-      pool.forEach(p => eventNotes(p.degree, p.mods, p.playMode, "arp", false, true).forEach(n=>notes.push(n)));
+      arpPool.forEach(p => eventNotes(p.degree, p.mods, p.playMode, "arp", false, true).forEach(n=>notes.push(n)));
       notes.sort((a,b)=>a-b);
       const uniq = notes.filter((n,i)=> i===0 || n!==notes[i-1]);
-      rateEvents.forEach(e=>playArpStep(uniq, e.time, e.dur));
+      const arpBus = S.arpLayer === "chord-arp" ? arpNoteBus : undefined;
+      rateEvents.forEach(e=>playArpStep(uniq, e.time, e.dur, arpBus));
+
+      if(S.arpLayer === "rhythm-arp") {
+        arpPool.forEach(p=>{
+          const chord = eventNotes(p.degree, p.mods, p.playMode, "live", true, false, p.slashBass);
+          rateEvents.forEach(e=>playArpLayerPulse(chord, e.time, e.dur, .52));
+        });
+      }
     }
   } else {
     rt.events.forEach(ev=>{
-      if(ev.open) return;
+      if(ev.open || ev.playMode === "repeat") return;
       if(ev.step === step){
         const id = "L"+ev.id;
         startChord(id, eventNotes(ev.degree, ev.mods, ev.playMode || "play", "loop", false, false, ev.slashBass), time, .9);
@@ -1999,6 +2191,7 @@ function tapTempo(){
   if(el) el.value = String(bpm);
   if(SLIDER_PAINT.kBpm) SLIDER_PAINT.kBpm();
   syncDelayTime();
+  syncTremoloRate();
   refreshScreen();
   save();
   flash(bpm + " BPM");
@@ -2166,6 +2359,40 @@ function buildPanels(){
       });
       stopAllChords(); save();
     });
+  chips($("reverbTypeRow"), REVERB_TYPES, ()=>S.reverbType, v=>{
+    S.reverbType=v;
+    // Selecting a named HiChord character turns the effect on. Preserve the
+    // slider as a direct browser control, but give a newly-enabled type enough
+    // wet level to hear immediately.
+    if(v !== "off" && S.reverb <= 0){
+      S.reverb = 30;
+      const el=$("kRev"); if(el) el.value=String(S.reverb);
+      if(SLIDER_PAINT.kRev) SLIDER_PAINT.kRev();
+    }
+    syncReverbType(); applySoundParams(); save();
+  });
+  chips($("delayRateRow"), DELAY_RATES, ()=>S.delayRate, v=>{
+    S.delayRate=v;
+    // A newly-enabled delay should be audible even if the amount was still at
+    // the factory 0%. The amount remains a browser-friendly fine control.
+    if(v !== "off" && S.delay <= 0){
+      S.delay = 30;
+      const el=$("kDly"); if(el) el.value=String(S.delay);
+      if(SLIDER_PAINT.kDly) SLIDER_PAINT.kDly();
+    }
+    syncDelayTime(); applySoundParams(); save();
+  });
+  chips($("tremRateRow"), TREM_RATES, ()=>S.tremRate, v=>{
+    S.tremRate=v;
+    // As with Delay, choosing a musical rate should make the effect audible
+    // even when the depth is still at its factory 0%.
+    if(v !== "off" && S.trem <= 0){
+      S.trem = 50;
+      const el=$("kTrem"); if(el) el.value=String(S.trem);
+      if(SLIDER_PAINT.kTrem) SLIDER_PAINT.kTrem();
+    }
+    syncTremoloRate(); applySoundParams(); save();
+  });
   const strumModes = [
     {label:"PLAY", value:0},
     {label:"SLOW 200ms", value:200},
@@ -2182,7 +2409,8 @@ function buildPanels(){
   chips($("perfModeRow"), [
       {label:"PLAY",value:"play"},
       {label:"LEAD",value:"lead"},
-      {label:"DRONE",value:"drone"}
+      {label:"DRONE",value:"drone"},
+      {label:"REPEAT",value:"repeat"}
     ], ()=>S.playMode,
     v=>{
       // Close a held recording event before changing modes. Drone itself never
@@ -2194,7 +2422,7 @@ function buildPanels(){
       rt.held.forEach((h,d)=>{ const el=padEl(d); if(el) el.classList.remove("hit"); });
       rt.held.clear();
       S.playMode=v;
-      if(v === "lead" || v === "drone"){
+      if(v === "lead" || v === "drone" || v === "repeat"){
         S.arpOn=false;
         S.latch=false;
         if(ui.arp) ui.arp.classList.remove("on");
@@ -2203,6 +2431,16 @@ function buildPanels(){
       labelPads(); refreshScreen(); save();
     });
   chips($("arpRow"), ARPS.map(a=>({label:a.toUpperCase().replace(/-/g,"/"), value:a})), ()=>S.arp, v=>{ S.arp=v; rt.arpIdx=0; rt.arpDir=1; save(); });
+  chips($("arpLayerRow"), [
+      {label:"ARP ONLY", value:"arp-only"},
+      {label:"CHORD+ARP", value:"chord-arp"},
+      {label:"RHYTHM+ARP", value:"rhythm-arp"}
+    ], ()=>S.arpLayer, v=>{
+      if(S.arpOn) stopAllChords(true);
+      S.arpLayer=v;
+      if(S.arpOn && v === "chord-arp") restoreHeldPlayChords(arpChordBus, .62);
+      save();
+    });
   chips($("rateRow"), RATES.map(r=>({label:r[0], value:r[1]})), ()=>S.rate, v=>{ S.rate=v; save(); });
   chips($("barsRow"), [1,2,4,8].map(b=>({label:b+(b>1?" bars":" bar"), value:b})), ()=>S.bars,
     v=>{ S.bars=v; rt.events=rt.events.filter(e=>e.step < v*16); save(); });
@@ -2470,11 +2708,29 @@ function clearLoop(){
   rt.events = [];
   flash("LOOP CLEARED");
 }
+function restoreHeldPlayChords(bus, vel){
+  if(!ctx || S.playMode !== "play" || !rt.held.size) return;
+  const degrees = Array.from(rt.held.keys());
+  const anchor = (S.bass === "slash" && degrees.length > 1) ? degrees[0] : null;
+  degrees.forEach(deg=>{
+    if(anchor !== null && deg === anchor) return;
+    const h = rt.held.get(deg);
+    if(!h) return;
+    startChord("p"+deg, voiceChord(deg, h.mods, "live", true, false, anchor), ctx.currentTime, vel, bus);
+  });
+}
+
 function toggleArp(){
   S.arpOn = !S.arpOn;
   ui.arp.classList.toggle("on", S.arpOn);
-  if(S.arpOn){ stopAllChords(); if(!rt.playing) startTransport(); }
-  else document.querySelectorAll(".pad").forEach(p=>p.classList.remove("arp"));
+  stopAllChords(true);
+  if(S.arpOn){
+    if(S.arpLayer === "chord-arp") restoreHeldPlayChords(arpChordBus, .62);
+    if(!rt.playing) startTransport();
+  } else {
+    restoreHeldPlayChords(undefined, 1);
+    document.querySelectorAll(".pad").forEach(p=>p.classList.remove("arp"));
+  }
   save();
 }
 function toggleLatch(){
@@ -2655,7 +2911,7 @@ function resetAll(){
   ui.arp.classList.remove("on");
   ui.drums.classList.remove("on");
   ui.latch.classList.remove("on");
-  applySoundParams(); syncDelayTime(); refreshScreen();
+  applySoundParams(); syncDelayTime(); syncTremoloRate(); refreshScreen();
   flash("RESET");
 }
 
@@ -2692,10 +2948,24 @@ function load(){
     });
     if(!JOY_MODES[S.joyMode]) S.joyMode = "default";
     if(!["play","lead","drone"].includes(S.playMode)) S.playMode = "play";
+    if(!["play","lead","drone","repeat"].includes(S.playMode)) S.playMode = "play";
     if(!ARPS.includes(S.arp)) S.arp = "up";
+    if(!["arp-only","chord-arp","rhythm-arp"].includes(S.arpLayer)) S.arpLayer = "arp-only";
     // Migrate pre-003.22 numeric arp rates to the named musical-rate values.
     if(typeof S.rate === "number") S.rate = ({16:"1/1",8:"1/2",4:"1/4",2:"1/8",1:"1/16"})[S.rate] || "1/8";
     if(!RATES.some(r=>r[1]===S.rate)) S.rate = "1/8";
+    // Pre-003.32 saved states had only a generic reverb amount. Preserve an
+    // audible old reverb by mapping it to HALL, the closest of the named types.
+    if(!("reverbType" in o)) S.reverbType = S.reverb > 0 ? "hall" : "off";
+    else if(!REVERB_TYPES.some(r=>r.value===S.reverbType)) S.reverbType = "off";
+    // Pre-003.30 saved states had only a delay amount. Preserve an existing
+    // audible delay by migrating it to the former default-ish 1/8 timing.
+    if(!("delayRate" in o)) S.delayRate = S.delay > 0 ? "1/8" : "off";
+    else if(!DELAY_RATES.some(r=>r.value===S.delayRate)) S.delayRate = "off";
+    // Pre-003.31 tremolo used one fixed 5.2 Hz LFO. If a saved state had
+    // tremolo depth, migrate it to a musical 1/8 rate instead of muting it.
+    if(!("tremRate" in o)) S.tremRate = S.trem > 0 ? "1/8" : "off";
+    else if(!TREM_RATES.some(r=>r.value===S.tremRate)) S.tremRate = "off";
   }catch(e){}
 }
 
@@ -2750,7 +3020,7 @@ function boot(){
   slider("kTrem","trem",v=>Math.round(v)+"%");
   slider("kStrum","strum",v=>Math.round(v)+"ms");
   slider("kVol","vol",v=>Math.round(v)+"%");
-  slider("kBpm","bpm",v=>Math.round(v)+" BPM",()=>{ syncDelayTime(); refreshScreen(); });
+  slider("kBpm","bpm",v=>Math.round(v)+" BPM",()=>{ syncDelayTime(); syncTremoloRate(); refreshScreen(); });
   slider("kSwing","swing",v=>Math.round(v)+"%");
   slider("kDrumVol","drumVol",v=>Math.round(v)+"%");
 

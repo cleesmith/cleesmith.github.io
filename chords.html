@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.18 — HTML chord synth</title>
+<title>Chords 003.27 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -275,6 +275,12 @@ body{
 .pad-oct{display:flex;align-items:center;gap:5px;padding:6px 7px;border-radius:9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07)}
 .pad-oct b{font-family:var(--font-mono);font-size:11px;color:#bcae9c;min-width:14px;text-align:center}
 .pad-oct .chip{min-width:27px;padding:7px 5px;font-size:10px;flex:1}
+.lock-select{
+  width:100%;min-width:0;padding:7px 24px 7px 8px;border-radius:7px;
+  font-family:var(--font-mono);font-size:10px;cursor:pointer;
+  background:rgba(255,255,255,.06);color:#cdc1b1;border:1px solid rgba(255,255,255,.1);
+}
+.lock-select.on{background:var(--pad);color:#7a4f3d;border-color:var(--pad);font-weight:700}
 .knobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px 20px;width:100%}
 .knob label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8f8272;font-weight:700;margin-bottom:7px}
 .knob label span{font-family:var(--font-mono);color:#d6c9b7;letter-spacing:0}
@@ -409,7 +415,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.18</span></div>
+      <div class="logo">Chords<span class="ver">003.27</span></div>
     </div>
 
     <div class="top">
@@ -468,12 +474,14 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Global octave</span><div class="row" id="octaveRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Per-pad octave</span><div class="pad-oct-grid" id="padOctGrid"></div></div>
   <div class="row"><span class="lbl">Per-pad inversion</span><div class="pad-oct-grid" id="padInvGrid"></div></div>
+  <div class="row"><span class="lbl">Chord lock — pin a joystick-modified chord to a pad</span><div class="pad-oct-grid" id="padLockGrid"></div></div>
 </section>
 
 <section class="panel" id="panel-sound">
   <h2>Sound</h2>
   <div class="row"><span class="lbl">Instrument</span><div class="row" id="sndRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Voice leading</span><div class="row" id="vleadRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Joystick mode</span><div class="row" id="joyModeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Voicing — FULL 6 fills all six HiChord voice slots; 3-note uses root, third, fifth only</span><div class="row" id="regRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Width — STEREO is a detuned pair per voice; MONO is one centred oscillator</span><div class="row" id="wideRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Bass note</span><div class="row" id="bassRow" style="margin:0"></div></div>
@@ -498,7 +506,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
     <div class="knob"><label for="kRev">Reverb <span id="vRev"></span></label><input type="range" id="kRev" min="0" max="70" step="1"></div>
     <div class="knob"><label for="kCho">Chorus <span id="vCho"></span></label><input type="range" id="kCho" min="0" max="100" step="1"></div>
     <div class="knob"><label for="kTrem">Tremolo <span id="vTrem"></span></label><input type="range" id="kTrem" min="0" max="90" step="1"></div>
-    <div class="knob"><label for="kStrum">Strum <span id="vStrum"></span></label><input type="range" id="kStrum" min="0" max="120" step="2"></div>
+    <div class="knob"><label for="kStrum">Strum <span id="vStrum"></span></label><input type="range" id="kStrum" min="0" max="200" step="2"></div>
     <div class="knob"><label for="kVol">Volume <span id="vVol"></span></label><input type="range" id="kVol" min="0" max="100" step="1"></div>
   </div>
 </section>
@@ -510,6 +518,9 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
     <div class="knob"><label for="kSwing">Swing <span id="vSwing"></span></label><input type="range" id="kSwing" min="0" max="60" step="1"></div>
     <div class="knob"><label for="kDrumVol">Drum level <span id="vDrumVol"></span></label><input type="range" id="kDrumVol" min="0" max="100" step="1"></div>
   </div>
+  <div class="row"><span class="lbl">Tap tempo — tap 3 or more times</span><div class="row" style="margin:0"><button class="chip" id="btnTapTempo">TAP TEMPO</button></div></div>
+  <div class="row"><span class="lbl">Strum mode</span><div class="row" id="strumModeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Performance mode</span><div class="row" id="perfModeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Arp pattern</span><div class="row" id="arpRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Arp rate</span><div class="row" id="rateRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Loop length</span><div class="row" id="barsRow" style="margin:0"></div></div>
@@ -575,8 +586,11 @@ const ADSR_PRESETS = {
   TOUCH:   {a:25,  d:260,  s:.66,  r:450},
   SUSTAIN: {a:200, d:300,  s:.85,  r:3000}
 };
-const ARPS = ["up","down","up-down","random","chord"];
-const RATES = [["1/4",4],["1/8",2],["1/16",1]];
+const ARPS = ["up","down","up-down","down-up","random","fingerpick"];
+const RATES = [
+  ["1/1","1/1"], ["1/2","1/2"], ["1/4","1/4"], ["1/8","1/8"], ["1/16","1/16"],
+  ["1/16T","1/16T"], ["1/32","1/32"], ["SWING 8TH","swing8"], ["SWING 16TH","swing16"]
+];
 const LANES = ["KICK","SNARE","HAT","CLAP"];
 const KITS = {
   "Four": [
@@ -618,16 +632,17 @@ const S = {
   // 3 = SAW. Chosen to match an out-of-box HiChord heard in several YouTube
   // demos; this is a perceptual reference, not a direct hardware capture.
   // The manual independently confirms SAW as HiChord's bright analog waveform.
-  root:0, scale:"major", octave:0, padOct:[0,0,0,0,0,0,0], padInv:[0,0,0,0,0,0,0], sound:3, wave:null,
+  root:0, scale:"major", octave:0, padOct:[0,0,0,0,0,0,0], padInv:[0,0,0,0,0,0,0], chordLocks:[null,null,null,null,null,null,null], sound:3, wave:null,
   cut:3500, res:.7, atk:25, dec:30, sus:.8, rel:300, adsr:null,   // brightness and attack estimated from the YouTube factory reference
   // strum 0 — the device's default play mode is oneshot, all notes together.
-  // Strumming there is a separate mode (slow/med/fast = 120/80/40ms), not a default.
+  // Strumming there is a separate mode (slow/med/fast = 200/80/40ms), not a default.
   delay:0, reverb:0, chorus:0, trem:0, strum:0, vol:70,
   bpm:120, swing:0, drumVol:70,
-  arpOn:false, arp:"up", rate:2, bars:2, latch:false,   // rate 2 = 1/8, the device's default
+  playMode:"play",
+  arpOn:false, arp:"up", rate:"1/8", bars:2, latch:false,   // 1/8 = the device's default
   drumsOn:false, kit:"Four",
   useSample:false, sampRoot:0, sampOct:4, sampLoop:true,
-  bass:"off", vlead:false, sixVoice:true,
+  bass:"off", vlead:false, joyMode:"default", sixVoice:true,
   // STEREO = each voice is a detuned pair panned apart, which is what the manual
   // describes ("12 oscillators arranged as 6 stereo pairs"). MONO = one
   // oscillator per voice, centred, no detune — "everything plays in the center".
@@ -646,7 +661,8 @@ const rt = {
   held:new Map(),      // degree -> {startStep, mods}
   liveVoices:new Map(),// id -> voice group
   voices:[],           // every sounding voice, oldest first
-  stick:{x:0,y:0,shift:false}
+  stick:{x:0,y:0,shift:false},
+  chromKeyShift:0      // prevents one held L/R gesture from stepping the key repeatedly
 };
 
 /* ============================================================
@@ -886,9 +902,11 @@ function playNote(midi, time, dur, vel, bus){
 
   // fast=true is a steal: get out of the way quickly instead of using the
   // patch's release time, which could be seconds long.
-  grp.release = (rt2, fast)=>{
+  grp.release = (rt2, fast, relOverride)=>{
     if(grp.released) return; grp.released = true;
-    const rel = fast ? 0.04 : (dur != null ? Math.min(R, Math.max(0.08, dur*1.2)) : R);
+    const rel = Number.isFinite(relOverride) ? Math.max(0.01, relOverride)
+              : fast ? 0.04
+              : (dur != null ? Math.min(R, Math.max(0.08, dur*1.2)) : R);
     const now = Math.max(rt2||ctx.currentTime, t + 0.002);
     out.gain.cancelScheduledValues(now);
     out.gain.setValueAtTime(Math.max(out.gain.value, 0.0001), now);
@@ -922,7 +940,7 @@ function startChord(id, midis, time, vel){
   stopChord(id, time);
   const strum = S.strum/1000;
   const grp = [];
-  const hasBass = S.bass !== "off" && midis.length > 0;
+  const hasBass = S.bass !== "off" && midis.length > 1;
   midis.forEach((m,i)=>{
     const t = time + i*strum;
     if(hasBass && i === 0) grp.push(...playBassVoice(m, t, vel));
@@ -934,8 +952,19 @@ function stopChord(id, time){
   const grp = rt.liveVoices.get(id);
   if(grp){ grp.forEach(v=>v.release(time)); rt.liveVoices.delete(id); }
 }
-function stopAllChords(){
-  rt.liveVoices.forEach(g=>g.forEach(v=>v.release()));
+// Drone chord changes use a short fixed fade on the outgoing chord so the old
+// and new chords overlap briefly instead of clicking or waiting on a long
+// user-selected Release value.
+function crossfadeStopChord(id, time, seconds){
+  const grp = rt.liveVoices.get(id);
+  if(grp){
+    const fade = Number.isFinite(seconds) ? seconds : 0.18;
+    grp.forEach(v=>v.release(time, false, fade));
+    rt.liveVoices.delete(id);
+  }
+}
+function stopAllChords(fast){
+  rt.liveVoices.forEach(g=>g.forEach(v=>v.release(undefined, !!fast)));
   rt.liveVoices.clear();
 }
 
@@ -1167,75 +1196,243 @@ function scaleDeg(n){
   const len = st.length;
   return st[((n%len)+len)%len] + 12*Math.floor(n/len);
 }
-// Eight positions plus centre, matching the companion app's DEFAULT joystick
-// mode: NW aug, N M/m, NE dom7, W dim, E M7/m7, SW 6/sus2, S sus4, SE 9.
-const STICK_MAP = [
-  {name:"M/m",    ax:0,  ay:1},
-  {name:"dom7",   ax:1,  ay:1},
-  {name:"M7/m7",  ax:1,  ay:0},
-  {name:"9",      ax:1,  ay:-1},
-  {name:"sus4",   ax:0,  ay:-1},
-  {name:"6/sus2", ax:-1, ay:-1},
-  {name:"dim",    ax:-1, ay:0},
-  {name:"aug",    ax:-1, ay:1}
-];
+// The browser keeps HiChord's joystick as an expressive chord control, but mode
+// selection itself is a direct UI choice. Each mode maps the same eight physical
+// directions to a different musical transformation from the Rev 2.9 manual.
+const JOY_MODES = {
+  default:{label:"DEFAULT", dirs:[
+    {pos:"n",  key:"M/m",       label:"M/m",      ax:0, ay:1},
+    {pos:"ne", key:"dom7",      label:"dom7",     ax:1, ay:1},
+    {pos:"e",  key:"M7/m7",     label:"M7/m7",    ax:1, ay:0},
+    {pos:"se", key:"9",         label:"9",        ax:1, ay:-1},
+    {pos:"s",  key:"sus4",      label:"sus4",     ax:0, ay:-1},
+    {pos:"sw", key:"6/sus2",    label:"6/sus2",   ax:-1,ay:-1},
+    {pos:"w",  key:"dim",       label:"dim",      ax:-1,ay:0},
+    {pos:"nw", key:"aug",       label:"aug",      ax:-1,ay:1}
+  ]},
+  extend:{label:"EXTEND", dirs:[
+    {pos:"n",  key:"ext-flip",    label:"M/m",      ax:0, ay:1},
+    {pos:"ne", key:"ext-dom9",    label:"dom9",     ax:1, ay:1},
+    {pos:"e",  key:"ext-add11",   label:"add11",    ax:1, ay:0},
+    {pos:"se", key:"ext-min11",   label:"min11",    ax:1, ay:-1},
+    {pos:"s",  key:"ext-dom7s9",  label:"7#9",      ax:0, ay:-1},
+    {pos:"sw", key:"ext-add9",    label:"add9",     ax:-1,ay:-1},
+    {pos:"w",  key:"ext-sus47",   label:"sus4+7",   ax:-1,ay:0},
+    {pos:"nw", key:"ext-halfdim", label:"ø7",       ax:-1,ay:1}
+  ]},
+  chrom:{label:"CHROM", dirs:[
+    {pos:"n",  key:"chr-minmaj7", label:"m(M7)",    ax:0, ay:1},
+    {pos:"ne", key:"chr-dom7alt", label:"7alt",     ax:1, ay:1},
+    {pos:"e",  key:"chr-key+1",   label:"+1 semi",  ax:1, ay:0},
+    {pos:"se", key:"chr-halfdim", label:"ø7",       ax:1, ay:-1},
+    {pos:"s",  key:"chr-maj13",   label:"maj13",    ax:0, ay:-1},
+    {pos:"sw", key:"chr-69",      label:"6/9",      ax:-1,ay:-1},
+    {pos:"w",  key:"chr-key-1",   label:"-1 semi",  ax:-1,ay:0},
+    {pos:"nw", key:"chr-dom7b9",  label:"7b9",      ax:-1,ay:1}
+  ]},
+  borrow:{label:"BORROW", dirs:[
+    {pos:"n",  key:"bor-secdom",   label:"sec dom",  ax:0, ay:1},
+    {pos:"ne", key:"bor-backdoor", label:"backdoor", ax:1, ay:1},
+    {pos:"e",  key:"bor-passdim",  label:"dim7 +1",  ax:1, ay:0},
+    {pos:"se", key:"bor-halfdim",  label:"ø7",       ax:1, ay:-1},
+    {pos:"s",  key:"bor-parallel", label:"M↔m",      ax:0, ay:-1},
+    {pos:"sw", key:"bor-7flip",    label:"7th flip", ax:-1,ay:-1},
+    {pos:"w",  key:"bor-flatmaj",  label:"♭Major",   ax:-1,ay:0},
+    {pos:"nw", key:"bor-tritone",  label:"tritone",  ax:-1,ay:1}
+  ]},
+  og:{label:"OG", dirs:[
+    {pos:"n",  key:"M/m",       label:"M/m",      ax:0, ay:1},
+    {pos:"ne", key:"dom7",      label:"dom7",     ax:1, ay:1},
+    {pos:"e",  key:"M7/m7",     label:"M7/m7",    ax:1, ay:0},
+    {pos:"se", key:"9",         label:"9 OG",     ax:1, ay:-1},
+    {pos:"s",  key:"sus4",      label:"sus4",     ax:0, ay:-1},
+    {pos:"sw", key:"6/sus2",    label:"6/sus2",   ax:-1,ay:-1},
+    {pos:"w",  key:"dim",       label:"dim",      ax:-1,ay:0},
+    {pos:"nw", key:"aug",       label:"aug",      ax:-1,ay:1}
+  ]}
+};
 
+function joyModeFor(m){
+  // Events recorded before 003.23 have a modifier but no stored mode; they were
+  // necessarily DEFAULT, so preserve their original meaning after migration.
+  if(m && m.mod && !m.joy) return "default";
+  return (m && m.joy) || S.joyMode || "default";
+}
+function joyDirs(mode){ return (JOY_MODES[mode] || JOY_MODES.default).dirs; }
+function updateStickLabels(){
+  joyDirs(S.joyMode).forEach(e=>{
+    const el = document.querySelector(".dir."+e.pos);
+    if(el) el.textContent = e.label;
+  });
+}
 function mods(){
   const x = rt.stick.x, y = rt.stick.y;
-  if(Math.hypot(x, y) < .42) return {mod:null};
-  // Snap to the nearest of the eight compass points.
+  if(Math.hypot(x, y) < .42) return {mod:null, joy:S.joyMode};
+  // Snap to the nearest of the eight compass points in the selected mode.
   let best = null, bestD = Infinity;
-  STICK_MAP.forEach(e=>{
+  joyDirs(S.joyMode).forEach(e=>{
     const len = Math.hypot(e.ax, e.ay);
     const d = Math.hypot(x - e.ax/len, y - e.ay/len);
     if(d < bestD){ bestD = d; best = e; }
   });
-  return {mod: best.name};
+  return {mod:best.key, joy:S.joyMode};
+}
+function storedChordLock(degree){
+  const locks = Array.isArray(S.chordLocks) ? S.chordLocks : null;
+  const lock = locks && locks[degree];
+  return lock && Array.isArray(lock.iv) && Number.isFinite(lock.root) ? lock : null;
+}
+function activeChordLock(degree, m){
+  // A recorded event may carry the exact lock snapshot that was active when it
+  // was played. A live joystick direction temporarily overrides a stored lock;
+  // when the stick returns to centre, the lock becomes the pad's base chord again.
+  if(m && m.lock && Array.isArray(m.lock.iv)) return m.lock;
+  if(m && m.mod) return null;
+  return storedChordLock(degree);
+}
+function effectiveMods(degree, m){
+  if(m && m.mod) return {mod:m.mod, joy:m.joy || S.joyMode};
+  const lock = storedChordLock(degree);
+  if(lock){
+    return {mod:null, joy:S.joyMode, lock:{
+      root:lock.root, iv:lock.iv.slice(), label:lock.label || "LOCKED",
+      joy:lock.joy || "default", mod:lock.mod || null
+    }};
+  }
+  return {mod:null, joy:(m && m.joy) || S.joyMode};
 }
 function chordIntervals(degree, m){
   const i = degree;
   const r = scaleDeg(i);
-  let notes = [r, scaleDeg(i+2), scaleDeg(i+4)];
-  const third = notes[1] - r;       // 3 = minor, 4 = major
+  const base = [r, scaleDeg(i+2), scaleDeg(i+4)];
+  let notes = base.slice();
+  const third = ((base[1]-r)%12+12)%12;
   const isMinor = third <= 3;
+  const mod = m && m.mod;
+  const joy = joyModeFor(m);
 
-  switch(m && m.mod){
-    case "M/m":                     // flip the third the other way
-      notes[1] = r + (isMinor ? 4 : 3); break;
-    case "aug":                   // raise only the fifth; keep the chord's third
-      notes[2] = r+8; break;
-    case "dim":                     // manual: major -> minor, minor -> diminished
-      if(isMinor) notes[2] = r+6;
-      else notes[1] = r+3;
-      break;
-    case "dom7":                    // triad plus a flat seventh
-      notes.push(r+10); break;
-    case "M7/m7":                   // the seventh the scale gives you
-      notes.push(scaleDeg(i+6)); break;
-    case "9":                       // default joystick 9th is add9, not maj9/min9
-      notes.push(scaleDeg(i+8)); break;
-    case "sus4":
-      notes[1] = scaleDeg(i+3); break;
-    case "6/sus2":                  // manual: major adds 6th; minor becomes sus2
-      if(isMinor) notes[1] = scaleDeg(i+1);
-      else notes.push(scaleDeg(i+5));
-      break;
+  // No stick direction: ordinary scale chord regardless of selected joystick mode.
+  if(!mod) return notes;
+
+  // DEFAULT and OG select the same chord types. OG differs only in the old 2.8
+  // "9th" voicing, which doubled the third on top instead of adding the 9th.
+  if(joy === "default" || joy === "og"){
+    switch(mod){
+      case "M/m":
+        notes[1] = r + (isMinor ? 4 : 3); break;
+      case "aug":
+        notes[2] = r + 8; break;
+      case "dim":
+        if(isMinor) notes[2] = r + 6;
+        else notes[1] = r + 3;
+        break;
+      case "dom7":
+        notes = [r,r+4,r+7,r+10]; break;
+      case "M7/m7":
+        notes = isMinor ? [r,r+3,r+7,r+10] : [r,r+4,r+7,r+11]; break;
+      case "9":
+        notes.push(joy === "og" ? r + third + 12 : scaleDeg(i+8)); break;
+      case "sus4":
+        notes[1] = scaleDeg(i+3); break;
+      case "6/sus2":
+        if(isMinor) notes[1] = scaleDeg(i+1);
+        else notes.push(scaleDeg(i+5));
+        break;
+    }
+    return notes;
+  }
+
+  if(joy === "extend"){
+    switch(mod){
+      case "ext-flip":    return [r, r+(isMinor?4:3), r+7];
+      case "ext-dom7s9":  return [r,r+4,r+7,r+10,r+15];
+      case "ext-sus47":   return [r,r+5,r+7,r+10];
+      case "ext-add11":   return base.concat([r+17]);
+      case "ext-halfdim": return [r,r+3,r+6,r+10];
+      case "ext-dom9":    return [r,r+4,r+7,r+10,r+14];
+      case "ext-add9":    return base.concat([r+14]);
+      case "ext-min11":   return [r,r+3,r+7,r+10,r+17];
+    }
+  }
+
+  if(joy === "chrom"){
+    switch(mod){
+      case "chr-minmaj7": return [r,r+3,r+7,r+11];
+      case "chr-maj13":   return [r,r+4,r+7,r+11,r+14,r+21];
+      // With a chord held, left/right transpose that chord by one semitone.
+      // Without a chord held, setStick() turns the same gestures into key shifts.
+      case "chr-key-1":   return base.map(n=>n-1);
+      case "chr-key+1":   return base.map(n=>n+1);
+      case "chr-dom7b9":  return [r,r+4,r+7,r+10,r+13];
+      // The manual specifies altered 5th + altered 9th but not which variants;
+      // use the common b5/b9 voicing as the deterministic browser equivalent.
+      case "chr-dom7alt": return [r,r+4,r+6,r+10,r+13];
+      case "chr-69":      return [r,r+4,r+7,r+9,r+14];
+      case "chr-halfdim": return [r,r+3,r+6,r+10];
+    }
+  }
+
+  if(joy === "borrow"){
+    switch(mod){
+      case "bor-secdom":   return [r,r+4,r+7,r+10];
+      case "bor-parallel": return [r,r+(isMinor?4:3),r+7];
+      case "bor-flatmaj":  { const nr=r-1; return [nr,nr+4,nr+7]; }
+      case "bor-passdim":  { const nr=r+1; return [nr,nr+3,nr+6,nr+9]; }
+      case "bor-tritone":  { const nr=r+6; return [nr,nr+4,nr+7,nr+10]; }
+      case "bor-backdoor": { const nr=r-2; return [nr,nr+4,nr+7,nr+10]; }
+      case "bor-7flip":
+        return isMinor ? [r,r+4,r+7,r+11] : [r,r+3,r+7,r+10];
+      case "bor-halfdim":  return [r,r+3,r+6,r+10];
+    }
   }
   return notes;
 }
-// Voice leading is tracked per source. Live playing, loop playback and the arp
-// each keep their own reference note, so one can't drag the others around.
-const lastLow = {live:48, loop:48, arp:48};
+// Voice leading is tracked per source. Live playing and loop playback keep
+// independent previous voicings, so one cannot pull the other into a different
+// inversion. The manual defines Voice Leading as automatically choosing the
+// smoothest Root / 1st / 2nd inversion.
+const lastLow = {live:48, loop:48, arp:48}; // retained for MIDI-export compatibility
+const lastVoicing = {live:null, loop:null};
+
+function invertChordVoicing(base, inversion){
+  const out = base.slice().sort((a,b)=>a-b);
+  for(let i=0; i<Math.min(inversion, out.length); i++) out.push(out.shift()+12);
+  return out.sort((a,b)=>a-b);
+}
+
+function voicingDistance(a, b){
+  if(!b || !b.length) return 0;
+  // Symmetric nearest-note movement: every old voice and every new voice
+  // contributes, so extensions do not overpower ordinary triads.
+  const nearest = (n, arr)=>Math.min.apply(null, arr.map(x=>Math.abs(n-x)));
+  let total = 0;
+  a.forEach(n=>{ total += nearest(n,b); });
+  b.forEach(n=>{ total += nearest(n,a); });
+  return total / (a.length + b.length);
+}
+
+function smoothestInversion(rootVoicing, ref){
+  const choices = [0,1,2].map(i=>invertChordVoicing(rootVoicing, i));
+  if(!ref || !ref.length) return choices[0];
+  let best = choices[0], bestScore = voicingDistance(best, ref);
+  for(let i=1; i<choices.length; i++){
+    const score = voicingDistance(choices[i], ref);
+    if(score < bestScore - 1e-9){ best = choices[i]; bestScore = score; }
+  }
+  return best;
+}
 
 // track: "live" | "loop" | "arp".  hold: read the reference without moving it,
 // used when re-voicing a chord that is already sounding.
 function voiceChord(degree, m, track, hold, skipBass, slashBassDegree){
   track = track || "live";
-  const iv = chordIntervals(degree, m);
+  const lock = activeChordLock(degree, m);
+  const iv = lock ? lock.iv.slice() : chordIntervals(degree, m);
+  const rootBase = lock ? lock.root : S.root;
   // Base C3 (48), not C4. Measured from a recording of an out-of-the-box device:
   // its seven pads sound C3 D3 E3 F3 G3 A3 B3 as chord roots.
-  const rootMidi = 48 + S.root + iv[0];
-  let ch = iv.map(v => 48 + S.root + v);
+  const rootMidi = 48 + rootBase + iv[0];
+  let ch = iv.map(v => 48 + rootBase + v);
   // Fold the lowest note into one octave, C3..B3. The old window (52..66) was a
   // 15-semitone span, which let F sit in octave 4 but pushed G back down to
   // octave 3 — so the seven pads jumped an octave between pad 4 and pad 5
@@ -1251,24 +1448,23 @@ function voiceChord(degree, m, track, hold, skipBass, slashBassDegree){
   const octaveShift = 12 * (S.octave + padOctave);
   ch = ch.map(n => n + octaveShift);
 
-  // Per-pad inversion: Root leaves the chord alone; 1st moves the root up an
-  // octave; 2nd moves the root and third up an octave. Extensions stay above
-  // the triad, and ROOT bass (when enabled) remains tied to the chord root.
-  const inversion = Array.isArray(S.padInv) ? (S.padInv[degree] || 0) : 0;
-  for(let i=0; i<Math.min(inversion, ch.length); i++){
-    ch.push(ch.shift() + 12);
-  }
-  ch.sort((a,b)=>a-b);
-
-  // The arp only needs the pitch set, and it rebuilds the chord every step —
-  // running voice leading there would rewrite the reference constantly.
+  // Per-pad inversion is the manual choice when Voice Leading is OFF. When
+  // Voice Leading is ON, it deliberately takes over that job and compares all
+  // three legal inversions against the previously played chord.
+  const rootVoicing = ch.slice().sort((a,b)=>a-b);
   if(track !== "arp" && S.vlead){
-    const ref = lastLow[track];
-    if(Math.abs(ch[0] - ref) > 5 && ch.length > 2){
-      const alt = ch.slice(1).concat([ch[0]+12]);
-      if(Math.abs(alt[0]-ref) < Math.abs(ch[0]-ref)) ch = alt;
+    ch = smoothestInversion(rootVoicing, lastVoicing[track]);
+    if(!hold){
+      lastVoicing[track] = ch.slice();
+      lastLow[track] = ch[0];
     }
-    if(!hold) lastLow[track] = ch[0];
+  } else {
+    const inversion = Array.isArray(S.padInv) ? (S.padInv[degree] || 0) : 0;
+    ch = invertChordVoicing(rootVoicing, inversion);
+    if(track !== "arp" && !hold){
+      lastVoicing[track] = ch.slice();
+      lastLow[track] = ch[0];
+    }
   }
   // HiChord has six main voice slots, each with a stereo partner. The manual
   // assigns root / third / fifth first, then bass / extension / fill. It does NOT
@@ -1294,8 +1490,9 @@ function voiceChord(degree, m, track, hold, skipBass, slashBassDegree){
   // that chord's own root so it still behaves naturally by itself.
   let bass = rootMidi + shift + octaveShift - 24;
   if(S.bass === "slash" && Number.isInteger(slashBassDegree)){
-    const br = scaleDeg(slashBassDegree);
-    let b = 48 + S.root + br;
+    const bl = storedChordLock(slashBassDegree);
+    const br = bl ? bl.iv[0] : scaleDeg(slashBassDegree);
+    let b = 48 + (bl ? bl.root : S.root) + br;
     let bs = 0;
     while(b + bs < 48) bs += 12;
     while(b + bs > 59) bs -= 12;
@@ -1309,8 +1506,46 @@ function voiceChord(degree, m, track, hold, skipBass, slashBassDegree){
   return [bass].concat(ch);
 }
 function chordLabel(degree, m){
+  const lock = activeChordLock(degree, m);
+  if(lock && lock.label) return lock.label;
   const iv = chordIntervals(degree, m);
-  const rootPc = (S.root + iv[0]) % 12;
+  const rootPc = ((S.root + iv[0]) % 12 + 12) % 12;
+  const root = NOTES[rootPc];
+  const mod = m && m.mod;
+  const joy = joyModeFor(m);
+
+  // Explicit names for the non-default maps keep the screen useful even when
+  // several extensions are present at once.
+  if(mod){
+    if(joy === "extend"){
+      if(mod === "ext-dom7s9") return root+"7#9";
+      if(mod === "ext-sus47") return root+"7sus4";
+      if(mod === "ext-add11") return root+(baseMinor(degree)?"m":"")+"add11";
+      if(mod === "ext-halfdim") return root+"m7b5";
+      if(mod === "ext-dom9") return root+"9";
+      if(mod === "ext-add9") return root+(baseMinor(degree)?"m":"")+"add9";
+      if(mod === "ext-min11") return root+"m11";
+    }
+    if(joy === "chrom"){
+      if(mod === "chr-minmaj7") return root+"m(maj7)";
+      if(mod === "chr-maj13") return root+"maj13";
+      if(mod === "chr-dom7b9") return root+"7b9";
+      if(mod === "chr-dom7alt") return root+"7alt";
+      if(mod === "chr-69") return root+"6/9";
+      if(mod === "chr-halfdim") return root+"m7b5";
+    }
+    if(joy === "borrow"){
+      if(mod === "bor-secdom" || mod === "bor-tritone" || mod === "bor-backdoor") return root+"7";
+      if(mod === "bor-passdim") return root+"dim7";
+      if(mod === "bor-halfdim") return root+"m7b5";
+      if(mod === "bor-7flip") return root+(baseMinor(degree)?"maj7":"m7");
+    }
+    if((joy === "default" || joy === "og") && mod === "dom7") return root+"7";
+    if((joy === "default" || joy === "og") && mod === "M7/m7") return root+(baseMinor(degree)?"m7":"maj7");
+    if((joy === "default" || joy === "og") && mod === "9") return root+(baseMinor(degree)?"m":"")+"add9";
+  }
+
+  // Generic quality detector for triads, flips, sus chords, borrowed roots, etc.
   const rel = iv.map(v => ((v - iv[0])%12+12)%12);
   const has = n => rel.indexOf(n) >= 0;
   let q = "";
@@ -1322,24 +1557,102 @@ function chordLabel(degree, m){
   let ext = "";
   if(has(11)) ext = "maj7";
   else if(has(10)) ext = "7";
-  if(ext && has(2) && q.indexOf("sus") < 0) ext = (ext === "maj7" ? "maj9" : "9");
   if(!ext && has(9) && !has(10) && !has(11)) ext = "6";
   if(q === "dim" && ext === "7"){ q = "m"; ext = "7b5"; }
-  return NOTES[rootPc] + q + ext;
+  return root + q + ext;
+}
+
+function baseMinor(degree){
+  const r = scaleDeg(degree);
+  const t = ((scaleDeg(degree+2)-r)%12+12)%12;
+  return t <= 3;
 }
 
 /* ============================================================
    6. TRIGGERING
    ============================================================ */
+// LEAD mode is monophonic and plays only the root note of each pad's chord.
+// Keep the same register and octave controls as chord playing, but ignore chord
+// inversions, extensions, bass mode and joystick alterations.
+function leadMidi(degree){
+  let n = 48 + S.root + scaleDeg(degree);
+  while(n < 48) n += 12;
+  while(n > 59) n -= 12;
+  const padOctave = Array.isArray(S.padOct) ? (S.padOct[degree] || 0) : 0;
+  return n + 12 * (S.octave + padOctave);
+}
+function leadLabel(degree){
+  return NOTES[((S.root + scaleDeg(degree)) % 12 + 12) % 12];
+}
+function eventNotes(degree, m, playMode, track, hold, skipBass, slashBassDegree){
+  return playMode === "lead" ? [leadMidi(degree)]
+       : voiceChord(degree, m, track, hold, skipBass, slashBassDegree);
+}
 function slashBassName(degree){
-  const pc = ((S.root + scaleDeg(degree)) % 12 + 12) % 12;
+  const lock = storedChordLock(degree);
+  const pc = lock
+    ? ((lock.root + lock.iv[0]) % 12 + 12) % 12
+    : ((S.root + scaleDeg(degree)) % 12 + 12) % 12;
   return NOTES[pc];
 }
 function padDown(degree){
   if(!ctx) return;
+
+  if(S.playMode === "lead"){
+    // HiChord Lead is true monophonic playing: a new pad cuts the previous note.
+    // Close any previous held/recorded lead event before starting the new one.
+    Array.from(rt.held.entries()).forEach(([d,h])=>{
+      if(d === degree) return;
+      stopChord("p"+d);
+      const el = padEl(d); if(el) el.classList.remove("hit");
+      if(h && h.ev && h.ev.open){ h.ev.dur = heldLength(h.ev); h.ev.open = false; }
+      rt.held.delete(d);
+    });
+    const m = {mod:null, joy:S.joyMode};
+    rt.held.set(degree, {startStep:rt.step, mods:m, playMode:"lead"});
+    padEl(degree).classList.add("hit");
+    setScreenChord(leadLabel(degree));
+    startChord("p"+degree, [leadMidi(degree)], ctx.currentTime, 1);
+    if(rt.recording){
+      if(!rt.playing) startTransport();
+      const ev = {id:++rt.evId, step:rt.step, abs:rt.absStep, dur:1, degree, mods:m, slashBass:null, playMode:"lead", open:true};
+      rt.events.push(ev);
+      rt.held.get(degree).ev = ev;
+    }
+    return;
+  }
+
+  if(S.playMode === "drone"){
+    // Drone ignores key/pointer release. Only one drone chord is active: a new
+    // pad crossfades from the previous chord, and leaving Drone stops it.
+    const current = Array.from(rt.held.entries());
+    if(current.length === 1 && current[0][0] === degree) return;
+
+    current.forEach(([d,h])=>{
+      crossfadeStopChord("p"+d, ctx.currentTime, 0.18);
+      const el = padEl(d); if(el) el.classList.remove("hit");
+      if(h && h.ev && h.ev.open){ h.ev.dur = heldLength(h.ev); h.ev.open = false; }
+      rt.held.delete(d);
+    });
+
+    const m = effectiveMods(degree, mods());
+    rt.held.set(degree, {startStep:rt.step, mods:m, playMode:"drone"});
+    padEl(degree).classList.add("hit");
+    setScreenChord(chordLabel(degree, m));
+    startChord("p"+degree, voiceChord(degree, m, "live", false), ctx.currentTime, 1);
+
+    if(rt.recording){
+      if(!rt.playing) startTransport();
+      const ev = {id:++rt.evId, step:rt.step, abs:rt.absStep, dur:1, degree, mods:m, slashBass:null, playMode:"drone", open:true};
+      rt.events.push(ev);
+      rt.held.get(degree).ev = ev;
+    }
+    return;
+  }
+
   if(S.latch && rt.held.has(degree)){ releasePad(degree); return; }
-  const m = mods();
-  rt.held.set(degree, {startStep: rt.step, mods: m});
+  const m = effectiveMods(degree, mods());
+  rt.held.set(degree, {startStep: rt.step, mods: m, playMode:"play"});
   padEl(degree).classList.add("hit");
 
   const heldDegrees = Array.from(rt.held.keys());
@@ -1367,7 +1680,7 @@ function padDown(degree){
   }
   if(rt.recording){
     if(!rt.playing) startTransport();
-    const ev = {id:++rt.evId, step: rt.step, abs: rt.absStep, dur:1, degree, mods:m, slashBass, open:true};
+    const ev = {id:++rt.evId, step: rt.step, abs: rt.absStep, dur:1, degree, mods:m, slashBass, playMode:"play", open:true};
     rt.events.push(ev);
     rt.held.get(degree).ev = ev;
   }
@@ -1375,7 +1688,8 @@ function padDown(degree){
 // Pointer or key release. With latch on it does nothing — the pad stays down
 // until it is pressed again.
 function padUp(degree){
-  if(S.latch) return;
+  if(S.playMode === "drone") return;
+  if(S.latch && S.playMode !== "lead") return;
   releasePad(degree);
 }
 
@@ -1389,6 +1703,11 @@ function releasePad(degree){
     h.ev.open = false;
   }
 
+  if(S.playMode === "lead"){
+    if(rt.held.size === 0) setScreenChord(null);
+    return;
+  }
+
   if(!S.arpOn && S.bass === "slash" && rt.held.size){
     const heldDegrees = Array.from(rt.held.keys());
     const anchor = heldDegrees.length > 1 ? heldDegrees[0] : null;
@@ -1397,7 +1716,7 @@ function releasePad(degree){
       const deg = heldDegrees[0], hh = rt.held.get(deg), hm = hh.mods;
       startChord("p"+deg, voiceChord(deg, hm, "live", true), ctx.currentTime, 1);
       if(rt.recording && (!hh.ev || !hh.ev.open)){
-        const ev = {id:++rt.evId, step:rt.step, abs:rt.absStep, dur:1, degree:deg, mods:hm, slashBass:null, open:true};
+        const ev = {id:++rt.evId, step:rt.step, abs:rt.absStep, dur:1, degree:deg, mods:hm, slashBass:null, playMode:"play", open:true};
         rt.events.push(ev);
         hh.ev = ev;
       }
@@ -1428,12 +1747,12 @@ function heldLength(ev){
 
 function activePool(step){
   const out = [];
-  rt.held.forEach((h,deg)=>{ out.push({degree:deg, mods:h.mods}); });
+  rt.held.forEach((h,deg)=>{ out.push({degree:deg, mods:h.mods, playMode:h.playMode || S.playMode}); });
   const L = loopSteps();
   rt.events.forEach(ev=>{
     if(ev.open) return;
     for(let k=0;k<ev.dur;k++){
-      if((ev.step+k)%L === step){ out.push({degree:ev.degree, mods:ev.mods}); break; }
+      if((ev.step+k)%L === step){ out.push({degree:ev.degree, mods:ev.mods, playMode:ev.playMode || "play"}); break; }
     }
   });
   return out;
@@ -1444,6 +1763,7 @@ function activePool(step){
    ============================================================ */
 function startTransport(){
   if(!ctx) return;
+  lastVoicing.loop = null;
   rt.playing = true;
   rt.step = 0; rt.absStep = 0; rt.arpIdx = 0; rt.arpDir = 1;
   rt.nextTime = ctx.currentTime + .06;
@@ -1473,6 +1793,78 @@ function tick(){
   }
 }
 
+// Arp timing is based on the HiChord musical-rate names. The transport grid is
+// 16th notes, so triplets / 32nds / swing schedule extra notes inside a grid step.
+function arpRateEvents(step, time){
+  const sd = stepDur(); // one straight 16th note
+  const ev = (offset, span)=>({time:time+offset, dur:Math.max(.01, span*.85)});
+  switch(S.rate){
+    case "1/1":  return step%16===0 ? [ev(0,sd*16)] : [];
+    case "1/2":  return step%8===0  ? [ev(0,sd*8)]  : [];
+    case "1/4":  return step%4===0  ? [ev(0,sd*4)]  : [];
+    case "1/8":  return step%2===0  ? [ev(0,sd*2)]  : [];
+    case "1/16": return [ev(0,sd)];
+    case "1/16T":
+      // Six evenly-spaced notes per beat: three notes every two 16th steps.
+      return step%2===0 ? [ev(0,sd*2/3), ev(sd*2/3,sd*2/3), ev(sd*4/3,sd*2/3)] : [];
+    case "1/32":
+      return [ev(0,sd/2), ev(sd/2,sd/2)];
+    case "swing8":
+      // Long-short eighth-note pair across one beat (2:1 triplet feel).
+      return step%4===0 ? [ev(0,sd*8/3), ev(sd*8/3,sd*4/3)] : [];
+    case "swing16":
+      // Two long-short 16th-note pairs per beat.
+      return step%4===0 ? [
+        ev(0,sd*4/3), ev(sd*4/3,sd*2/3),
+        ev(sd*2,sd*4/3), ev(sd*10/3,sd*2/3)
+      ] : [];
+    default:
+      return step%2===0 ? [ev(0,sd*2)] : []; // safe fallback: 1/8
+  }
+}
+
+function playArpStep(uniq, time, dur){
+  const n = uniq.length;
+  if(!n) return;
+  if(S.arp === "fingerpick"){
+    // The 2.9 manual defines Fingerpick as pairs of chord tones but does not
+    // publish a fixed factory pair sequence. Use a simple repeating guitar-like
+    // pair cycle across the available chord tones.
+    let pair;
+    if(n <= 1) pair = [0];
+    else if(n === 2) pair = [0,1];
+    else {
+      const pairs = [
+        [0,2],
+        [1,Math.min(3,n-1)],
+        [0,n-1],
+        [1,2]
+      ];
+      pair = pairs[rt.arpIdx % pairs.length];
+    }
+    [...new Set(pair)].forEach(i=>{
+      i = Math.max(0,Math.min(n-1,i));
+      playNote(uniq[i], time, dur, .92);
+    });
+    rt.arpIdx++;
+    return;
+  }
+
+  let i;
+  if(S.arp === "up") i = rt.arpIdx % n;
+  else if(S.arp === "down") i = (n-1) - (rt.arpIdx % n);
+  else if(S.arp === "random") i = Math.floor(Math.random()*n);
+  else {
+    // UP/DOWN and DOWN/UP bounce without repeating the end notes.
+    const span = Math.max(1,(n-1)*2);
+    const k = rt.arpIdx % span;
+    const upDown = k < n ? k : span-k;
+    i = S.arp === "down-up" ? (n-1)-upDown : upDown;
+  }
+  playNote(uniq[Math.max(0,Math.min(n-1,i))], time, dur, 1);
+  rt.arpIdx++;
+}
+
 function schedule(step, time){
   const L = loopSteps();
 
@@ -1484,34 +1876,20 @@ function schedule(step, time){
     const pool = activePool(step);
     const sig = pool.map(p=>p.degree).sort().join(",");
     if(sig !== rt.lastPool){ rt.lastPool = sig; rt.arpIdx = 0; rt.arpDir = 1; }
-    if(pool.length && step % S.rate === 0){
+    const rateEvents = arpRateEvents(step, time);
+    if(pool.length && rateEvents.length){
       const notes = [];
-      pool.forEach(p => voiceChord(p.degree, p.mods, "arp", false, true).forEach(n=>notes.push(n)));
+      pool.forEach(p => eventNotes(p.degree, p.mods, p.playMode, "arp", false, true).forEach(n=>notes.push(n)));
       notes.sort((a,b)=>a-b);
       const uniq = notes.filter((n,i)=> i===0 || n!==notes[i-1]);
-      if(S.arp === "chord"){
-        uniq.forEach(n => playNote(n, time, stepDur()*S.rate*.9, .85));
-      } else {
-        let i;
-        const n = uniq.length;
-        if(S.arp === "up") i = rt.arpIdx % n;
-        else if(S.arp === "down") i = (n-1) - (rt.arpIdx % n);
-        else if(S.arp === "random") i = Math.floor(Math.random()*n);
-        else { // up-down
-          const span = Math.max(1,(n-1)*2);
-          const k = rt.arpIdx % span;
-          i = k < n ? k : span - k;
-        }
-        playNote(uniq[Math.max(0,Math.min(n-1,i))], time, stepDur()*S.rate*.85, 1);
-        rt.arpIdx++;
-      }
+      rateEvents.forEach(e=>playArpStep(uniq, e.time, e.dur));
     }
   } else {
     rt.events.forEach(ev=>{
       if(ev.open) return;
       if(ev.step === step){
         const id = "L"+ev.id;
-        startChord(id, voiceChord(ev.degree, ev.mods, "loop", false, false, ev.slashBass), time, .9);
+        startChord(id, eventNotes(ev.degree, ev.mods, ev.playMode || "play", "loop", false, false, ev.slashBass), time, .9);
         const off = time + ev.dur*stepDur();
         const grp = rt.liveVoices.get(id);
         if(grp) grp.forEach(v=>v.release(off));
@@ -1576,7 +1954,7 @@ function labelPads(){
   document.querySelectorAll(".pad").forEach(p=>{
     const d = +p.dataset.deg;
     p.querySelector(".num").textContent = String(d + 1);
-    p.querySelector(".nm").textContent = chordLabel(d, mods());
+    p.querySelector(".nm").textContent = S.playMode === "lead" ? leadLabel(d) : chordLabel(d, mods());
   });
 }
 function setScreenChord(name){
@@ -1596,6 +1974,34 @@ function paintGridNow(s){
   document.querySelectorAll(".cell").forEach(c=>{
     c.classList.toggle("now", +c.dataset.s === s);
   });
+}
+
+/* --- tap tempo --- */
+let tapTimes = [];
+function tapTempo(){
+  const now = performance.now();
+  if(tapTimes.length && now - tapTimes[tapTimes.length-1] > 2000) tapTimes = [];
+  tapTimes.push(now);
+  if(tapTimes.length > 8) tapTimes.shift();
+
+  if(tapTimes.length < 3){
+    flash("TAP " + tapTimes.length);
+    return;
+  }
+
+  let total = 0;
+  for(let i=1;i<tapTimes.length;i++) total += tapTimes[i] - tapTimes[i-1];
+  const avgMs = total / (tapTimes.length - 1);
+  const bpm = Math.max(40, Math.min(300, Math.round(60000 / avgMs)));
+  S.bpm = bpm;
+
+  const el = $("kBpm");
+  if(el) el.value = String(bpm);
+  if(SLIDER_PAINT.kBpm) SLIDER_PAINT.kBpm();
+  syncDelayTime();
+  refreshScreen();
+  save();
+  flash(bpm + " BPM");
 }
 
 /* --- chips helper --- */
@@ -1658,6 +2064,70 @@ function buildPadInversions(){
   }
 }
 
+function buildChordLocks(){
+  const host = $("padLockGrid");
+  if(!host) return;
+  host.innerHTML = "";
+  for(let d=0; d<7; d++){
+    const box = document.createElement("div");
+    box.className = "pad-oct";
+    const lab = document.createElement("b");
+    lab.textContent = String(d+1);
+    box.appendChild(lab);
+
+    const sel = document.createElement("select");
+    sel.className = "lock-select";
+    const lock = storedChordLock(d);
+
+    const off = document.createElement("option");
+    off.value = ""; off.textContent = "OFF";
+    sel.appendChild(off);
+
+    // If this pad was locked in another joystick mode, keep that exact lock
+    // visible/selectable even after the user changes the current mode.
+    if(lock && lock.joy !== S.joyMode){
+      const keep = document.createElement("option");
+      keep.value = "__keep__";
+      keep.textContent = "LOCKED: " + (lock.label || "CHORD");
+      sel.appendChild(keep);
+    }
+
+    joyDirs(S.joyMode).forEach(e=>{
+      const o = document.createElement("option");
+      o.value = e.key;
+      o.textContent = e.label;
+      sel.appendChild(o);
+    });
+
+    if(lock){
+      sel.classList.add("on");
+      const sameMode = lock.joy === S.joyMode && joyDirs(S.joyMode).some(e=>e.key===lock.mod);
+      sel.value = sameMode ? lock.mod : "__keep__";
+    } else sel.value = "";
+
+    sel.addEventListener("change", ()=>{
+      if(sel.value === "__keep__") return;
+      if(!sel.value){
+        S.chordLocks[d] = null;
+        stopAllChords(); labelPads(); buildChordLocks(); save();
+        flash("PAD " + (d+1) + " UNLOCKED");
+        return;
+      }
+      const m = {mod:sel.value, joy:S.joyMode};
+      const iv = chordIntervals(d, m).slice();
+      // Capture the resulting chord in the current key. The manual specifies
+      // that a lock stays pinned to the key in which it was created.
+      const label = chordLabel(d, m);
+      S.chordLocks[d] = {root:S.root, iv, label, joy:S.joyMode, mod:sel.value};
+      stopAllChords(); labelPads(); buildChordLocks(); save();
+      flash("PAD " + (d+1) + " " + label + " LOCKED");
+    });
+
+    box.appendChild(sel);
+    host.appendChild(box);
+  }
+}
+
 function buildPanels(){
   chips($("rootRow"), NOTES.map((n,i)=>({label:n, value:i})), ()=>S.root,
     v=>{ S.root=v; labelPads(); refreshScreen(); save(); });
@@ -1667,10 +2137,17 @@ function buildPanels(){
     v=>{ S.octave=v; stopAllChords(); save(); });
   buildPadOctaves();
   buildPadInversions();
+  buildChordLocks();
   chips($("sndRow"), SOUNDS.map((s,i)=>({label:s.n, value:i})), ()=>S.sound,
     v=>{ S.sound=v; S.wave=null; loadPatch(); buildPanels(); refreshScreen(); save(); });
   chips($("vleadRow"), [{label:"OFF",value:false},{label:"ON",value:true}], ()=>S.vlead,
-    v=>{ S.vlead=v; save(); });
+    v=>{
+      S.vlead=v;
+      lastVoicing.live = lastVoicing.loop = null;
+      stopAllChords(); save();
+    });
+  chips($("joyModeRow"), Object.keys(JOY_MODES).map(k=>({label:JOY_MODES[k].label,value:k})), ()=>S.joyMode,
+    v=>{ S.joyMode=v; rt.chromKeyShift=0; updateStickLabels(); setStick(0,0); buildChordLocks(); save(); });
   chips($("regRow"), [{label:"3-NOTE",value:false},{label:"FULL 6",value:true}], ()=>S.sixVoice,
     v=>{ S.sixVoice=v; stopAllChords(); save(); });
   chips($("wideRow"), [{label:"STEREO",value:true},{label:"MONO",value:false}], ()=>S.stereo,
@@ -1689,7 +2166,43 @@ function buildPanels(){
       });
       stopAllChords(); save();
     });
-  chips($("arpRow"), ARPS.map(a=>({label:a.toUpperCase(), value:a})), ()=>S.arp, v=>{ S.arp=v; save(); });
+  const strumModes = [
+    {label:"PLAY", value:0},
+    {label:"SLOW 200ms", value:200},
+    {label:"MEDIUM 80ms", value:80},
+    {label:"FAST 40ms", value:40}
+  ];
+  chips($("strumModeRow"), strumModes, ()=>strumModes.some(x=>x.value===S.strum)?S.strum:null,
+    v=>{
+      S.strum=v;
+      const el=$("kStrum"); if(el) el.value=String(v);
+      if(SLIDER_PAINT.kStrum) SLIDER_PAINT.kStrum();
+      stopAllChords(); save();
+    });
+  chips($("perfModeRow"), [
+      {label:"PLAY",value:"play"},
+      {label:"LEAD",value:"lead"},
+      {label:"DRONE",value:"drone"}
+    ], ()=>S.playMode,
+    v=>{
+      // Close a held recording event before changing modes. Drone itself never
+      // receives a pad-up, so mode exit is its natural endpoint.
+      rt.held.forEach(h=>{
+        if(h && h.ev && h.ev.open){ h.ev.dur = heldLength(h.ev); h.ev.open = false; }
+      });
+      stopAllChords(true);
+      rt.held.forEach((h,d)=>{ const el=padEl(d); if(el) el.classList.remove("hit"); });
+      rt.held.clear();
+      S.playMode=v;
+      if(v === "lead" || v === "drone"){
+        S.arpOn=false;
+        S.latch=false;
+        if(ui.arp) ui.arp.classList.remove("on");
+        if(ui.latch) ui.latch.classList.remove("on");
+      }
+      labelPads(); refreshScreen(); save();
+    });
+  chips($("arpRow"), ARPS.map(a=>({label:a.toUpperCase().replace(/-/g,"/"), value:a})), ()=>S.arp, v=>{ S.arp=v; rt.arpIdx=0; rt.arpDir=1; save(); });
   chips($("rateRow"), RATES.map(r=>({label:r[0], value:r[1]})), ()=>S.rate, v=>{ S.rate=v; save(); });
   chips($("barsRow"), [1,2,4,8].map(b=>({label:b+(b>1?" bars":" bar"), value:b})), ()=>S.bars,
     v=>{ S.bars=v; rt.events=rt.events.filter(e=>e.step < v*16); save(); });
@@ -1699,6 +2212,7 @@ function buildPanels(){
     v=>{ S.sampOct=v; save(); });
   chips($("kitRow"), Object.keys(KITS).map(k=>({label:k, value:k})), ()=>S.kit,
     v=>{ S.kit=v; S.pattern = KITS[v].map(r=>r.slice()); buildGrid(); save(); });
+  updateStickLabels();
 }
 
 function buildGrid(){
@@ -1800,19 +2314,37 @@ function setStick(x,y){
   $("cap").style.transform = "translate("+(rt.stick.x*30)+"px,"+(-rt.stick.y*30)+"px)";
   const m = mods();
   $("well").setAttribute("aria-valuetext", m.mod || "triad");
+
+  // CHROM left/right has a second behavior when no chord is held: shift the
+  // entire key by one semitone. One continuous gesture steps only once; return
+  // to centre (or another direction) before another step.
+  if(S.joyMode === "chrom" && rt.held.size === 0 && (m.mod === "chr-key-1" || m.mod === "chr-key+1")){
+    const dir = m.mod === "chr-key-1" ? -1 : 1;
+    if(rt.chromKeyShift !== dir){
+      rt.chromKeyShift = dir;
+      S.root = (S.root + dir + 12) % 12;
+      refreshScreen(); buildPanels(); save();
+    }
+  } else {
+    rt.chromKeyShift = 0;
+  }
+
   labelPads();
   // live re-voice any held pads
-  if(ctx && !S.arpOn){
+  if(ctx && !S.arpOn && S.playMode !== "lead"){
     const heldDegrees = Array.from(rt.held.keys());
     const slashBass = (S.bass === "slash" && heldDegrees.length > 1) ? heldDegrees[0] : null;
     rt.held.forEach((h,deg)=>{
-      h.mods = m;
+      const hm = effectiveMods(deg, m);
+      h.mods = hm;
       if(deg === slashBass){ stopChord("p"+deg); return; }
-      startChord("p"+deg, voiceChord(deg, m, "live", true, false, slashBass), ctx.currentTime, 1);
+      if(S.playMode === "drone") crossfadeStopChord("p"+deg, ctx.currentTime, 0.12);
+      startChord("p"+deg, voiceChord(deg, hm, "live", true, false, slashBass), ctx.currentTime, 1);
     });
     if(heldDegrees.length){
       const top = heldDegrees[heldDegrees.length-1];
-      setScreenChord(chordLabel(top, m) + (slashBass !== null ? "/"+slashBassName(slashBass) : ""));
+      const tm = rt.held.get(top).mods;
+      setScreenChord(chordLabel(top, tm) + (slashBass !== null ? "/"+slashBassName(slashBass) : ""));
     }
   }
 }
@@ -1946,6 +2478,7 @@ function toggleArp(){
   save();
 }
 function toggleLatch(){
+  if(S.playMode === "drone"){ flash("DRONE HOLDS AUTOMATICALLY"); return; }
   S.latch = !S.latch;
   ui.latch.classList.toggle("on", S.latch);
   if(!S.latch) Array.from(rt.held.keys()).forEach(releasePad);
@@ -2060,14 +2593,16 @@ function exportMidi(){
   if(!done.length){ flash("LOOP IS EMPTY"); return; }
   const PPQ = 96, tps = PPQ/4;          // ticks per sixteenth
   const keep = lastLow.loop;             // don't disturb playback voicing
+  const keepVoicing = lastVoicing.loop ? lastVoicing.loop.slice() : null;
   const evs = [];
   done.forEach(ev=>{
-    voiceChord(ev.degree, ev.mods, "loop", true, false, ev.slashBass).forEach(n=>{
+    eventNotes(ev.degree, ev.mods, ev.playMode || "play", "loop", true, false, ev.slashBass).forEach(n=>{
       evs.push({t: ev.step*tps, k:0x90, n:n, v:92});
       evs.push({t:(ev.step+ev.dur)*tps, k:0x80, n:n, v:0});
     });
   });
   lastLow.loop = keep;
+  lastVoicing.loop = keepVoicing;
   evs.sort((a,b)=> a.t - b.t || (a.k === 0x80 ? -1 : 1));
 
   const trk = [];
@@ -2094,14 +2629,17 @@ function resetAll(){
     S[k] = (k === "pattern") ? FACTORY.pattern.map(r=>r.slice())
          : (k === "padOct") ? FACTORY.padOct.slice()
          : (k === "padInv") ? FACTORY.padInv.slice()
+         : (k === "chordLocks") ? FACTORY.chordLocks.map(x=>x ? JSON.parse(JSON.stringify(x)) : null)
          : FACTORY[k];
   });
   try{ localStorage.removeItem("Chords.v1"); }catch(e){}
 
   stopAllChords();
+  lastVoicing.live = lastVoicing.loop = null;
   rt.held.forEach((h,d)=>{ const el = padEl(d); if(el) el.classList.remove("hit"); });
   rt.held.clear();
   rt.events = [];
+  tapTimes = [];
   sampleBuf = null; sampleLoop = null; idbDel("sample");
   if(ui.sampUse) ui.sampUse.classList.remove("on");
   if(ui.sampLoop) ui.sampLoop.classList.add("on");
@@ -2147,6 +2685,17 @@ function load(){
     S.padOct = S.padOct.map(v=>Math.max(-2,Math.min(2,Number(v)||0)));
     if(!Array.isArray(S.padInv) || S.padInv.length!==7) S.padInv = [0,0,0,0,0,0,0];
     S.padInv = S.padInv.map(v=>Math.max(0,Math.min(2,Math.round(Number(v)||0))));
+    if(!Array.isArray(S.chordLocks) || S.chordLocks.length!==7) S.chordLocks = [null,null,null,null,null,null,null];
+    S.chordLocks = S.chordLocks.map(lock=>{
+      if(!lock || !Array.isArray(lock.iv) || !Number.isFinite(Number(lock.root))) return null;
+      return {root:Number(lock.root), iv:lock.iv.map(Number), label:String(lock.label||"LOCKED"), joy:lock.joy||"default", mod:lock.mod||null};
+    });
+    if(!JOY_MODES[S.joyMode]) S.joyMode = "default";
+    if(!["play","lead","drone"].includes(S.playMode)) S.playMode = "play";
+    if(!ARPS.includes(S.arp)) S.arp = "up";
+    // Migrate pre-003.22 numeric arp rates to the named musical-rate values.
+    if(typeof S.rate === "number") S.rate = ({16:"1/1",8:"1/2",4:"1/4",2:"1/8",1:"1/16"})[S.rate] || "1/8";
+    if(!RATES.some(r=>r[1]===S.rate)) S.rate = "1/8";
   }catch(e){}
 }
 
@@ -2170,6 +2719,7 @@ function cacheUI(){
   ui.play=$("btnPlay"); ui.rec=$("btnRec"); ui.arp=$("btnArp"); ui.drums=$("btnDrums");
   ui.latch=$("btnLatch"); ui.cap=$("btnCap"); ui.midi=$("btnMidi");
   ui.reset=$("btnReset");
+  ui.tapTempo=$("btnTapTempo");
   ui.sampRec=$("btnSampRec"); ui.sampUse=$("btnSampUse"); ui.sampClear=$("btnSampClear");
   ui.sampLoop=$("btnSampLoop");
   ui.beat=$("beat");
@@ -2213,6 +2763,7 @@ function boot(){
   onPress(ui.cap, toggleCapture);
   onPress(ui.midi, exportMidi);
   onPress(ui.reset, resetAll);
+  onPress(ui.tapTempo, tapTempo);
   onPress(ui.sampRec, ()=>recordSample(3));
   onPress(ui.sampUse, toggleSample);
   onPress(ui.sampClear, clearSample);

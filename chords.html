@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords App — internet chord synth</title>
+<title>Chords 003.10 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -107,7 +107,7 @@ body{
 }
 .logo{
   font-size:8px;font-weight:600;letter-spacing:.04em;
-  color:#4B3A8F;line-height:1;
+  color:var(--lav);line-height:1;
 }
 .logo em{font-style:normal;color:var(--red)}
 .logo .ver{
@@ -271,6 +271,10 @@ body{
   min-width:44px;text-align:center;
 }
 .chip.on{background:var(--pad);color:#7a4f3d;border-color:var(--pad);font-weight:700}
+.pad-oct-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;width:100%}
+.pad-oct{display:flex;align-items:center;gap:5px;padding:6px 7px;border-radius:9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07)}
+.pad-oct b{font-family:var(--font-mono);font-size:11px;color:#bcae9c;min-width:14px;text-align:center}
+.pad-oct .chip{min-width:27px;padding:7px 5px;font-size:10px;flex:1}
 .knobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px 20px;width:100%}
 .knob label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8f8272;font-weight:700;margin-bottom:7px}
 .knob label span{font-family:var(--font-mono);color:#d6c9b7;letter-spacing:0}
@@ -405,7 +409,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.06</span></div>
+      <div class="logo">Chords<span class="ver">003.10</span></div>
     </div>
 
     <div class="top">
@@ -462,6 +466,8 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Root</span><div class="row" id="rootRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Scale</span><div class="row" id="modeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Global octave</span><div class="row" id="octaveRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Per-pad octave</span><div class="pad-oct-grid" id="padOctGrid"></div></div>
+  <div class="row"><span class="lbl">Per-pad inversion</span><div class="pad-oct-grid" id="padInvGrid"></div></div>
 </section>
 
 <section class="panel" id="panel-sound">
@@ -603,7 +609,7 @@ const S = {
   // 3 = SAW. Chosen to match an out-of-box HiChord heard in several YouTube
   // demos; this is a perceptual reference, not a direct hardware capture.
   // The manual independently confirms SAW as HiChord's bright analog waveform.
-  root:0, scale:"major", octave:0, sound:3, wave:null,
+  root:0, scale:"major", octave:0, padOct:[0,0,0,0,0,0,0], padInv:[0,0,0,0,0,0,0], sound:3, wave:null,
   cut:3500, res:.7, atk:25, rel:300,   // brightness and attack estimated from the YouTube factory reference
   // strum 0 — the device's default play mode is oneshot, all notes together.
   // Strumming there is a separate mode (slow/med/fast = 120/80/40ms), not a default.
@@ -1216,8 +1222,19 @@ function voiceChord(degree, m, track, hold, skipBass){
   ch = ch.map(n => n + shift);
   // Global octave is a performance transpose applied after register folding,
   // so -2..+2 moves the whole instrument without being folded back into C3..B3.
-  const octaveShift = 12 * S.octave;
+  const padOctave = Array.isArray(S.padOct) ? (S.padOct[degree] || 0) : 0;
+  const octaveShift = 12 * (S.octave + padOctave);
   ch = ch.map(n => n + octaveShift);
+
+  // Per-pad inversion: Root leaves the chord alone; 1st moves the root up an
+  // octave; 2nd moves the root and third up an octave. Extensions stay above
+  // the triad, and ROOT bass (when enabled) remains tied to the chord root.
+  const inversion = Array.isArray(S.padInv) ? (S.padInv[degree] || 0) : 0;
+  for(let i=0; i<Math.min(inversion, ch.length); i++){
+    ch.push(ch.shift() + 12);
+  }
+  ch.sort((a,b)=>a-b);
+
   // The arp only needs the pitch set, and it rebuilds the chord every step —
   // running voice leading there would rewrite the reference constantly.
   if(track !== "arp" && S.vlead){
@@ -1512,6 +1529,54 @@ function chips(host, items, getActive, onPick){
   });
 }
 
+function buildPadOctaves(){
+  const host = $("padOctGrid");
+  if(!host) return;
+  host.innerHTML = "";
+  for(let d=0; d<7; d++){
+    const box = document.createElement("div");
+    box.className = "pad-oct";
+    const lab = document.createElement("b");
+    lab.textContent = String(d+1);
+    box.appendChild(lab);
+    const choices = document.createElement("div");
+    choices.className = "row";
+    choices.style.margin = "0";
+    choices.style.gap = "4px";
+    chips(choices, [-2,-1,0,1,2].map(o=>({label:o>0?"+"+o:String(o), value:o})),
+      ()=>S.padOct[d],
+      v=>{ S.padOct[d]=v; stopAllChords(); save(); });
+    box.appendChild(choices);
+    host.appendChild(box);
+  }
+}
+
+function buildPadInversions(){
+  const host = $("padInvGrid");
+  if(!host) return;
+  host.innerHTML = "";
+  const opts = [
+    {label:"ROOT", value:0},
+    {label:"1ST", value:1},
+    {label:"2ND", value:2}
+  ];
+  for(let d=0; d<7; d++){
+    const box = document.createElement("div");
+    box.className = "pad-oct";
+    const lab = document.createElement("b");
+    lab.textContent = String(d+1);
+    box.appendChild(lab);
+    const choices = document.createElement("div");
+    choices.className = "row";
+    choices.style.margin = "0";
+    choices.style.gap = "4px";
+    chips(choices, opts, ()=>S.padInv[d],
+      v=>{ S.padInv[d]=v; stopAllChords(); save(); });
+    box.appendChild(choices);
+    host.appendChild(box);
+  }
+}
+
 function buildPanels(){
   chips($("rootRow"), NOTES.map((n,i)=>({label:n, value:i})), ()=>S.root,
     v=>{ S.root=v; labelPads(); refreshScreen(); save(); });
@@ -1519,6 +1584,8 @@ function buildPanels(){
     v=>{ S.scale=v; labelPads(); refreshScreen(); save(); });
   chips($("octaveRow"), [-2,-1,0,1,2].map(o=>({label:o>0?"+"+o:String(o), value:o})), ()=>S.octave,
     v=>{ S.octave=v; stopAllChords(); save(); });
+  buildPadOctaves();
+  buildPadInversions();
   chips($("sndRow"), SOUNDS.map((s,i)=>({label:s.n, value:i})), ()=>S.sound,
     v=>{ S.sound=v; S.wave=null; loadPatch(); buildPanels(); refreshScreen(); save(); });
   chips($("vleadRow"), [{label:"OFF",value:false},{label:"ON",value:true}], ()=>S.vlead,
@@ -1925,7 +1992,10 @@ function exportMidi(){
 
 function resetAll(){
   Object.keys(FACTORY).forEach(k=>{
-    S[k] = (k === "pattern") ? FACTORY.pattern.map(r=>r.slice()) : FACTORY[k];
+    S[k] = (k === "pattern") ? FACTORY.pattern.map(r=>r.slice())
+         : (k === "padOct") ? FACTORY.padOct.slice()
+         : (k === "padInv") ? FACTORY.padInv.slice()
+         : FACTORY[k];
   });
   try{ localStorage.removeItem("Chords.v1"); }catch(e){}
 
@@ -1974,6 +2044,10 @@ function load(){
     const o = JSON.parse(raw);
     Object.keys(S).forEach(k=>{ if(k in o) S[k]=o[k]; });
     if(!Array.isArray(S.pattern) || S.pattern.length!==4) S.pattern = KITS["Four"].map(r=>r.slice());
+    if(!Array.isArray(S.padOct) || S.padOct.length!==7) S.padOct = [0,0,0,0,0,0,0];
+    S.padOct = S.padOct.map(v=>Math.max(-2,Math.min(2,Number(v)||0)));
+    if(!Array.isArray(S.padInv) || S.padInv.length!==7) S.padInv = [0,0,0,0,0,0,0];
+    S.padInv = S.padInv.map(v=>Math.max(0,Math.min(2,Math.round(Number(v)||0))));
   }catch(e){}
 }
 

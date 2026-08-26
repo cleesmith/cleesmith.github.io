@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.15 — HTML chord synth</title>
+<title>Chords 003.18 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -409,7 +409,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.15</span></div>
+      <div class="logo">Chords<span class="ver">003.18</span></div>
     </div>
 
     <div class="top">
@@ -478,6 +478,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Width — STEREO is a detuned pair per voice; MONO is one centred oscillator</span><div class="row" id="wideRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Bass note</span><div class="row" id="bassRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Waveform</span><div class="row" id="waveRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">ADSR preset — Attack / Decay / Sustain / Release</span><div class="row" id="adsrRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Sampler — record through the mic, then play it as chords</span>
     <div class="row" style="margin:0">
       <button class="chip" id="btnSampRec">Record 3s</button>
@@ -489,7 +490,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Note you sang</span><div class="row" id="sampRootRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Octave you sang</span><div class="row" id="sampOctRow" style="margin:0"></div></div>
   <div class="knobs">
-    <div class="knob"><label for="kCut">Brightness <span id="vCut"></span></label><input type="range" id="kCut" min="200" max="9000" step="50"></div>
+    <div class="knob"><label for="kCut">Brightness <span id="vCut"></span></label><input type="range" id="kCut" min="20" max="20000" step="10"></div>
     <div class="knob"><label for="kRes">Resonance <span id="vRes"></span></label><input type="range" id="kRes" min="0.5" max="14" step="0.1"></div>
     <div class="knob"><label for="kAtk">Attack <span id="vAtk"></span></label><input type="range" id="kAtk" min="0.1" max="5000" step="0.1"></div>
     <div class="knob"><label for="kRel">Release <span id="vRel"></span></label><input type="range" id="kRel" min="0.1" max="5000" step="0.1"></div>
@@ -566,6 +567,14 @@ const SOUNDS = [
   {n:"PLUCK",   wave:"sawtooth", det:7,  a:3,   d:340, s:.02, r:260,  cut:650,  q:6, env:3400, fd:.3,  pan:.3}
 ];
 const WAVES = ["sine","triangle","sawtooth","square"];
+const ADSR_PRESETS = {
+  LONG:    {a:800, d:1000, s:.70, r:2000},
+  SHORT:   {a:100, d:100,  s:1.00, r:1000},
+  SWELL:   {a:800, d:300,  s:.80, r:2000},
+  PLUCK:   {a:5,   d:80,   s:0,    r:180},
+  TOUCH:   {a:25,  d:260,  s:.66,  r:450},
+  SUSTAIN: {a:200, d:300,  s:.85,  r:3000}
+};
 const ARPS = ["up","down","up-down","random","chord"];
 const RATES = [["1/4",4],["1/8",2],["1/16",1]];
 const LANES = ["KICK","SNARE","HAT","CLAP"];
@@ -610,7 +619,7 @@ const S = {
   // demos; this is a perceptual reference, not a direct hardware capture.
   // The manual independently confirms SAW as HiChord's bright analog waveform.
   root:0, scale:"major", octave:0, padOct:[0,0,0,0,0,0,0], padInv:[0,0,0,0,0,0,0], sound:3, wave:null,
-  cut:3500, res:.7, atk:25, rel:300,   // brightness and attack estimated from the YouTube factory reference
+  cut:3500, res:.7, atk:25, dec:30, sus:.8, rel:300, adsr:null,   // brightness and attack estimated from the YouTube factory reference
   // strum 0 — the device's default play mode is oneshot, all notes together.
   // Strumming there is a separate mode (slow/med/fast = 120/80/40ms), not a default.
   delay:0, reverb:0, chorus:0, trem:0, strum:0, vol:70,
@@ -867,10 +876,10 @@ function playNote(midi, time, dur, vel, bus){
   // Dropping from a detuned pair to a single oscillator loses ~3dB. Put it back,
   // otherwise MONO just sounds quieter than STEREO and the comparison is useless.
   const solo = nOsc === 1 && !(S.useSample && sampleBuf);
-  const D = p.d/1000, R = S.rel/1000, peak = 0.16*vel*(solo ? Math.SQRT2 : 1);
+  const D = S.dec/1000, R = S.rel/1000, peak = 0.16*vel*(solo ? Math.SQRT2 : 1);
   out.gain.setValueAtTime(0.0001, t);
   out.gain.linearRampToValueAtTime(peak, t + A);
-  out.gain.setTargetAtTime(peak*p.s + 0.0001, t + A, Math.max(.02, D/3));
+  out.gain.setTargetAtTime(peak*S.sus + 0.0001, t + A, Math.max(.02, D/3));
 
   const grp = {oscs, out, filt, released:false};
   const stopAll = (endT)=>{ oscs.forEach(o=>{ try{o.stop(endT);}catch(e){} }); };
@@ -1670,6 +1679,16 @@ function buildPanels(){
     v=>{ S.bass=v; stopAllChords(); save(); });
   chips($("waveRow"), [{label:"AUTO",value:null}].concat(WAVES.map(w=>({label:w.slice(0,3).toUpperCase(), value:w}))),
     ()=>S.wave, v=>{ S.wave=v; save(); });
+  chips($("adsrRow"), Object.keys(ADSR_PRESETS).map(k=>({label:k, value:k})), ()=>S.adsr,
+    v=>{
+      const e = ADSR_PRESETS[v];
+      S.adsr=v; S.atk=e.a; S.dec=e.d; S.sus=e.s; S.rel=e.r;
+      [["kAtk","atk"],["kRel","rel"]].forEach(([id,key])=>{
+        const el=$(id); if(el) el.value=String(S[key]);
+        if(SLIDER_PAINT[id]) SLIDER_PAINT[id]();
+      });
+      stopAllChords(); save();
+    });
   chips($("arpRow"), ARPS.map(a=>({label:a.toUpperCase(), value:a})), ()=>S.arp, v=>{ S.arp=v; save(); });
   chips($("rateRow"), RATES.map(r=>({label:r[0], value:r[1]})), ()=>S.rate, v=>{ S.rate=v; save(); });
   chips($("barsRow"), [1,2,4,8].map(b=>({label:b+(b>1?" bars":" bar"), value:b})), ()=>S.bars,
@@ -1703,11 +1722,12 @@ function buildGrid(){
 
 /* --- sliders --- */
 const SLIDER_KEY = {};
+const SLIDER_PAINT = {};
 // Pull the selected instrument's own filter and envelope into the live
 // settings, then push them out to the sliders so the UI agrees.
 function loadPatch(){
   const p = SOUNDS[S.sound];
-  S.cut = p.cut; S.res = p.q; S.atk = p.a; S.rel = p.r;
+  S.cut = p.cut; S.res = p.q; S.atk = p.a; S.dec = p.d; S.sus = p.s; S.rel = p.r; S.adsr = null;
   ["kCut","kRes","kAtk","kRel"].forEach(id=>{
     const el = $(id);
     if(el){ el.value = S[SLIDER_KEY[id]]; el.dispatchEvent(new Event("input")); }
@@ -1742,6 +1762,7 @@ function slider(id, key, fmt, after){
     const m = shown.match(/^\s*[-+]?(?:\d+(?:\.\d*)?|\.\d+)\s*(.*)$/);
     unit.textContent = m ? m[1] : "";
   };
+  SLIDER_PAINT[id] = paint;
   const apply = ()=>{
     applySoundParams();
     if(after) after();
@@ -2171,8 +2192,8 @@ function boot(){
 
   slider("kCut","cut",v=>Math.round(v)+"Hz");
   slider("kRes","res",v=>v.toFixed(1));
-  slider("kAtk","atk",v=>Math.round(v)+"ms");
-  slider("kRel","rel",v=>Math.round(v)+"ms");
+  slider("kAtk","atk",v=>Math.round(v)+"ms",()=>{ S.adsr=null; buildPanels(); });
+  slider("kRel","rel",v=>Math.round(v)+"ms",()=>{ S.adsr=null; buildPanels(); });
   slider("kDly","delay",v=>Math.round(v)+"%");
   slider("kRev","reverb",v=>Math.round(v)+"%");
   slider("kCho","chorus",v=>Math.round(v)+"%");

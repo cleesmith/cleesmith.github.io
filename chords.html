@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.32 — HTML chord synth</title>
+<title>Chords 003.45 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -117,7 +117,7 @@ body{
 }
 
 /* joystick */
-.stick-area{grid-area:stick;min-width:0;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.stick-area{grid-area:stick;min-width:0;display:flex;flex-direction:column;gap:12px;align-items:flex-start;padding-top:34px}
 .well{
   position:relative;width:150px;height:150px;border-radius:50%;
   background:radial-gradient(circle at 50% 45%,#ded2c2,#c7b8a5);
@@ -197,7 +197,13 @@ body{
 .mode.on{outline:2px solid rgba(255,255,255,.55);outline-offset:-2px}
 
 /* pads */
-.pads{grid-area:pads;min-width:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:.46fr 1fr;gap:9px;min-height:310px}
+.pads{
+  grid-area:pads;min-width:0;display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  grid-template-rows:104px 1fr;
+  column-gap:3px;row-gap:10px;
+  min-height:336px;align-items:start;
+}
 .pad{
   position:relative;border:none;cursor:pointer;min-width:0;overflow:hidden;
   border-radius:var(--radius-pad);
@@ -217,8 +223,17 @@ body{
   box-shadow:0 0 0 var(--pad-edge), 0 0 22px rgba(240,140,100,.45), inset 0 2px 0 rgba(255,255,255,.5);
 }
 .pad.arp{background:linear-gradient(180deg,#fbe3d6,#f3cdb9)}
-.pads .pad:nth-child(-n+3){grid-column:span 4;grid-row:1;justify-content:flex-start;gap:5px}
-.pads .pad:nth-child(n+4){grid-column:span 3;grid-row:2}
+/* top row 2,4,6: three separate short pads with clear gaps */
+.pads .pad:nth-child(-n+3){grid-row:1;grid-column:span 4;width:98%;min-height:92px;justify-self:center;align-self:end;justify-content:flex-start;gap:5px}
+.pads .pad:nth-child(1){grid-column:1 / span 4}
+.pads .pad:nth-child(2){grid-column:5 / span 4}
+.pads .pad:nth-child(3){grid-column:9 / span 4}
+/* bottom row 1,3,5,7: taller, slightly thinner */
+.pads .pad:nth-child(n+4){grid-row:2;grid-column:span 3;width:98%;min-height:212px;justify-self:center}
+.pads .pad:nth-child(4){grid-column:1 / span 3}
+.pads .pad:nth-child(5){grid-column:4 / span 3}
+.pads .pad:nth-child(6){grid-column:7 / span 3}
+.pads .pad:nth-child(7){grid-column:10 / span 3}
 
 /* ---------- dock ---------- */
 .dock{
@@ -271,6 +286,17 @@ body{
   min-width:44px;text-align:center;
 }
 .chip.on{background:var(--pad);color:#7a4f3d;border-color:var(--pad);font-weight:700}
+.player-box{width:100%;display:grid;gap:8px}
+.player-text{
+  width:100%;min-height:72px;resize:vertical;padding:10px 12px;border-radius:9px;
+  font-family:var(--font-mono);font-size:13px;line-height:1.5;letter-spacing:.04em;
+  background:rgba(255,255,255,.055);color:#e8dccb;border:1px solid rgba(255,255,255,.12);outline:none;
+}
+.player-text:focus{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+.player-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.player-help{font-family:var(--font-mono);font-size:10px;color:#8f8272}
+.player-status{font-family:var(--font-mono);font-size:11px;color:#b7aa9a;letter-spacing:.04em;min-height:1.2em}
+.player-status.playing{color:#d8c9b5}
 .pad-oct-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;width:100%}
 .pad-oct{display:flex;align-items:center;gap:5px;padding:6px 7px;border-radius:9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07)}
 .pad-oct b{font-family:var(--font-mono);font-size:11px;color:#bcae9c;min-width:14px;text-align:center}
@@ -327,11 +353,14 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
 /* iPad and similar: keep the two-handed layout but make everything thumb-sized */
 @media (min-width:761px) and (pointer:coarse){
   .device{width:100%}
-  .pads{min-height:420px;gap:12px}
+  .pads{min-height:452px;column-gap:4px;row-gap:12px;grid-template-rows:126px 1fr}
   .pad{padding:14px 16px;border-radius:14px}
+  .pads .pad:nth-child(-n+3){min-height:110px;width:98%}
+  .pads .pad:nth-child(n+4){min-height:286px;width:98%}
   .pad .num{font-size:20px}
   .pad .nm{font-size:13px}
   .pad .kb{display:none}
+  .stick-area{padding-top:37px}
   .well{width:190px;height:190px}
   .cap{width:92px;height:92px;margin:-46px 0 0 -46px}
   .well .dir{font-size:11px}
@@ -355,10 +384,12 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
     .logo{font-size:7px}
   .screen{min-height:104px}
   .top{max-width:none}
-  .stick-area{align-items:center;justify-content:center;width:100%;gap:6px}
+  .stick-area{align-items:center;justify-content:flex-start;width:100%;gap:6px;padding-top:32px}
   .well{width:118px;height:118px;margin:0 auto;flex:0 0 auto}
-  .pads{min-height:290px;gap:6px}
+  .pads{min-height:312px;column-gap:2px;row-gap:9px;grid-template-rows:86px 1fr}
   .pad{padding:7px 8px}
+  .pads .pad:nth-child(-n+3){min-height:74px;width:98%}
+  .pads .pad:nth-child(n+4){min-height:190px;width:98%}
   .pad .kb{top:6px;right:7px}
   .mode{width:50px}
   .mode span{font-size:11px;letter-spacing:.16em}
@@ -380,7 +411,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   .cap{width:42px;height:42px;margin:-21px 0 0 -21px}
   .mode{min-height:52px}
   .chip{padding:11px 13px;min-height:42px}
-  .pads{min-height:250px;gap:5px}
+  .pads{min-height:250px;column-gap:2px;row-gap:9px}
   .pad{padding:6px 7px;border-radius:9px}
   .pad .num{font-size:13px}
   .pad .nm{font-size:9px}
@@ -415,7 +446,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.32</span></div>
+      <div class="logo">Chords<span class="ver">003.45</span></div>
     </div>
 
     <div class="top">
@@ -488,6 +519,9 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Waveform</span><div class="row" id="waveRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">ADSR preset — Attack / Decay / Sustain / Release</span><div class="row" id="adsrRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Reverb type — Reverb slider sets wet amount</span><div class="row" id="reverbTypeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Chorus type — Chorus slider sets wet amount</span><div class="row" id="chorusTypeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Drive — distortion character</span><div class="row" id="driveTypeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Tape — analog / lo-fi character</span><div class="row" id="tapeTypeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Delay rate — synced to BPM; Delay slider sets echo amount</span><div class="row" id="delayRateRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Tremolo rate — synced to BPM; Tremolo slider sets depth</span><div class="row" id="tremRateRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Sampler — record through the mic, then play it as chords</span>
@@ -524,6 +558,17 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">Tap tempo — tap 3 or more times</span><div class="row" style="margin:0"><button class="chip" id="btnTapTempo">TAP TEMPO</button></div></div>
   <div class="row"><span class="lbl">Strum mode</span><div class="row" id="strumModeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Performance mode</span><div class="row" id="perfModeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Player — optional @settings before the tune; one number = one beat; | = divider; - = rest</span>
+    <div class="player-box">
+      <textarea id="playerText" class="player-text" rows="3" spellcheck="false" autocapitalize="off" placeholder="@key C @scale major @mode lead @bpm 120 @sound saw | 3 3 4 5 | 5 4 3 2"></textarea>
+      <div class="player-actions">
+        <button class="chip" id="btnPlayerPlay">PLAY</button>
+        <button class="chip" id="btnPlayerStop">STOP</button>
+        <span class="player-help">@key @scale @mode @bpm @sound · 1 2 3 4 5 6 7 = pads 1–7</span>
+      </div>
+      <div class="player-status" id="playerStatus"></div>
+    </div>
+  </div>
   <div class="row"><span class="lbl">Arp pattern</span><div class="row" id="arpRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Arp layering</span><div class="row" id="arpLayerRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Arp / Repeat rate</span><div class="row" id="rateRow" style="margin:0"></div></div>
@@ -564,22 +609,36 @@ const SCALES = {
 // Rhodes. Patches without an fm block use the original subtractive path.
 // pan is the stereo spread of the detuned pair, in fractions of full width.
 const SOUNDS = [
-  {n:"FM E.PIANO", wave:"sine", det:4, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4,
-   pan:.35, fm:{ratio:1,    i0:5.0, i1:0.45, dec:.42}},
-  {n:"FM BELL",    wave:"sine", det:6, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4,
-   pan:.45, fm:{ratio:3.51, i0:7.5, i1:0.30, dec:1.5}},
-  {n:"WURLI",      wave:"sine", det:5, a:5, d:30, s:.8, r:300, cut:16000, q:.8, env:0, fd:.4,
-   pan:.3,  fm:{ratio:2,    i0:3.4, i1:0.55, dec:.3}},
-  // Factory-reference target: the out-of-box YouTube recording is strongly
-  // saw-like, and the HiChord manual confirms SAW is a native analog waveform.
-  // The ~25ms attack is an estimate from that video recording, not a direct
-  // hardware/audio-interface measurement, so keep it as a perceptual match.
-  {n:"SAW",     wave:"sawtooth", det:8, a:25, d:30, s:.8, r:300, cut:3500,  q:.7, env:0, fd:.4, pan:.4, softSaw:1.3},
-  {n:"SQUARE",  wave:"square",   det:5, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4, pan:.3},
-  {n:"TRIANGLE",wave:"triangle", det:5, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4, pan:.3},
-  {n:"SINE",    wave:"sine",     det:4, a:5, d:30, s:.8, r:300, cut:16000, q:.7, env:0, fd:.4, pan:.25},
-  {n:"STRINGS", wave:"sawtooth", det:11, a:330, d:600, s:.82, r:1100, cut:1900, q:1, env:800,  fd:1.2, pan:.5},
-  {n:"PLUCK",   wave:"sawtooth", det:7,  a:3,   d:340, s:.02, r:260,  cut:650,  q:6, env:3400, fd:.3,  pan:.3}
+  // HiChord Rev 2.9 browse order. The hardware's Recorded sounds use its own
+  // sample ROM; here those are Web Audio perceptual approximations so all 27
+  // instruments are immediately playable in a standalone browser file.
+  {n:"SAW",       engine:"Analog",   wave:"sawtooth", det:8,  a:25,  d:30,  s:.80, r:300,  cut:3500, q:.7, env:0,    fd:.4, pan:.40, softSaw:1.3},
+  {n:"PIANO",     engine:"Recorded", wave:"sine",     det:2,  a:3,   d:520, s:.22, r:850,  cut:9000, q:.7, env:0,    fd:.5, pan:.34, fm:{ratio:2.01,i0:4.8,i1:.18,dec:.22}},
+  {n:"TINE EP",   engine:"Recorded", wave:"sine",     det:4,  a:4,   d:380, s:.56, r:720,  cut:14000,q:.7, env:0,    fd:.4, pan:.36, fm:{ratio:1,i0:4.5,i1:.38,dec:.48}},
+  {n:"ORGAN",     engine:"Recorded", wave:"square",   det:3,  a:8,   d:45,  s:.95, r:420,  cut:5200, q:.55,env:0,    fd:.4, pan:.32},
+  {n:"STRINGS",   engine:"Recorded", wave:"sawtooth", det:11, a:330, d:600, s:.82, r:1100, cut:1900, q:1,  env:800,  fd:1.2,pan:.50},
+  {n:"HORNS",     engine:"Recorded", wave:"sawtooth", det:7,  a:55,  d:180, s:.76, r:620,  cut:2500, q:.9, env:900,  fd:.45,pan:.36},
+  {n:"BRASS",     engine:"Recorded", wave:"sawtooth", det:6,  a:18,  d:170, s:.70, r:520,  cut:2100, q:.85,env:2800, fd:.32,pan:.34},
+  {n:"E GUITAR",  engine:"Recorded", wave:"triangle", det:5,  a:4,   d:420, s:.30, r:650,  cut:4200, q:1.2,env:1700, fd:.38,pan:.34},
+  {n:"CLARINET",  engine:"Recorded", wave:"square",   det:2,  a:22,  d:120, s:.78, r:480,  cut:2300, q:1.5,env:0,    fd:.4, pan:.24},
+  {n:"FLUTE",     engine:"Recorded", wave:"triangle", det:2,  a:65,  d:130, s:.82, r:560,  cut:6200, q:.7, env:0,    fd:.4, pan:.28},
+  {n:"GRANDPNO",  engine:"Recorded", wave:"sine",     det:3,  a:3,   d:620, s:.26, r:1100, cut:12000,q:.7, env:0,    fd:.4, pan:.42, fm:{ratio:2.02,i0:5.5,i1:.20,dec:.30}},
+  {n:"RETRO EP",  engine:"Recorded", wave:"sine",     det:5,  a:5,   d:300, s:.62, r:680,  cut:12000,q:.8, env:0,    fd:.4, pan:.32, fm:{ratio:2,i0:3.4,i1:.55,dec:.30}},
+  {n:"VOX AHH",   engine:"Recorded", wave:"sawtooth", det:8,  a:180, d:360, s:.78, r:1200, cut:1550, q:3.2,env:500,  fd:.65,pan:.46},
+  {n:"VIBRAPH",   engine:"Recorded", wave:"sine",     det:5,  a:3,   d:500, s:.22, r:1500, cut:15000,q:.7, env:0,    fd:.4, pan:.46, fm:{ratio:3.51,i0:6.2,i1:.24,dec:1.2}},
+  {n:"FM EPIANO", engine:"FM",       wave:"sine",     det:4,  a:5,   d:30,  s:.80, r:300,  cut:16000,q:.7, env:0,    fd:.4, pan:.35, fm:{ratio:1,i0:5.0,i1:.45,dec:.42}},
+  {n:"ACOUSTIC",  engine:"Recorded", wave:"sawtooth", det:4,  a:3,   d:300, s:.04, r:420,  cut:950,  q:4.0,env:3600, fd:.28,pan:.34},
+  {n:"HARP",      engine:"Recorded", wave:"triangle", det:3,  a:2,   d:540, s:.02, r:850,  cut:5200, q:1.1,env:1800, fd:.35,pan:.42},
+  {n:"BUZZ ORG",  engine:"Recorded", wave:"square",   det:7,  a:7,   d:55,  s:.92, r:420,  cut:3900, q:.9, env:450,  fd:.30,pan:.38},
+  {n:"HUMMING",   engine:"Recorded", wave:"triangle", det:7,  a:220, d:360, s:.80, r:1050, cut:1400, q:2.7,env:400,  fd:.60,pan:.46},
+  {n:"SINE",      engine:"Analog",   wave:"sine",     det:4,  a:5,   d:30,  s:.80, r:300,  cut:16000,q:.7, env:0,    fd:.4, pan:.25},
+  {n:"FM WOW",    engine:"FM",       wave:"sine",     det:6,  a:4,   d:420, s:.28, r:1450, cut:16000,q:.7, env:0,    fd:.4, pan:.47, fm:{ratio:3.51,i0:7.5,i1:.30,dec:1.5}},
+  {n:"ROBBO",     engine:"Recorded", wave:"sawtooth", det:4,  a:3,   d:240, s:.34, r:300,  cut:720,  q:4.5,env:2300, fd:.22,pan:.24},
+  {n:"SHUTTER",   engine:"Recorded", wave:"square",   det:2,  a:1,   d:55,  s:0,   r:75,   cut:9000, q:.8, env:0,    fd:.1, pan:.20, noise:true},
+  {n:"TRIANGLE",  engine:"Analog",   wave:"triangle", det:5,  a:5,   d:30,  s:.80, r:300,  cut:16000,q:.7, env:0,    fd:.4, pan:.30},
+  {n:"SQUARE",    engine:"Analog",   wave:"square",   det:5,  a:5,   d:30,  s:.80, r:300,  cut:16000,q:.7, env:0,    fd:.4, pan:.30},
+  {n:"SAWSQUARE", engine:"Hybrid",   wave:"sawtooth", det:12, a:8,   d:70,  s:.78, r:420,  cut:5600, q:.9, env:700,  fd:.35,pan:.48, softSaw:1.15},
+  {n:"OCEAN",     engine:"Noise",    wave:"sine",     det:0,  a:420, d:900, s:.78, r:2200, cut:1500, q:1.2,env:650,  fd:1.8,pan:.60, noise:true}
 ];
 const WAVES = ["sine","triangle","sawtooth","square"];
 const ADSR_PRESETS = {
@@ -602,6 +661,26 @@ const REVERB_TYPES = [
   {label:"PLATE",   value:"plate",   seconds:1.8,  decay:2.0, damp:0.74},
   {label:"SPRING",  value:"spring",  seconds:1.6,  decay:2.6, damp:0.62, spring:true},
   {label:"AMBIENT", value:"ambient", seconds:5.2,  decay:1.6, damp:0.22}
+];
+const CHORUS_TYPES = [
+  {label:"OFF",   value:"off",   delays:[0.012,0.018], rates:[0.45,0.57], depths:[0.0015,0.0018], pans:[-0.45,0.45]},
+  {label:"LIGHT", value:"light", delays:[0.012,0.017], rates:[0.42,0.55], depths:[0.0012,0.0015], pans:[-0.40,0.40]},
+  {label:"WARM",  value:"warm",  delays:[0.014,0.021], rates:[0.28,0.39], depths:[0.0020,0.0024], pans:[-0.55,0.55]},
+  {label:"WIDE",  value:"wide",  delays:[0.011,0.020], rates:[0.50,0.68], depths:[0.0026,0.0031], pans:[-1.00,1.00]},
+  {label:"LUSH",  value:"lush",  delays:[0.016,0.025], rates:[0.24,0.36], depths:[0.0035,0.0042], pans:[-0.90,0.90]}
+];
+const DRIVE_TYPES = [
+  {label:"OFF",   value:"off",   amount:0,  tone:16000, makeup:1.00},
+  {label:"TUBE",  value:"tube",  amount:2.2,tone:7200,  makeup:0.92},
+  {label:"DRIVE", value:"drive", amount:4.0,tone:5600,  makeup:0.80},
+  {label:"DIST",  value:"dist",  amount:7.0,tone:4400,  makeup:0.68},
+  {label:"FUZZ",  value:"fuzz",  amount:13, tone:3200,  makeup:0.52}
+];
+const TAPE_TYPES = [
+  {label:"OFF",   value:"off",   amount:0,   hp:20,  lp:20000, makeup:1.00, noise:0,     wowRate:0.20, wowDepth:0},
+  {label:"LOFI",  value:"lofi",  amount:2.5, hp:180, lp:4300,  makeup:0.90, noise:0.010, wowRate:1.40, wowDepth:0.0016},
+  {label:"VINYL", value:"vinyl", amount:1.6, hp:90,  lp:8500,  makeup:0.94, noise:0.014, wowRate:0.62, wowDepth:0.0011},
+  {label:"TAPE",  value:"tape",  amount:2.0, hp:35,  lp:7200,  makeup:0.96, noise:0.004, wowRate:0.35, wowDepth:0.0007}
 ];
 const DELAY_RATES = [
   {label:"OFF", value:"off"},
@@ -657,14 +736,12 @@ const KITS = {
    2. STATE
    ============================================================ */
 const S = {
-  // 3 = SAW. Chosen to match an out-of-box HiChord heard in several YouTube
-  // demos; this is a perceptual reference, not a direct hardware capture.
-  // The manual independently confirms SAW as HiChord's bright analog waveform.
-  root:0, scale:"major", octave:0, padOct:[0,0,0,0,0,0,0], padInv:[0,0,0,0,0,0,0], chordLocks:[null,null,null,null,null,null,null], sound:3, wave:null,
+  // 0 = SAW, matching the Rev 2.9 browse list and the factory-reference target.
+  root:0, scale:"major", octave:0, padOct:[0,0,0,0,0,0,0], padInv:[0,0,0,0,0,0,0], chordLocks:[null,null,null,null,null,null,null], sound:0, soundList27:true, wave:null,
   cut:3500, res:.7, atk:25, dec:30, sus:.8, rel:300, adsr:null,   // brightness and attack estimated from the YouTube factory reference
   // strum 0 — the device's default play mode is oneshot, all notes together.
   // Strumming there is a separate mode (slow/med/fast = 200/80/40ms), not a default.
-  delay:0, delayRate:"off", reverb:0, reverbType:"off", chorus:0, trem:0, tremRate:"off", strum:0, vol:70,
+  delay:0, delayRate:"off", reverb:0, reverbType:"off", chorus:0, chorusType:"off", driveType:"off", tapeType:"off", trem:0, tremRate:"off", strum:0, vol:70,
   bpm:120, swing:0, drumVol:70,
   playMode:"play",
   arpOn:false, arp:"up", arpLayer:"arp-only", rate:"1/8", bars:2, latch:false,   // 1/8 = the device's default
@@ -690,14 +767,17 @@ const rt = {
   liveVoices:new Map(),// id -> voice group
   voices:[],           // every sounding voice, oldest first
   stick:{x:0,y:0,shift:false},
-  chromKeyShift:0      // prevents one held L/R gesture from stepping the key repeatedly
+  chromKeyShift:0,     // prevents one held L/R gesture from stepping the key repeatedly
+  player:{running:false, timer:null, gateTimer:null, degree:null}
 };
 
 /* ============================================================
    3. AUDIO GRAPH
    ============================================================ */
-let ctx=null, master, limiter, tremGain, lfo, lfoAmt, chorusIn, chorusWet,
-    chordBus, arpChordBus, arpNoteBus, drumBus, dryGain, delayNode, delayFb, delayTone, delaySend,
+let ctx=null, master, limiter, tremGain, lfo, lfoAmt, chorusIn, chorusWet, chorusDelays=[], chorusLfos=[], chorusDepths=[], chorusPans=[],
+    chordBus, fxBus, postTapeBus, driveDry, driveWet, driveShaper, driveTone, driveMakeup,
+    tapeDry, tapeWet, tapeShaper, tapeHP, tapeLP, tapeDelay, tapeMakeup, tapeNoiseGain, tapeNoiseSrc, tapeWow, tapeWowAmt,
+    arpChordBus, arpNoteBus, drumBus, dryGain, delayNode, delayFb, delayTone, delaySend,
     convolver, revSend, noiseBuf, worker;
 
 function buildAudio(){
@@ -727,15 +807,46 @@ function buildAudio(){
   drumBus  = ctx.createGain(); drumBus.gain.value = S.drumVol/100;
   drumBus.connect(tremGain);
 
+  // Drive is an insert on the chord/synth path (drums stay clean). OFF is a
+  // transparent dry route; named characters switch to the waveshaped route.
+  fxBus = ctx.createGain();
+  driveDry = ctx.createGain(); driveDry.gain.value = 1;
+  driveWet = ctx.createGain(); driveWet.gain.value = 0;
+  driveShaper = ctx.createWaveShaper(); driveShaper.oversample = "4x";
+  driveTone = ctx.createBiquadFilter(); driveTone.type = "lowpass"; driveTone.Q.value = .7;
+  driveMakeup = ctx.createGain();
+  chordBus.connect(driveDry); driveDry.connect(fxBus);
+  chordBus.connect(driveWet); driveWet.connect(driveShaper); driveShaper.connect(driveTone); driveTone.connect(driveMakeup); driveMakeup.connect(fxBus);
+  syncDriveType();
+
+  // Tape is a second insert after Drive. The named modes combine gentle
+  // saturation, bandwidth shaping, hiss, and wow/flutter. OFF is transparent.
+  postTapeBus = ctx.createGain();
+  tapeDry = ctx.createGain(); tapeDry.gain.value = 1;
+  tapeWet = ctx.createGain(); tapeWet.gain.value = 0;
+  tapeShaper = ctx.createWaveShaper(); tapeShaper.oversample = "2x";
+  tapeHP = ctx.createBiquadFilter(); tapeHP.type = "highpass"; tapeHP.Q.value = .7;
+  tapeLP = ctx.createBiquadFilter(); tapeLP.type = "lowpass"; tapeLP.Q.value = .55;
+  tapeDelay = ctx.createDelay(.05); tapeDelay.delayTime.value = .006;
+  tapeMakeup = ctx.createGain();
+  fxBus.connect(tapeDry); tapeDry.connect(postTapeBus);
+  fxBus.connect(tapeWet); tapeWet.connect(tapeShaper); tapeShaper.connect(tapeHP); tapeHP.connect(tapeLP); tapeLP.connect(tapeDelay); tapeDelay.connect(tapeMakeup); tapeMakeup.connect(postTapeBus);
+  tapeWow = ctx.createOscillator(); tapeWow.type = "sine";
+  tapeWowAmt = ctx.createGain(); tapeWowAmt.gain.value = 0;
+  tapeWow.connect(tapeWowAmt); tapeWowAmt.connect(tapeDelay.delayTime); tapeWow.start();
+  tapeNoiseGain = ctx.createGain(); tapeNoiseGain.gain.value = 0; tapeNoiseGain.connect(postTapeBus);
+  tapeNoiseSrc = ctx.createBufferSource(); tapeNoiseSrc.buffer = makeNoise(2); tapeNoiseSrc.loop = true; tapeNoiseSrc.connect(tapeNoiseGain); tapeNoiseSrc.start();
+  syncTapeType();
+
   dryGain = ctx.createGain(); dryGain.gain.value=1;
-  chordBus.connect(dryGain); dryGain.connect(tremGain);
+  postTapeBus.connect(dryGain); dryGain.connect(tremGain);
 
   // delay
   delaySend = ctx.createGain(); delaySend.gain.value = S.delayRate === "off" ? 0 : S.delay/100;
   delayNode = ctx.createDelay(1.5);
   delayFb   = ctx.createGain(); delayFb.gain.value=.34;
   delayTone = ctx.createBiquadFilter(); delayTone.type="lowpass"; delayTone.frequency.value=2600;
-  chordBus.connect(delaySend); delaySend.connect(delayNode);
+  postTapeBus.connect(delaySend); delaySend.connect(delayNode);
   delayNode.connect(delayTone); delayTone.connect(delayFb); delayFb.connect(delayNode);
   delayNode.connect(tremGain);
 
@@ -744,24 +855,28 @@ function buildAudio(){
   // these IRs are browser-side approximations of those descriptions.
   convolver = ctx.createConvolver();
   revSend = ctx.createGain(); revSend.gain.value = S.reverbType === "off" ? 0 : S.reverb/100;
-  chordBus.connect(revSend); drumBus.connect(revSend);
+  postTapeBus.connect(revSend); drumBus.connect(revSend);
   revSend.connect(convolver); convolver.connect(tremGain);
   syncReverbType();
 
-  // Chorus: two short modulated delays panned hard left and right. The pitch
-  // wobble between them is what makes a synth sound wide rather than flat.
+  // Chorus: two modulated short delays. HiChord names five characters but
+  // does not publish the DSP values, so these browser settings are perceptual
+  // approximations of LIGHT / WARM / WIDE / LUSH.
   chorusIn  = ctx.createGain();
-  chorusWet = ctx.createGain(); chorusWet.gain.value = S.chorus/100;
-  chordBus.connect(chorusIn);
-  [[0.0118, 0.53, 0.0028, -1], [0.0193, 0.71, 0.0034, 1]].forEach(cfg=>{
-    const dl  = ctx.createDelay(0.08); dl.delayTime.value = cfg[0];
-    const osc = ctx.createOscillator(); osc.type = "sine"; osc.frequency.value = cfg[1];
-    const amt = ctx.createGain(); amt.gain.value = cfg[2];
-    const pan = ctx.createStereoPanner(); pan.pan.value = cfg[3];
+  chorusWet = ctx.createGain(); chorusWet.gain.value = 0;
+  postTapeBus.connect(chorusIn);
+  chorusDelays=[]; chorusLfos=[]; chorusDepths=[]; chorusPans=[];
+  for(let i=0;i<2;i++){
+    const dl  = ctx.createDelay(0.08);
+    const osc = ctx.createOscillator(); osc.type = "sine";
+    const amt = ctx.createGain();
+    const pan = ctx.createStereoPanner();
     osc.connect(amt); amt.connect(dl.delayTime); osc.start();
     chorusIn.connect(dl); dl.connect(pan); pan.connect(chorusWet);
-  });
+    chorusDelays.push(dl); chorusLfos.push(osc); chorusDepths.push(amt); chorusPans.push(pan);
+  }
   chorusWet.connect(tremGain);
+  syncChorusType();
 
   noiseBuf = makeNoise(1);
   syncDelayTime();
@@ -802,6 +917,73 @@ function syncReverbType(){
     reverbIRCache.set(cfg.value, ir);
   }
   convolver.buffer = ir;
+}
+function syncChorusType(){
+  if(!ctx || !chorusDelays.length) return;
+  const cfg = CHORUS_TYPES.find(x=>x.value===S.chorusType) || CHORUS_TYPES[0];
+  const now = ctx.currentTime;
+  for(let i=0;i<2;i++){
+    chorusDelays[i].delayTime.setTargetAtTime(cfg.delays[i], now, .02);
+    chorusLfos[i].frequency.setTargetAtTime(cfg.rates[i], now, .02);
+    chorusDepths[i].gain.setTargetAtTime(cfg.depths[i], now, .02);
+    chorusPans[i].pan.setTargetAtTime(cfg.pans[i], now, .02);
+  }
+}
+function makeDriveCurve(type, amount){
+  const n = 4096, curve = new Float32Array(n);
+  for(let i=0;i<n;i++){
+    const x = i*2/(n-1)-1;
+    let y;
+    if(type === "tube"){
+      // Smooth soft saturation with a touch of even-harmonic asymmetry.
+      y = Math.tanh(amount*(x + .08*x*x)) / Math.tanh(amount);
+    } else if(type === "drive"){
+      y = Math.tanh(amount*x) / Math.tanh(amount);
+    } else if(type === "dist"){
+      // Harder clipping than DRIVE but still continuous around zero.
+      const z = amount*x; y = Math.max(-1, Math.min(1, z/(1 + .18*Math.abs(z))));
+    } else {
+      // FUZZ: near-square saturation, then tame level/tone downstream.
+      y = Math.tanh(amount*x);
+    }
+    curve[i] = y;
+  }
+  return curve;
+}
+function syncDriveType(){
+  if(!ctx || !driveDry || !driveWet || !driveShaper) return;
+  const cfg = DRIVE_TYPES.find(x=>x.value===S.driveType) || DRIVE_TYPES[0];
+  const on = cfg.value !== "off";
+  const now = ctx.currentTime;
+  driveDry.gain.setTargetAtTime(on ? 0 : 1, now, .008);
+  driveWet.gain.setTargetAtTime(on ? 1 : 0, now, .008);
+  if(on) driveShaper.curve = makeDriveCurve(cfg.value, cfg.amount);
+  driveTone.frequency.setTargetAtTime(cfg.tone, now, .015);
+  driveMakeup.gain.setTargetAtTime(cfg.makeup, now, .015);
+}
+function makeTapeCurve(amount){
+  const n = 4096, curve = new Float32Array(n);
+  const den = Math.tanh(Math.max(.001, amount));
+  for(let i=0;i<n;i++){
+    const x = i*2/(n-1)-1;
+    curve[i] = Math.tanh(amount*(x + .035*x*x)) / den;
+  }
+  return curve;
+}
+function syncTapeType(){
+  if(!ctx || !tapeDry || !tapeWet || !tapeShaper) return;
+  const cfg = TAPE_TYPES.find(x=>x.value===S.tapeType) || TAPE_TYPES[0];
+  const on = cfg.value !== "off";
+  const now = ctx.currentTime;
+  tapeDry.gain.setTargetAtTime(on ? 0 : 1, now, .01);
+  tapeWet.gain.setTargetAtTime(on ? 1 : 0, now, .01);
+  if(on) tapeShaper.curve = makeTapeCurve(cfg.amount);
+  tapeHP.frequency.setTargetAtTime(cfg.hp, now, .02);
+  tapeLP.frequency.setTargetAtTime(cfg.lp, now, .02);
+  tapeMakeup.gain.setTargetAtTime(cfg.makeup, now, .02);
+  tapeNoiseGain.gain.setTargetAtTime(on ? cfg.noise : 0, now, .03);
+  tapeWow.frequency.setTargetAtTime(cfg.wowRate, now, .03);
+  tapeWowAmt.gain.setTargetAtTime(on ? cfg.wowDepth : 0, now, .03);
 }
 function makeNoise(sec){
   const sr = ctx.sampleRate, len = Math.floor(sr*sec);
@@ -852,7 +1034,7 @@ function applySoundParams(){
   master.gain.value = S.vol/100;
   delaySend.gain.value = S.delayRate === "off" ? 0 : S.delay/100;
   revSend.gain.value = S.reverbType === "off" ? 0 : S.reverb/100;
-  if(chorusWet) chorusWet.gain.value = S.chorus/100;
+  if(chorusWet) chorusWet.gain.value = S.chorusType === "off" ? 0 : S.chorus/100;
   drumBus.gain.value = S.drumVol/100;
   const dep = S.tremRate === "off" ? 0 : S.trem/100;
   lfoAmt.gain.value = dep/2;
@@ -937,6 +1119,14 @@ function playNote(midi, time, dur, vel, bus, relOverride){
       src.loopStart = sampleLoop[0];
       src.loopEnd = sampleLoop[1];
     }
+    src.connect(filt);
+    oscs.push(src);
+  } else if(p.noise && !S.wave){
+    // Noise-engine / recorded-percussion approximations (Ocean, Shutter).
+    // A looping noise source is shaped by the same filter and ADSR as the
+    // pitched voices, so the normal Brightness/Resonance controls still work.
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuf; src.loop = true;
     src.connect(filt);
     oscs.push(src);
   } else if(p.fm && !S.wave){
@@ -1872,6 +2062,169 @@ function releasePad(degree){
   }
 }
 
+/* ============================================================
+   PLAYER — browser-only piano-roll-style text playback
+   ============================================================ */
+function playerTokens(text){
+  // Bars are visual separators only. Commas are accepted as harmless spacing.
+  return String(text || "")
+    .replace(/[|,]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(t=>t === "-" || /^[1-7]$/.test(t));
+}
+function playerNorm(v){
+  return String(v || "").trim().toLowerCase().replace(/[^a-z0-9#]+/g, "");
+}
+function parsePlayerText(text){
+  const src = String(text || "");
+  const settings = {};
+  // A setting value may contain spaces (e.g. "Harmonic Minor" or "FM E.Piano").
+  // It ends at the next @setting, a bar separator, newline, or end of text.
+  const re = /@(key|scale|mode|bpm|sound)\s+(.+?)(?=\s+@(key|scale|mode|bpm|sound)\b|\||\n|$)/gi;
+  let body = src.replace(re, (whole, key, value)=>{ settings[key.toLowerCase()] = value.trim(); return " "; });
+  return {settings, tokens:playerTokens(body)};
+}
+function playerSettingValues(settings){
+  const out = {};
+  if(settings.key !== undefined){
+    const flats = {db:"C#",eb:"D#",gb:"F#",ab:"G#",bb:"A#"};
+    let k = String(settings.key).trim().toUpperCase().replace(/♭/g,"B").replace(/♯/g,"#");
+    if(flats[k.toLowerCase()]) k = flats[k.toLowerCase()];
+    const idx = NOTES.indexOf(k);
+    if(idx < 0) throw new Error("BAD KEY " + settings.key);
+    out.root = idx;
+  }
+  if(settings.scale !== undefined){
+    const want = playerNorm(settings.scale);
+    const key = Object.keys(SCALES).find(k=>playerNorm(k)===want || playerNorm(SCALES[k].label)===want || (want==="naturalminor" && k==="minor"));
+    if(!key) throw new Error("BAD SCALE " + settings.scale);
+    out.scale = key;
+  }
+  if(settings.mode !== undefined){
+    const mode = playerNorm(settings.mode);
+    const modes = {play:"play",lead:"lead",drone:"drone",repeat:"repeat"};
+    if(!modes[mode]) throw new Error("BAD MODE " + settings.mode);
+    out.playMode = modes[mode];
+  }
+  if(settings.bpm !== undefined){
+    const bpm = Number(settings.bpm);
+    if(!Number.isFinite(bpm) || bpm < 40 || bpm > 300) throw new Error("BAD BPM " + settings.bpm);
+    out.bpm = Math.round(bpm);
+  }
+  if(settings.sound !== undefined){
+    const want = playerNorm(settings.sound);
+    const aliases = {fmbell:"fmwow", wurli:"retroep", pluck:"harp", vibraphone:"vibraph", grandpiano:"grandpno", eguitar:"eguitar"};
+    const target = aliases[want] || want;
+    const idx = SOUNDS.findIndex(s=>playerNorm(s.n)===target);
+    if(idx < 0) throw new Error("BAD SOUND " + settings.sound);
+    out.sound = idx;
+  }
+  return out;
+}
+function applyPlayerSettings(settings){
+  const v = playerSettingValues(settings);
+  if(!Object.keys(v).length) return;
+
+  stopAllChords(true);
+  rt.held.forEach((h,d)=>{ const el=padEl(d); if(el) el.classList.remove("hit"); });
+  rt.held.clear();
+
+  if(v.sound !== undefined && v.sound !== S.sound){
+    S.sound = v.sound; S.wave = null; loadPatch();
+  }
+  if(v.root !== undefined) S.root = v.root;
+  if(v.scale !== undefined) S.scale = v.scale;
+  if(v.playMode !== undefined){
+    S.playMode = v.playMode;
+    if(S.playMode === "lead" || S.playMode === "drone" || S.playMode === "repeat"){
+      S.arpOn = false; S.latch = false;
+      if(ui.arp) ui.arp.classList.remove("on");
+      if(ui.latch) ui.latch.classList.remove("on");
+    }
+  }
+  if(v.bpm !== undefined){
+    S.bpm = v.bpm;
+    const el = $("kBpm"); if(el) el.value = String(S.bpm);
+    if(SLIDER_PAINT.kBpm) SLIDER_PAINT.kBpm();
+    syncDelayTime(); syncTremoloRate();
+  }
+
+  labelPads(); buildPanels(); refreshScreen(); applySoundParams(); save();
+}
+function updatePlayerStatus(playing=rt.player.running){
+  if(!ui.playerStatus) return;
+  const parts = [NOTES[S.root], SCALES[S.scale].label, S.playMode.toUpperCase(), S.bpm + " BPM", snd().n];
+  ui.playerStatus.textContent = (playing ? "PLAYING · " : "READY · ") + parts.join(" · ");
+  ui.playerStatus.classList.toggle("playing", !!playing);
+}
+function playerClearHeld(){
+  if(!ctx) return;
+  if(rt.player.degree !== null && S.playMode !== "drone"){
+    padUp(rt.player.degree);
+  }
+  rt.player.degree = null;
+  if(S.playMode === "drone"){
+    stopAllChords(true);
+    rt.held.forEach((h,d)=>{ const el=padEl(d); if(el) el.classList.remove("hit"); });
+    rt.held.clear();
+    setScreenChord(null);
+  }
+}
+function stopPlayer(){
+  if(rt.player.timer !== null) clearTimeout(rt.player.timer);
+  if(rt.player.gateTimer !== null) clearTimeout(rt.player.gateTimer);
+  rt.player.timer = rt.player.gateTimer = null;
+  playerClearHeld();
+  rt.player.running = false;
+  if(ui.playerPlay) ui.playerPlay.classList.remove("on");
+  updatePlayerStatus(false);
+}
+function startPlayer(){
+  if(!ctx) return;
+  stopPlayer();
+  const parsed = parsePlayerText(ui.playerText ? ui.playerText.value : "");
+  try{ applyPlayerSettings(parsed.settings); }
+  catch(err){ flash("PLAYER: " + err.message); return; }
+  const tokens = parsed.tokens;
+  if(!tokens.length){ flash("PLAYER: ENTER 1 2 3 4 5 6 7 OR -"); return; }
+
+  rt.player.running = true;
+  if(ui.playerPlay) ui.playerPlay.classList.add("on");
+  updatePlayerStatus(true);
+  let i = 0;
+
+  const next = ()=>{
+    if(!rt.player.running) return;
+    if(i >= tokens.length){ stopPlayer(); return; }
+
+    const token = tokens[i++];
+    const beatMs = 60000 / Math.max(1, S.bpm);
+
+    // Release the previous non-drone note before the next beat. Drone mode
+    // intentionally keeps it alive so padDown() can crossfade to the next one.
+    playerClearHeld();
+
+    if(token !== "-"){
+      const degree = Number(token) - 1;
+      rt.player.degree = degree;
+      padDown(degree);
+      if(S.playMode !== "drone"){
+        rt.player.gateTimer = setTimeout(()=>{
+          rt.player.gateTimer = null;
+          if(rt.player.degree === degree){
+            padUp(degree);
+            rt.player.degree = null;
+          }
+        }, beatMs * 0.78);
+      }
+    }
+
+    rt.player.timer = setTimeout(next, beatMs);
+  };
+  next();
+}
+
 function loopSteps(){ return S.bars*16; }
 
 // How long an event has been held, in steps. Measured against the monotonic
@@ -2157,6 +2510,7 @@ function refreshScreen(){
   ui.scrBpm.textContent = S.bpm + "BPM";
   ui.scrSnd.textContent = snd().n;
   if(rt.held.size === 0) setScreenChord(null);
+  updatePlayerStatus();
 }
 function paintBeat(b){
   const dots = ui.beat.children;
@@ -2370,6 +2724,25 @@ function buildPanels(){
       if(SLIDER_PAINT.kRev) SLIDER_PAINT.kRev();
     }
     syncReverbType(); applySoundParams(); save();
+  });
+  chips($("chorusTypeRow"), CHORUS_TYPES, ()=>S.chorusType, v=>{
+    S.chorusType=v;
+    // Selecting a named character turns chorus on. Keep the existing amount
+    // slider as fine control, but make a newly-enabled type audible immediately.
+    if(v !== "off" && S.chorus <= 0){
+      S.chorus = 35;
+      const el=$("kCho"); if(el) el.value=String(S.chorus);
+      if(SLIDER_PAINT.kCho) SLIDER_PAINT.kCho();
+    }
+    syncChorusType(); applySoundParams(); save();
+  });
+  chips($("driveTypeRow"), DRIVE_TYPES, ()=>S.driveType, v=>{
+    S.driveType=v;
+    syncDriveType(); save();
+  });
+  chips($("tapeTypeRow"), TAPE_TYPES, ()=>S.tapeType, v=>{
+    S.tapeType=v;
+    syncTapeType(); save();
   });
   chips($("delayRateRow"), DELAY_RATES, ()=>S.delayRate, v=>{
     S.delayRate=v;
@@ -2911,7 +3284,7 @@ function resetAll(){
   ui.arp.classList.remove("on");
   ui.drums.classList.remove("on");
   ui.latch.classList.remove("on");
-  applySoundParams(); syncDelayTime(); syncTremoloRate(); refreshScreen();
+  applySoundParams(); syncDelayTime(); syncTremoloRate(); syncTapeType(); refreshScreen();
   flash("RESET");
 }
 
@@ -2936,6 +3309,15 @@ function load(){
     if(!raw) return;
     const o = JSON.parse(raw);
     Object.keys(S).forEach(k=>{ if(k in o) S[k]=o[k]; });
+    // 003.42 replaces the old 9-sound list with the current 27-sound Rev 2.9
+    // browse list. Preserve the user's previously selected sound by mapping the
+    // old numeric index to its closest current equivalent.
+    if(!o.soundList27){
+      const oldTo27 = [14,20,11,0,24,23,19,4,16];
+      S.sound = oldTo27[Math.max(0,Math.min(8,Number(o.sound)||0))] ?? 0;
+      S.soundList27 = true;
+    }
+    if(!Number.isInteger(S.sound) || S.sound < 0 || S.sound >= SOUNDS.length) S.sound = 0;
     if(!Array.isArray(S.pattern) || S.pattern.length!==4) S.pattern = KITS["Four"].map(r=>r.slice());
     if(!Array.isArray(S.padOct) || S.padOct.length!==7) S.padOct = [0,0,0,0,0,0,0];
     S.padOct = S.padOct.map(v=>Math.max(-2,Math.min(2,Number(v)||0)));
@@ -2958,6 +3340,14 @@ function load(){
     // audible old reverb by mapping it to HALL, the closest of the named types.
     if(!("reverbType" in o)) S.reverbType = S.reverb > 0 ? "hall" : "off";
     else if(!REVERB_TYPES.some(r=>r.value===S.reverbType)) S.reverbType = "off";
+    // Pre-003.41 saved states had only a generic chorus amount. Preserve an
+    // audible old chorus by mapping it to WIDE, closest to the former hard-panned chorus.
+    if(!("chorusType" in o)) S.chorusType = S.chorus > 0 ? "wide" : "off";
+    else if(!CHORUS_TYPES.some(r=>r.value===S.chorusType)) S.chorusType = "off";
+    // Drive was added in 003.43. Older saved states should remain clean.
+    if(!("driveType" in o) || !DRIVE_TYPES.some(r=>r.value===S.driveType)) S.driveType = "off";
+    // Tape was added in 003.44. Older saved states should remain clean.
+    if(!("tapeType" in o) || !TAPE_TYPES.some(r=>r.value===S.tapeType)) S.tapeType = "off";
     // Pre-003.30 saved states had only a delay amount. Preserve an existing
     // audible delay by migrating it to the former default-ish 1/8 timing.
     if(!("delayRate" in o)) S.delayRate = S.delay > 0 ? "1/8" : "off";
@@ -2990,6 +3380,7 @@ function cacheUI(){
   ui.latch=$("btnLatch"); ui.cap=$("btnCap"); ui.midi=$("btnMidi");
   ui.reset=$("btnReset");
   ui.tapTempo=$("btnTapTempo");
+  ui.playerText=$("playerText"); ui.playerPlay=$("btnPlayerPlay"); ui.playerStop=$("btnPlayerStop"); ui.playerStatus=$("playerStatus");
   ui.sampRec=$("btnSampRec"); ui.sampUse=$("btnSampUse"); ui.sampClear=$("btnSampClear");
   ui.sampLoop=$("btnSampLoop");
   ui.beat=$("beat");
@@ -3034,6 +3425,8 @@ function boot(){
   onPress(ui.midi, exportMidi);
   onPress(ui.reset, resetAll);
   onPress(ui.tapTempo, tapTempo);
+  onPress(ui.playerPlay, startPlayer);
+  onPress(ui.playerStop, stopPlayer);
   onPress(ui.sampRec, ()=>recordSample(3));
   onPress(ui.sampUse, toggleSample);
   onPress(ui.sampClear, clearSample);

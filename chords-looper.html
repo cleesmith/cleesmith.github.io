@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.53 — HTML chord synth</title>
+<title>Chords 003.50 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -336,9 +336,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--pad);border:none}
 
 /* drum grid */
-.grid{display:grid;grid-template-columns:76px repeat(16,minmax(0,1fr));gap:4px;width:100%;align-items:center}
-.grid .lane{font-family:var(--font-mono);font-size:9px;color:#a99c8b;letter-spacing:.04em;text-align:left;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:5px 6px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.grid .lane:active{background:rgba(255,255,255,.11)}
+.grid{display:grid;grid-template-columns:56px repeat(16,minmax(0,1fr));gap:4px;width:100%;align-items:center}
+.grid .lane{font-family:var(--font-mono);font-size:10px;color:#8f8272;letter-spacing:.1em}
 .cell{
   aspect-ratio:1/1;min-height:18px;min-width:0;border-radius:5px;cursor:pointer;
   background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.07);
@@ -405,8 +404,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   .mode span{font-size:11px;letter-spacing:.16em}
   .scr-main{font-size:21px}
   .screen{padding:9px 11px}
-  .grid{grid-template-columns:54px repeat(16,minmax(0,1fr));gap:2px}
-  .grid .lane{font-size:8px;padding:4px 4px}
+  .grid{grid-template-columns:34px repeat(16,minmax(0,1fr));gap:2px}
   .grid .lane{font-size:8px;letter-spacing:0}
   .card{font-size:11px}
   .cap{width:50px;height:50px;margin:-25px 0 0 -25px}
@@ -457,7 +455,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.53</span></div>
+      <div class="logo">Chords<span class="ver">003.50</span></div>
     </div>
 
     <div class="top">
@@ -603,9 +601,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
       </div>
     </div>
   </div>
-  <div class="row"><span class="lbl">Drum kit</span><div class="row" id="drumKitRow" style="margin:0"></div></div>
-  <div class="row"><span class="lbl">Drum loop style — 7 styles</span><div class="row" id="drumStyleRow" style="margin:0"></div></div>
-  <div class="row"><span class="lbl">Drum variation — 8 per style</span><div class="row" id="drumVariationRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Drum pattern</span><div class="row" id="kitRow" style="margin:0"></div></div>
   <div class="grid" id="grid"></div>
 </section>
 
@@ -757,180 +753,38 @@ const TREM_RATES = [
   {label:"1/16T", value:"1/16T"},
   {label:"1/32", value:"1/32"}
 ];
-// #35 — HiChord Rev 2.9 factory drum-kit positions. The hardware manual
-// calls these "7 drum kits", but button 7 cycles back to Tight, so there are
-// six unique factory kits. User Kit is a separate uploaded-sample feature.
-// These Web Audio profiles are perceptual synth approximations of those machines.
-const DRUM_KITS = [
-  {label:"TIGHT", value:"tight", style:"clean",
-   k1:[140,44,.11,.36,.90], k2:[105,34,.16,.48,.88], sn:[1900,.8,185,.50,.32,.19],
-   hh:[7200,.24,.055], tom:[165,88,.18,.32,.62], ride:[5200,7600,2.2,.22,.62], oh:[6500,.27,.42]},
-  {label:"x0x BOX", value:"x0x", style:"808",
-   k1:[92,30,.22,.72,1.00], k2:[72,25,.30,.92,.96], sn:[1650,.65,155,.44,.24,.24],
-   hh:[7600,.20,.070], tom:[135,62,.28,.48,.64], ride:[4700,6800,1.6,.17,.72], oh:[6100,.24,.55]},
-  {label:"x9x BOX", value:"x9x", style:"909",
-   k1:[170,49,.065,.28,.98], k2:[135,42,.09,.38,.92], sn:[2350,1.15,205,.62,.38,.17],
-   hh:[9000,.28,.045], tom:[190,95,.14,.27,.70], ride:[6100,8700,2.8,.24,.54], oh:[7900,.30,.36]},
-  {label:"LYNN KIT", value:"lynn", style:"LinnDrum",
-   k1:[128,48,.08,.31,.90], k2:[104,40,.11,.40,.84], sn:[1450,.75,172,.54,.30,.23],
-   hh:[6100,.21,.075], tom:[178,92,.16,.36,.68], ride:[4300,6200,1.8,.20,.64], oh:[5600,.24,.49]},
-  {label:"KR-78", value:"kr78", style:"retro",
-   k1:[112,55,.055,.22,.78], k2:[88,46,.075,.31,.72], sn:[1250,.55,155,.38,.22,.16],
-   hh:[5100,.18,.060], tom:[150,84,.11,.25,.52], ride:[3600,5100,2.5,.18,.48], oh:[4700,.20,.34]},
-  {label:"TRAP BOX", value:"trap", style:"trap",
-   k1:[82,27,.28,.82,1.00], k2:[64,23,.36,1.02,.98], sn:[2100,.9,190,.58,.26,.15],
-   hh:[9800,.25,.032], tom:[125,55,.26,.50,.70], ride:[5700,8000,2.1,.18,.58], oh:[7200,.24,.44]}
-];
-function drumKitProfile(){
-  return DRUM_KITS.find(k=>k.value===S.drumKit) || DRUM_KITS[0];
-}
-const LANES = ["1 KICK","2 ALT KICK","3 SNARE","4 CLOSED HH","5 TOM","6 RIDE","7 OPEN HH"];
-const ZERO_DRUM_ROW = ()=>Array(16).fill(0);
-const DRUM_STYLES = [
-  {label:"ROCK", value:"rock"},
-  {label:"BREAK", value:"break"},
-  {label:"DUB", value:"dub"},
-  {label:"FUNK", value:"funk"},
-  {label:"HOUSE", value:"house"},
-  {label:"DEMBOW", value:"dembow"},
-  {label:"SWING", value:"swing"}
-];
-const DRUM_VARIATIONS = [
-  {label:"ORIG", value:"orig"},
-  {label:"GHOST", value:"ghost"},
-  {label:"16TH", value:"16th"},
-  {label:"PUSH", value:"push"},
-  {label:"FILL", value:"fill"},
-  {label:"HALF", value:"half"},
-  {label:"DBL", value:"dbl"},
-  {label:"PERC", value:"perc"}
-];
-function drumRow(...steps){
-  const r=ZERO_DRUM_ROW();
-  steps.flat().forEach(i=>{ i=Number(i); if(Number.isInteger(i) && i>=0 && i<16) r[i]=1; });
-  return r;
-}
-function copyDrumPattern(p){ return p.map(r=>r.slice()); }
-function baseDrumLoop(style){
-  // The Rev 2.9 manual publishes each groove's musical feel, but not its exact
-  // 16-step bit pattern. These are browser arrangements built to match those
-  // descriptions while using all seven #34 drum voices where musically useful.
-  switch(style){
-    case "break": return [
-      drumRow(0,6,10,15), drumRow(8), drumRow(4,11,14),
-      drumRow(0,2,5,8,10,13), drumRow(7), drumRow(), drumRow(3,12)
-    ];
-    case "dub": return [
-      drumRow(8), drumRow(), drumRow(8),
-      drumRow(2,6,10,14), drumRow(), drumRow(0,12), drumRow(6,14)
-    ];
-    case "funk": return [
-      drumRow(0,3,7,10,14), drumRow(8), drumRow(4,12),
-      drumRow(0,2,4,6,8,10,12,14), drumRow(15), drumRow(6,14), drumRow(7)
-    ];
-    case "house": return [
-      drumRow(0,4,8,12), drumRow(), drumRow(4,12),
-      drumRow(2,6,10,14), drumRow(), drumRow(), drumRow(6,14)
-    ];
-    case "dembow": return [
-      drumRow(0,6,10), drumRow(12), drumRow(4,11),
-      drumRow(2,6,10,14), drumRow(), drumRow(), drumRow(7,15)
-    ];
-    case "swing": return [
-      drumRow(0,10), drumRow(), drumRow(4,12),
-      drumRow(3,7,11,15), drumRow(), drumRow(0,3,4,7,8,11,12,15), drumRow()
-    ];
-    case "rock":
-    default: return [
-      drumRow(0,8,10), drumRow(), drumRow(4,12),
-      drumRow(0,2,4,6,8,10,12,14), drumRow(), drumRow(), drumRow(6,14)
-    ];
-  }
-}
-function varyDrumLoop(base, variation){
-  const p=copyDrumPattern(base);
-  const set=(lane,steps)=>steps.forEach(i=>{ if(i>=0&&i<16) p[lane][i]=1; });
-  const clear=(lane)=>{ p[lane]=ZERO_DRUM_ROW(); };
-  switch(variation){
-    case "ghost":
-      // Extra snare chatter between the main backbeats.
-      set(2,[3,7,10,15]);
-      break;
-    case "16th":
-      // Full closed-hat sizzle across all 16 subdivisions.
-      p[3]=Array(16).fill(1);
-      set(6,[7,15]);
-      break;
-    case "push":
-      // Add kicks just ahead of the beat boundaries for forward motion.
-      set(0,[3,7,11,15]);
-      set(1,[6,14]);
-      break;
-    case "fill":
-      // Build through beat 4 with alternating snare/tom and a final open hat.
-      set(2,[12,14]); set(4,[13,15]); set(6,[15]);
-      break;
-    case "half":
-      // Half-time weight: one strong snare on beat 3 and a simpler kick bed.
-      clear(2); p[2][8]=1;
-      p[0]=drumRow(0,6,12);
-      p[1]=drumRow();
-      p[3]=drumRow(0,2,4,6,8,10,12,14);
-      break;
-    case "dbl":
-      // Double-time feel: denser backbeat and hats.
-      set(2,[2,6,10,14]);
-      p[3]=Array(16).fill(1);
-      set(0,[0,4,8,12]);
-      break;
-    case "perc":
-      // Manual description: off-beat bell accents.
-      set(5,[2,6,10,14]);
-      set(4,[7,15]);
-      break;
-    case "orig":
-    default:
-      break;
-  }
-  return p;
-}
-function makeDrumLoop(style, variation){
-  return varyDrumLoop(baseDrumLoop(style), variation);
-}
-
-// Legacy four browser patterns are retained only for migration of older saved
-// state. The visible preset system from 003.53 onward is the 56-loop matrix.
+const LANES = ["KICK","SNARE","HAT","CLAP"];
 const KITS = {
   "Four": [
     [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
-    ZERO_DRUM_ROW(),
     [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
     [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
-    ZERO_DRUM_ROW(), ZERO_DRUM_ROW(), ZERO_DRUM_ROW()
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0]
   ],
   "Boom bap":[
     [1,0,0,0, 0,0,1,0, 0,0,1,0, 0,0,0,0],
-    ZERO_DRUM_ROW(),
     [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,1],
     [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
-    ZERO_DRUM_ROW(), ZERO_DRUM_ROW(), ZERO_DRUM_ROW()
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0]
   ],
   "Half time":[
     [1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
-    ZERO_DRUM_ROW(),
     [0,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
     [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
-    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,1,0],
-    ZERO_DRUM_ROW(), ZERO_DRUM_ROW()
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,1,0]
   ],
   "Bossa":[
     [1,0,0,0, 0,0,1,0, 0,1,0,0, 0,0,1,0],
-    ZERO_DRUM_ROW(), ZERO_DRUM_ROW(),
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
     [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
-    [0,0,0,1, 0,0,0,0, 0,0,1,0, 0,0,0,0],
-    ZERO_DRUM_ROW(), ZERO_DRUM_ROW()
+    [0,0,0,1, 0,0,0,0, 0,0,1,0, 0,0,0,0]
   ],
-  "Empty": Array.from({length:7}, ZERO_DRUM_ROW)
+  "Empty":[
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0]
+  ]
 };
 
 /* ============================================================
@@ -946,14 +800,14 @@ const S = {
   bpm:120, swing:0, drumVol:70,
   playMode:"play",
   arpOn:false, arp:"up", arpLayer:"arp-only", rate:"1/8", bars:2, latch:false,   // 1/8 = the device's default
-  drumsOn:false, drumKit:"tight", drumStyle:"rock", drumVariation:"orig", kit:"Four",
+  drumsOn:false, kit:"Four",
   useSample:false, sampRoot:0, sampOct:4, sampLoop:true,
   bass:"off", vlead:false, joyMode:"default", sixVoice:true,
   // STEREO = each voice is a detuned pair panned apart, which is what the manual
   // describes ("12 oscillators arranged as 6 stereo pairs"). MONO = one
   // oscillator per voice, centred, no detune — "everything plays in the center".
   stereo:true,
-  pattern: makeDrumLoop("rock","orig")
+  pattern: KITS["Four"].map(r=>r.slice())
 };
 
 // Factory settings, captured before anything saved is applied over the top.
@@ -1536,63 +1390,42 @@ function stopAllChords(fast){
 
 /* ---- drums ---- */
 function drum(lane, time, vel){
-  const P = drumKitProfile();
   const g = ctx.createGain(); g.connect(drumBus);
-
-  if(lane===0 || lane===1){                       // 1/2 Kicks
-    const a = lane===0 ? P.k1 : P.k2;
+  if(lane===0){                                   // kick
     const o = ctx.createOscillator(); o.type="sine";
-    o.frequency.setValueAtTime(a[0], time);
-    o.frequency.exponentialRampToValueAtTime(Math.max(20,a[1]), time+a[2]);
-    g.gain.setValueAtTime(a[4]*vel, time);
-    g.gain.exponentialRampToValueAtTime(.0001, time+a[3]);
-    o.connect(g); o.start(time); o.stop(time+a[3]+.05);
-
-  } else if(lane===2){                            // 3 Snare
-    const a=P.sn;
+    o.frequency.setValueAtTime(140, time);
+    o.frequency.exponentialRampToValueAtTime(44, time+.11);
+    g.gain.setValueAtTime(.9*vel, time);
+    g.gain.exponentialRampToValueAtTime(.0001, time+.36);
+    o.connect(g); o.start(time); o.stop(time+.4);
+  } else if(lane===1){                            // snare
     const n = ctx.createBufferSource(); n.buffer=noiseBuf; n.loop=true;
-    const bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=a[0]; bp.Q.value=a[1];
-    const o = ctx.createOscillator(); o.type=(P.value==="kr78"?"square":"triangle"); o.frequency.value=a[2];
-    const og = ctx.createGain(); og.gain.setValueAtTime(a[4]*vel,time);
-    og.gain.exponentialRampToValueAtTime(.0001,time+Math.min(.12,a[5]));
-    g.gain.setValueAtTime(a[3]*vel,time);
-    g.gain.exponentialRampToValueAtTime(.0001,time+a[5]);
+    const bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=1900; bp.Q.value=.8;
+    const o = ctx.createOscillator(); o.type="triangle"; o.frequency.value=185;
+    const og = ctx.createGain(); og.gain.setValueAtTime(.32*vel,time);
+    og.gain.exponentialRampToValueAtTime(.0001,time+.09);
+    g.gain.setValueAtTime(.5*vel,time);
+    g.gain.exponentialRampToValueAtTime(.0001,time+.19);
     n.connect(bp); bp.connect(g); o.connect(og); og.connect(drumBus);
-    n.start(time); n.stop(time+a[5]+.05); o.start(time); o.stop(time+Math.min(.15,a[5]+.02));
-
-  } else if(lane===3){                            // 4 Closed hi-hat
-    const a=P.hh;
+    n.start(time); n.stop(time+.25); o.start(time); o.stop(time+.12);
+  } else if(lane===2){                            // hat
     const n = ctx.createBufferSource(); n.buffer=noiseBuf; n.loop=true;
-    const hp = ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=a[0];
-    g.gain.setValueAtTime(a[1]*vel,time);
-    g.gain.exponentialRampToValueAtTime(.0001,time+a[2]);
-    n.connect(hp); hp.connect(g); n.start(time); n.stop(time+a[2]+.04);
-
-  } else if(lane===4){                            // 5 Tom
-    const a=P.tom;
-    const o = ctx.createOscillator(); o.type=(P.value==="lynn"?"sine":"triangle");
-    o.frequency.setValueAtTime(a[0], time);
-    o.frequency.exponentialRampToValueAtTime(a[1], time+a[2]);
-    g.gain.setValueAtTime(a[4]*vel,time);
-    g.gain.exponentialRampToValueAtTime(.0001,time+a[3]);
-    o.connect(g); o.start(time); o.stop(time+a[3]+.04);
-
-  } else if(lane===5){                            // 6 Bell / Ride
-    const a=P.ride;
+    const hp = ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=7200;
+    g.gain.setValueAtTime(.24*vel,time);
+    g.gain.exponentialRampToValueAtTime(.0001,time+.055);
+    n.connect(hp); hp.connect(g); n.start(time); n.stop(time+.09);
+  } else {                                        // clap
+    const hp = ctx.createBiquadFilter(); hp.type="bandpass"; hp.frequency.value=1500; hp.Q.value=1.1;
+    hp.connect(g);
+    g.gain.setValueAtTime(.0001,time);
+    for(let i=0;i<3;i++){
+      const t2 = time + i*.012;
+      g.gain.setValueAtTime(.42*vel, t2);
+      g.gain.exponentialRampToValueAtTime(.06, t2+.011);
+    }
+    g.gain.exponentialRampToValueAtTime(.0001, time+.22);
     const n = ctx.createBufferSource(); n.buffer=noiseBuf; n.loop=true;
-    const hp = ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=a[0];
-    const bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=a[1]; bp.Q.value=a[2];
-    g.gain.setValueAtTime(a[3]*vel,time);
-    g.gain.exponentialRampToValueAtTime(.0001,time+a[4]);
-    n.connect(hp); hp.connect(bp); bp.connect(g); n.start(time); n.stop(time+a[4]+.06);
-
-  } else {                                        // 7 Open hi-hat / Cymbal
-    const a=P.oh;
-    const n = ctx.createBufferSource(); n.buffer=noiseBuf; n.loop=true;
-    const hp = ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=a[0];
-    g.gain.setValueAtTime(a[1]*vel,time);
-    g.gain.exponentialRampToValueAtTime(.0001,time+a[2]);
-    n.connect(hp); hp.connect(g); n.start(time); n.stop(time+a[2]+.06);
+    n.connect(hp); n.start(time); n.stop(time+.26);
   }
 }
 
@@ -2830,7 +2663,7 @@ function scheduleLoopTrack(t, step, time){
 
 function schedule(step, time){
   if(S.drumsOn){
-    for(let l=0;l<LANES.length;l++) if(S.pattern[l][step%16]) drum(l, time, 1);
+    for(let l=0;l<4;l++) if(S.pattern[l][step%16]) drum(l, time, 1);
   }
 
   // Every recorded track is replayed independently with the sound/mode/key
@@ -3241,22 +3074,15 @@ function buildPanels(){
     v=>{ S.sampRoot=v; save(); });
   chips($("sampOctRow"), [2,3,4,5].map(o=>({label:String(o), value:o})), ()=>S.sampOct,
     v=>{ S.sampOct=v; save(); });
-  chips($("drumKitRow"), DRUM_KITS.map(k=>({label:k.label, value:k.value})), ()=>S.drumKit,
-    v=>{ S.drumKit=v; save(); });
-  chips($("drumStyleRow"), DRUM_STYLES, ()=>S.drumStyle,
-    v=>{ S.drumStyle=v; S.pattern=makeDrumLoop(S.drumStyle,S.drumVariation); buildGrid(); save(); });
-  chips($("drumVariationRow"), DRUM_VARIATIONS, ()=>S.drumVariation,
-    v=>{ S.drumVariation=v; S.pattern=makeDrumLoop(S.drumStyle,S.drumVariation); buildGrid(); save(); });
+  chips($("kitRow"), Object.keys(KITS).map(k=>({label:k, value:k})), ()=>S.kit,
+    v=>{ S.kit=v; S.pattern = KITS[v].map(r=>r.slice()); buildGrid(); save(); });
   updateStickLabels();
 }
 
 function buildGrid(){
   const g = $("grid"); g.innerHTML = "";
   LANES.forEach((lane,l)=>{
-    const t = document.createElement("button"); t.className="lane"; t.textContent=lane; t.title="Tap to audition " + lane;
-    t.setAttribute("aria-label", "Play " + lane);
-    onPress(t, ()=>{ if(ctx) drum(l, ctx.currentTime, 1); });
-    g.appendChild(t);
+    const t = document.createElement("div"); t.className="lane"; t.textContent=lane; g.appendChild(t);
     for(let s=0;s<16;s++){
       const c = document.createElement("button");
       c.className = "cell" + (s%4===0?" q":"") + (S.pattern[l][s]?" on":"");
@@ -3866,30 +3692,7 @@ function load(){
       S.soundList27 = true;
     }
     if(!Number.isInteger(S.sound) || S.sound < 0 || S.sound >= SOUNDS.length) S.sound = 0;
-    // Drum kits were added in 003.52. Older saves use the clean Tight profile.
-    if(!DRUM_KITS.some(k=>k.value===S.drumKit)) S.drumKit = "tight";
-    // 003.53 replaces the old five browser groove buttons with the HiChord
-    // 7-style × 8-variation matrix. Map old factory presets to a close new
-    // starting point; already-edited seven-lane grids remain editable below.
-    if(!DRUM_STYLES.some(x=>x.value===S.drumStyle)){
-      const oldMap={"Four":["house","orig"],"Boom bap":["break","orig"],"Half time":["rock","half"],"Bossa":["funk","perc"],"Empty":["rock","orig"]};
-      const m=oldMap[S.kit] || ["rock","orig"];
-      S.drumStyle=m[0]; S.drumVariation=m[1];
-      if(S.kit in oldMap) S.pattern=makeDrumLoop(S.drumStyle,S.drumVariation);
-    }
-    if(!DRUM_VARIATIONS.some(x=>x.value===S.drumVariation)) S.drumVariation="orig";
-    if(Array.isArray(S.pattern) && S.pattern.length===4){
-      // Migrate pre-003.51 user patterns: kick, snare, hat, clap ->
-      // kick, alt kick, snare, closed hat, tom, ride, open hat.
-      const old = S.pattern.map(r=>Array.isArray(r) ? r.slice(0,16) : ZERO_DRUM_ROW());
-      while(old.length<4) old.push(ZERO_DRUM_ROW());
-      old.forEach(r=>{ while(r.length<16) r.push(0); });
-      S.pattern = [old[0], ZERO_DRUM_ROW(), old[1], old[2], old[3], ZERO_DRUM_ROW(), ZERO_DRUM_ROW()];
-    } else if(!Array.isArray(S.pattern) || S.pattern.length!==LANES.length){
-      S.pattern = KITS["Four"].map(r=>r.slice());
-    } else {
-      S.pattern = S.pattern.map(r=>{ const row=Array.isArray(r)?r.slice(0,16):[]; while(row.length<16) row.push(0); return row; });
-    }
+    if(!Array.isArray(S.pattern) || S.pattern.length!==4) S.pattern = KITS["Four"].map(r=>r.slice());
     if(!Array.isArray(S.padOct) || S.padOct.length!==7) S.padOct = [0,0,0,0,0,0,0];
     S.padOct = S.padOct.map(v=>Math.max(-2,Math.min(2,Number(v)||0)));
     if(!Array.isArray(S.padInv) || S.padInv.length!==7) S.padInv = [0,0,0,0,0,0,0];

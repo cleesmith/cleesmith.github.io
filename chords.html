@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.45 — HTML chord synth</title>
+<title>Chords 003.48 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -446,7 +446,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.45</span></div>
+      <div class="logo">Chords<span class="ver">003.48</span></div>
     </div>
 
     <div class="top">
@@ -520,8 +520,11 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="row"><span class="lbl">ADSR preset — Attack / Decay / Sustain / Release</span><div class="row" id="adsrRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Reverb type — Reverb slider sets wet amount</span><div class="row" id="reverbTypeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Chorus type — Chorus slider sets wet amount</span><div class="row" id="chorusTypeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Flanger — modulated comb sweep</span><div class="row" id="flangerTypeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Drive — distortion character</span><div class="row" id="driveTypeRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Tape — analog / lo-fi character</span><div class="row" id="tapeTypeRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">LFO / Vibrato — pitch wobble</span><div class="row" id="vibratoRow" style="margin:0"></div></div>
+  <div class="row"><span class="lbl">Glide — pitch slide between Lead notes</span><div class="row" id="glideRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Delay rate — synced to BPM; Delay slider sets echo amount</span><div class="row" id="delayRateRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Tremolo rate — synced to BPM; Tremolo slider sets depth</span><div class="row" id="tremRateRow" style="margin:0"></div></div>
   <div class="row"><span class="lbl">Sampler — record through the mic, then play it as chords</span>
@@ -669,6 +672,13 @@ const CHORUS_TYPES = [
   {label:"WIDE",  value:"wide",  delays:[0.011,0.020], rates:[0.50,0.68], depths:[0.0026,0.0031], pans:[-1.00,1.00]},
   {label:"LUSH",  value:"lush",  delays:[0.016,0.025], rates:[0.24,0.36], depths:[0.0035,0.0042], pans:[-0.90,0.90]}
 ];
+const FLANGER_TYPES = [
+  {label:"OFF",   value:"off",   rate:0.20, base:0.0030, depth:0.0000, feedback:0.00, wet:0.00},
+  {label:"SLOW",  value:"slow",  rate:0.12, base:0.0045, depth:0.0032, feedback:0.28, wet:0.48},
+  {label:"JET",   value:"jet",   rate:0.32, base:0.0026, depth:0.0022, feedback:0.72, wet:0.64},
+  {label:"DEEP",  value:"deep",  rate:0.09, base:0.0052, depth:0.0045, feedback:0.52, wet:0.68},
+  {label:"METAL", value:"metal", rate:0.58, base:0.0014, depth:0.0010, feedback:0.82, wet:0.60}
+];
 const DRIVE_TYPES = [
   {label:"OFF",   value:"off",   amount:0,  tone:16000, makeup:1.00},
   {label:"TUBE",  value:"tube",  amount:2.2,tone:7200,  makeup:0.92},
@@ -682,6 +692,26 @@ const TAPE_TYPES = [
   {label:"VINYL", value:"vinyl", amount:1.6, hp:90,  lp:8500,  makeup:0.94, noise:0.014, wowRate:0.62, wowDepth:0.0011},
   {label:"TAPE",  value:"tape",  amount:2.0, hp:35,  lp:7200,  makeup:0.96, noise:0.004, wowRate:0.35, wowDepth:0.0007}
 ];
+// HiChord exposes LOW / MED / HIGH rather than exact modulation values. These
+// browser values are perceptual approximations: rate in Hz, depth in cents.
+const VIBRATO_TYPES = [
+  {label:"OFF",  value:"off",  rate:5.0, depth:0},
+  {label:"LOW",  value:"low",  rate:4.4, depth:8},
+  {label:"MED",  value:"med",  rate:5.4, depth:18},
+  {label:"HIGH", value:"high", rate:6.8, depth:36}
+];
+// HiChord exposes named glide speeds rather than published milliseconds.
+// These browser timings are perceptual approximations for the pitch transition.
+const GLIDE_TYPES = [
+  {label:"OFF",    value:"off",    seconds:0},
+  {label:"SHORT",  value:"short",  seconds:0.07},
+  {label:"MEDIUM", value:"medium", seconds:0.18},
+  {label:"LONG",   value:"long",   seconds:0.45}
+];
+function glideSeconds(){
+  const g = GLIDE_TYPES.find(x=>x.value===S.glideType) || GLIDE_TYPES[0];
+  return g.seconds || 0;
+}
 const DELAY_RATES = [
   {label:"OFF", value:"off"},
   {label:"1/4", value:"1/4"},
@@ -741,7 +771,7 @@ const S = {
   cut:3500, res:.7, atk:25, dec:30, sus:.8, rel:300, adsr:null,   // brightness and attack estimated from the YouTube factory reference
   // strum 0 — the device's default play mode is oneshot, all notes together.
   // Strumming there is a separate mode (slow/med/fast = 200/80/40ms), not a default.
-  delay:0, delayRate:"off", reverb:0, reverbType:"off", chorus:0, chorusType:"off", driveType:"off", tapeType:"off", trem:0, tremRate:"off", strum:0, vol:70,
+  delay:0, delayRate:"off", reverb:0, reverbType:"off", chorus:0, chorusType:"off", flangerType:"off", driveType:"off", tapeType:"off", vibratoType:"off", glideType:"off", trem:0, tremRate:"off", strum:0, vol:70,
   bpm:120, swing:0, drumVol:70,
   playMode:"play",
   arpOn:false, arp:"up", arpLayer:"arp-only", rate:"1/8", bars:2, latch:false,   // 1/8 = the device's default
@@ -768,14 +798,16 @@ const rt = {
   voices:[],           // every sounding voice, oldest first
   stick:{x:0,y:0,shift:false},
   chromKeyShift:0,     // prevents one held L/R gesture from stepping the key repeatedly
-  player:{running:false, timer:null, gateTimer:null, degree:null}
+  player:{running:false, timer:null, gateTimer:null, degree:null},
+  glideMidi:null
 };
 
 /* ============================================================
    3. AUDIO GRAPH
    ============================================================ */
-let ctx=null, master, limiter, tremGain, lfo, lfoAmt, chorusIn, chorusWet, chorusDelays=[], chorusLfos=[], chorusDepths=[], chorusPans=[],
-    chordBus, fxBus, postTapeBus, driveDry, driveWet, driveShaper, driveTone, driveMakeup,
+let ctx=null, master, limiter, tremGain, lfo, lfoAmt, vibratoLfo, vibratoAmt, chorusIn, chorusWet, chorusDelays=[], chorusLfos=[], chorusDepths=[], chorusPans=[],
+    chordBus, fxBus, postTapeBus, postFlangeBus, flangerDry, flangerWet, flangerDelay, flangerFeedback, flangerLfo, flangerDepth,
+    driveDry, driveWet, driveShaper, driveTone, driveMakeup,
     tapeDry, tapeWet, tapeShaper, tapeHP, tapeLP, tapeDelay, tapeMakeup, tapeNoiseGain, tapeNoiseSrc, tapeWow, tapeWowAmt,
     arpChordBus, arpNoteBus, drumBus, dryGain, delayNode, delayFb, delayTone, delaySend,
     convolver, revSend, noiseBuf, worker;
@@ -795,6 +827,14 @@ function buildAudio(){
   lfo = ctx.createOscillator(); lfo.type="sine"; lfo.frequency.value=tremoloHz();
   lfoAmt = ctx.createGain(); lfoAmt.gain.value=0;
   lfo.connect(lfoAmt); lfoAmt.connect(tremGain.gain); lfo.start();
+
+  // Global vibrato LFO. Its output is in cents and is connected to the detune
+  // AudioParam of every pitched voice as that voice is created. This means
+  // changing LOW/MED/HIGH also changes notes that are already sounding.
+  vibratoLfo = ctx.createOscillator(); vibratoLfo.type = "sine";
+  vibratoAmt = ctx.createGain(); vibratoAmt.gain.value = 0;
+  vibratoLfo.connect(vibratoAmt); vibratoLfo.start();
+  syncVibratoType();
 
   chordBus = ctx.createGain(); chordBus.gain.value=1;
 
@@ -838,15 +878,31 @@ function buildAudio(){
   tapeNoiseSrc = ctx.createBufferSource(); tapeNoiseSrc.buffer = makeNoise(2); tapeNoiseSrc.loop = true; tapeNoiseSrc.connect(tapeNoiseGain); tapeNoiseSrc.start();
   syncTapeType();
 
+  // Flanger insert after Tape. A very short delay is swept by an LFO and fed
+  // back into itself; the named modes change sweep speed, depth and resonance.
+  // OFF is a transparent dry route. Drums remain outside this synth-only insert.
+  postFlangeBus = ctx.createGain();
+  flangerDry = ctx.createGain(); flangerDry.gain.value = 1;
+  flangerWet = ctx.createGain(); flangerWet.gain.value = 0;
+  flangerDelay = ctx.createDelay(.03); flangerDelay.delayTime.value = .003;
+  flangerFeedback = ctx.createGain(); flangerFeedback.gain.value = 0;
+  flangerLfo = ctx.createOscillator(); flangerLfo.type = "sine";
+  flangerDepth = ctx.createGain(); flangerDepth.gain.value = 0;
+  postTapeBus.connect(flangerDry); flangerDry.connect(postFlangeBus);
+  postTapeBus.connect(flangerDelay); flangerDelay.connect(flangerWet); flangerWet.connect(postFlangeBus);
+  flangerDelay.connect(flangerFeedback); flangerFeedback.connect(flangerDelay);
+  flangerLfo.connect(flangerDepth); flangerDepth.connect(flangerDelay.delayTime); flangerLfo.start();
+  syncFlangerType();
+
   dryGain = ctx.createGain(); dryGain.gain.value=1;
-  postTapeBus.connect(dryGain); dryGain.connect(tremGain);
+  postFlangeBus.connect(dryGain); dryGain.connect(tremGain);
 
   // delay
   delaySend = ctx.createGain(); delaySend.gain.value = S.delayRate === "off" ? 0 : S.delay/100;
   delayNode = ctx.createDelay(1.5);
   delayFb   = ctx.createGain(); delayFb.gain.value=.34;
   delayTone = ctx.createBiquadFilter(); delayTone.type="lowpass"; delayTone.frequency.value=2600;
-  postTapeBus.connect(delaySend); delaySend.connect(delayNode);
+  postFlangeBus.connect(delaySend); delaySend.connect(delayNode);
   delayNode.connect(delayTone); delayTone.connect(delayFb); delayFb.connect(delayNode);
   delayNode.connect(tremGain);
 
@@ -855,7 +911,7 @@ function buildAudio(){
   // these IRs are browser-side approximations of those descriptions.
   convolver = ctx.createConvolver();
   revSend = ctx.createGain(); revSend.gain.value = S.reverbType === "off" ? 0 : S.reverb/100;
-  postTapeBus.connect(revSend); drumBus.connect(revSend);
+  postFlangeBus.connect(revSend); drumBus.connect(revSend);
   revSend.connect(convolver); convolver.connect(tremGain);
   syncReverbType();
 
@@ -864,7 +920,7 @@ function buildAudio(){
   // approximations of LIGHT / WARM / WIDE / LUSH.
   chorusIn  = ctx.createGain();
   chorusWet = ctx.createGain(); chorusWet.gain.value = 0;
-  postTapeBus.connect(chorusIn);
+  postFlangeBus.connect(chorusIn);
   chorusDelays=[]; chorusLfos=[]; chorusDepths=[]; chorusPans=[];
   for(let i=0;i<2;i++){
     const dl  = ctx.createDelay(0.08);
@@ -929,6 +985,18 @@ function syncChorusType(){
     chorusPans[i].pan.setTargetAtTime(cfg.pans[i], now, .02);
   }
 }
+function syncFlangerType(){
+  if(!ctx || !flangerDry || !flangerWet || !flangerDelay || !flangerLfo || !flangerDepth || !flangerFeedback) return;
+  const cfg = FLANGER_TYPES.find(x=>x.value===S.flangerType) || FLANGER_TYPES[0];
+  const on = cfg.value !== "off";
+  const now = ctx.currentTime;
+  flangerDry.gain.setTargetAtTime(1, now, .01);
+  flangerWet.gain.setTargetAtTime(on ? cfg.wet : 0, now, .01);
+  flangerDelay.delayTime.setTargetAtTime(cfg.base, now, .02);
+  flangerLfo.frequency.setTargetAtTime(cfg.rate, now, .02);
+  flangerDepth.gain.setTargetAtTime(on ? cfg.depth : 0, now, .02);
+  flangerFeedback.gain.setTargetAtTime(on ? cfg.feedback : 0, now, .02);
+}
 function makeDriveCurve(type, amount){
   const n = 4096, curve = new Float32Array(n);
   for(let i=0;i<n;i++){
@@ -984,6 +1052,16 @@ function syncTapeType(){
   tapeNoiseGain.gain.setTargetAtTime(on ? cfg.noise : 0, now, .03);
   tapeWow.frequency.setTargetAtTime(cfg.wowRate, now, .03);
   tapeWowAmt.gain.setTargetAtTime(on ? cfg.wowDepth : 0, now, .03);
+}
+function syncVibratoType(){
+  if(!ctx || !vibratoLfo || !vibratoAmt) return;
+  const cfg = VIBRATO_TYPES.find(x=>x.value===S.vibratoType) || VIBRATO_TYPES[0];
+  const now = ctx.currentTime;
+  vibratoLfo.frequency.setTargetAtTime(cfg.rate, now, .02);
+  vibratoAmt.gain.setTargetAtTime(cfg.depth, now, .02);
+}
+function addVibrato(node){
+  if(vibratoAmt && node && node.detune) vibratoAmt.connect(node.detune);
 }
 function makeNoise(sec){
   const sr = ctx.sampleRate, len = Math.floor(sr*sec);
@@ -1075,8 +1153,10 @@ function reap(){
   }
 }
 
-function playNote(midi, time, dur, vel, bus, relOverride){
+function playNote(midi, time, dur, vel, bus, relOverride, glideFromMidi){
   reap();
+  const glideTime = (S.glideType !== "off" && Number.isFinite(glideFromMidi)) ? glideSeconds() : 0;
+  const glideFromHz = glideTime > 0 ? mtof(glideFromMidi) : null;
   const p = snd();
   const wave = S.wave || p.wave;
   const t = time;
@@ -1111,7 +1191,13 @@ function playNote(midi, time, dur, vel, bus, relOverride){
     // One buffer source, pitched by playback rate relative to the note recorded.
     const src = ctx.createBufferSource();
     src.buffer = sampleBuf;
-    src.playbackRate.value = Math.pow(2, (midi - sampleRootMidi())/12);
+    const targetRate = Math.pow(2, (midi - sampleRootMidi())/12);
+    if(glideTime > 0){
+      const startRate = Math.pow(2, (glideFromMidi - sampleRootMidi())/12);
+      src.playbackRate.setValueAtTime(Math.max(0.001, startRate), t);
+      src.playbackRate.exponentialRampToValueAtTime(Math.max(0.001, targetRate), t + glideTime);
+    } else src.playbackRate.setValueAtTime(targetRate, t);
+    addVibrato(src);
     // Only held notes loop. Arp and loop-playback notes have a known length and
     // are meant to be one-shots.
     if(S.sampLoop && dur == null && sampleLoop){
@@ -1132,8 +1218,11 @@ function playNote(midi, time, dur, vel, bus, relOverride){
   } else if(p.fm && !S.wave){
     // Carriers (a detuned pair in STEREO, one in MONO) sharing one modulator.
     const f = mtof(midi);
+    const f0 = glideTime > 0 ? glideFromHz : f;
     const mod  = ctx.createOscillator(); mod.type = "sine";
-    mod.frequency.value = f * p.fm.ratio;
+    mod.frequency.setValueAtTime(f0 * p.fm.ratio, t);
+    if(glideTime > 0) mod.frequency.exponentialRampToValueAtTime(f * p.fm.ratio, t + glideTime);
+    addVibrato(mod);
     const modAmt = ctx.createGain();
     modAmt.gain.setValueAtTime(f * p.fm.i0, t);
     modAmt.gain.exponentialRampToValueAtTime(Math.max(1, f * p.fm.i1), t + p.fm.dec);
@@ -1142,7 +1231,9 @@ function playNote(midi, time, dur, vel, bus, relOverride){
     for(let i=0;i<nOsc;i++){
       const o = ctx.createOscillator();
       o.type = "sine";
-      o.frequency.value = f;
+      o.frequency.setValueAtTime(f0, t);
+      if(glideTime > 0) o.frequency.exponentialRampToValueAtTime(f, t + glideTime);
+      addVibrato(o);
       modAmt.connect(o.frequency);
       spread(o, i);
       oscs.push(o);
@@ -1155,7 +1246,10 @@ function playNote(midi, time, dur, vel, bus, relOverride){
       // oscillator, so the waveform control still behaves predictably.
       if(p.softSaw && !S.wave) o.setPeriodicWave(softSaw(p.softSaw));
       else o.type = wave;
-      o.frequency.value = mtof(midi);
+      const targetHz = mtof(midi);
+      o.frequency.setValueAtTime(glideTime > 0 ? glideFromHz : targetHz, t);
+      if(glideTime > 0) o.frequency.exponentialRampToValueAtTime(targetHz, t + glideTime);
+      addVibrato(o);
       spread(o, i);
       oscs.push(o);
     }
@@ -1193,6 +1287,9 @@ function playNote(midi, time, dur, vel, bus, relOverride){
   oscs[0].onended = ()=>{
     const i = rt.voices.indexOf(grp);
     if(i >= 0) rt.voices.splice(i,1);
+    // Remove this voice's pitch-modulation connections as well as its audio
+    // connections, so long sessions do not accumulate stale AudioParams.
+    oscs.forEach(o=>{ try{ if(vibratoAmt && o.detune) vibratoAmt.disconnect(o.detune); }catch(e){} });
     try{ out.disconnect(); filt.disconnect(); oscs.forEach(o=>o.disconnect()); }catch(e){}
   };
 
@@ -1217,10 +1314,15 @@ function startChord(id, midis, time, vel, bus){
   const strum = S.strum/1000;
   const grp = [];
   const hasBass = S.bass !== "off" && midis.length > 1;
+  // Portamento is most musical in HiChord's monophonic LEAD mode. Remember the
+  // previous Lead pitch and start the new oscillator there before gliding to it.
+  const leadGlide = S.playMode === "lead" && S.glideType !== "off" && midis.length === 1;
+  const glideFrom = leadGlide ? rt.glideMidi : null;
+  if(S.playMode === "lead" && midis.length === 1) rt.glideMidi = midis[0];
   midis.forEach((m,i)=>{
     const t = time + i*strum;
     if(hasBass && i === 0) grp.push(...playBassVoice(m, t, vel, bus));
-    else grp.push(playNote(m, t, null, vel, bus));
+    else grp.push(playNote(m, t, null, vel, bus, undefined, glideFrom));
   });
   rt.liveVoices.set(id, grp);
 }
@@ -2736,6 +2838,10 @@ function buildPanels(){
     }
     syncChorusType(); applySoundParams(); save();
   });
+  chips($("flangerTypeRow"), FLANGER_TYPES, ()=>S.flangerType, v=>{
+    S.flangerType=v;
+    syncFlangerType(); save();
+  });
   chips($("driveTypeRow"), DRIVE_TYPES, ()=>S.driveType, v=>{
     S.driveType=v;
     syncDriveType(); save();
@@ -2743,6 +2849,17 @@ function buildPanels(){
   chips($("tapeTypeRow"), TAPE_TYPES, ()=>S.tapeType, v=>{
     S.tapeType=v;
     syncTapeType(); save();
+  });
+  chips($("vibratoRow"), VIBRATO_TYPES, ()=>S.vibratoType, v=>{
+    S.vibratoType=v;
+    syncVibratoType(); save();
+  });
+  chips($("glideRow"), GLIDE_TYPES, ()=>S.glideType, v=>{
+    S.glideType=v;
+    // A newly selected glide starts from the next played Lead note rather than
+    // unexpectedly sliding from a pitch remembered under the previous setting.
+    rt.glideMidi=null;
+    save();
   });
   chips($("delayRateRow"), DELAY_RATES, ()=>S.delayRate, v=>{
     S.delayRate=v;
@@ -2794,6 +2911,7 @@ function buildPanels(){
       stopAllChords(true);
       rt.held.forEach((h,d)=>{ const el=padEl(d); if(el) el.classList.remove("hit"); });
       rt.held.clear();
+      rt.glideMidi=null;
       S.playMode=v;
       if(v === "lead" || v === "drone" || v === "repeat"){
         S.arpOn=false;
@@ -3267,6 +3385,7 @@ function resetAll(){
   lastVoicing.live = lastVoicing.loop = null;
   rt.held.forEach((h,d)=>{ const el = padEl(d); if(el) el.classList.remove("hit"); });
   rt.held.clear();
+  rt.glideMidi = null;
   rt.events = [];
   tapTimes = [];
   sampleBuf = null; sampleLoop = null; idbDel("sample");
@@ -3284,7 +3403,7 @@ function resetAll(){
   ui.arp.classList.remove("on");
   ui.drums.classList.remove("on");
   ui.latch.classList.remove("on");
-  applySoundParams(); syncDelayTime(); syncTremoloRate(); syncTapeType(); refreshScreen();
+  applySoundParams(); syncDelayTime(); syncTremoloRate(); syncTapeType(); syncFlangerType(); syncVibratoType(); refreshScreen();
   flash("RESET");
 }
 
@@ -3344,10 +3463,16 @@ function load(){
     // audible old chorus by mapping it to WIDE, closest to the former hard-panned chorus.
     if(!("chorusType" in o)) S.chorusType = S.chorus > 0 ? "wide" : "off";
     else if(!CHORUS_TYPES.some(r=>r.value===S.chorusType)) S.chorusType = "off";
+    // Flanger was added in 003.48. Older saved states should remain clean.
+    if(!("flangerType" in o) || !FLANGER_TYPES.some(r=>r.value===S.flangerType)) S.flangerType = "off";
     // Drive was added in 003.43. Older saved states should remain clean.
     if(!("driveType" in o) || !DRIVE_TYPES.some(r=>r.value===S.driveType)) S.driveType = "off";
     // Tape was added in 003.44. Older saved states should remain clean.
     if(!("tapeType" in o) || !TAPE_TYPES.some(r=>r.value===S.tapeType)) S.tapeType = "off";
+    // Vibrato/LFO was added in 003.46. Older saved states should remain stable.
+    if(!("vibratoType" in o) || !VIBRATO_TYPES.some(r=>r.value===S.vibratoType)) S.vibratoType = "off";
+    // Glide was added in 003.47. Older saved states should remain instantaneous.
+    if(!("glideType" in o) || !GLIDE_TYPES.some(r=>r.value===S.glideType)) S.glideType = "off";
     // Pre-003.30 saved states had only a delay amount. Preserve an existing
     // audible delay by migrating it to the former default-ish 1/8 timing.
     if(!("delayRate" in o)) S.delayRate = S.delay > 0 ? "1/8" : "off";

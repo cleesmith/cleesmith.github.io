@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Chords 003.60 — HTML chord synth</title>
+<title>Chords 003.61 — HTML chord synth</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -480,7 +480,7 @@ button:focus-visible,.well:focus-visible,.cell:focus-visible{outline:2px solid v
   <div class="face">
 
     <div class="brand">
-      <div class="logo">Chords<span class="ver">003.60</span></div>
+      <div class="logo">Chords<span class="ver">003.61</span></div>
     </div>
 
     <div class="top">
@@ -3821,7 +3821,7 @@ function initKeys(){
   window.addEventListener("keydown", e=>{
     if(e.repeat) return;
     const t = e.target;
-    if(t && (t.tagName==="INPUT")) return;
+    if(t && (t.tagName==="INPUT" || t.tagName==="TEXTAREA" || t.isContentEditable)) return;
     const k = e.key.toLowerCase();
     if(k in KEYMAP){ e.preventDefault(); const d=KEYMAP[k]; if(!down.has(d)){ down.add(d); padDown(d);} return; }
     if(k in JOYMAP){
@@ -3842,6 +3842,8 @@ function initKeys(){
     if(k==="]"){ S.root=(S.root+1)%12; labelPads(); refreshScreen(); buildPanels(); save(); return; }
   });
   window.addEventListener("keyup", e=>{
+    const t = e.target;
+    if(t && (t.tagName==="INPUT" || t.tagName==="TEXTAREA" || t.isContentEditable)) return;
     const k = e.key.toLowerCase();
     if(k in KEYMAP){ const d=KEYMAP[k]; down.delete(d); padUp(d); return; }
     if(k in JOYMAP){
